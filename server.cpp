@@ -6,7 +6,7 @@
 /*   By: ablancha <ablancha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 15:10:15 by ablancha          #+#    #+#             */
-/*   Updated: 2024/09/03 15:11:06 by ablancha         ###   ########.fr       */
+/*   Updated: 2024/09/03 16:47:45 by maderuel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,15 @@ Server::Server(int port, const std::string &pwd) : password(pwd), port(port){
     std::cout << "Server initialized" << std::endl;
 }
 
+void sendReply(int clientSocket, const std::string& reply) {
+    std::string message = reply + "\r\n"; // IRC protocol requires CRLF at the end of the message
+    send(clientSocket, message.c_str(), message.size(), 0);
+}
+
+void sendRPL_WELCOME(int clientSocket, const std::string& nick) {
+    std::string reply = ":irc.example.com 001 " + nick + " :Welcome to the Internet Relay Network " + nick;
+    sendReply(clientSocket, reply);
+}
 
 void Server::start() {
     fd_set fds;
@@ -117,16 +126,18 @@ void Server::start() {
         
         for (size_t i = 0; i < clients.size(); ++i) {
             int clientFD = clients[i]->getSocket();
+            sendRPL_WELCOME(clientFD, "tester");
             if (FD_ISSET(clientFD, &fds)) {
                 char buffer[1024] = {0};
                 int valread = read(clientFD, buffer, 1024);
-                if (valread != 0) {
+                if (valread >= 0) {
                     // Mettre la fonction pour les messages
-                    std::cout << "Message : "<< std::string(buffer) <<  std::endl;
+                    std::cout << "Message : "<< buffer <<  std::endl;
                     sendMessageToClient(clientFD, "bienn recu chef");
                     std::cout << "ok"<< std::endl;
                     
                 } else {
+                    sendMessageToClient(clientFD, "rienn recu chef");
                     close(clientFD);
                     clients.erase(clients.begin() + i);
                 }
