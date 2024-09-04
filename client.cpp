@@ -6,7 +6,7 @@
 /*   By: ablancha <ablancha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 15:08:37 by ablancha          #+#    #+#             */
-/*   Updated: 2024/08/28 14:42:09 by ablancha         ###   ########.fr       */
+/*   Updated: 2024/09/04 14:54:19 by ablancha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,14 @@
 #include <unistd.h>
 
 Client::Client(const std::string &user, const std::string &nick, int socket): username(user), nickname(nick), socket(socket)
-{}
+{
+    this->Registered = false;
+}
 
 Client::Client(const Client &source): username(source.username), nickname(source.nickname) 
-{}
+{
+    this->Registered = false;
+}
 
 Client::~Client() {
 }
@@ -48,3 +52,12 @@ void Client::displayInfo() const {
     std::cout << "Username: " << username << std::endl;
     std::cout << "Nickname: " << nickname << std::endl;
 }
+
+bool Client::isRegistered() const{
+    return(this->Registered);
+}
+
+void Client::setRegistered(bool val){
+    this->Registered = val;
+}
+;
