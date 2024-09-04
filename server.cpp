@@ -151,6 +151,9 @@ void Server::start() {
         }
 
         FDready = select(maxFD + 1, &fds, NULL, NULL, NULL); // check les fd prets pour la lecture
+		if (FDready < 0){
+			continue ;
+		}
 
         if (FD_ISSET(server_socket, &fds)) {
             int new_socket = accept(server_socket, (struct sockaddr*)&client_addr, &client_len);
