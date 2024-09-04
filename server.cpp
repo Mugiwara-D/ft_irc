@@ -6,7 +6,7 @@
 /*   By: ablancha <ablancha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 15:10:15 by ablancha          #+#    #+#             */
-/*   Updated: 2024/09/03 16:47:45 by maderuel         ###   ########.fr       */
+/*   Updated: 2024/09/04 13:36:42 by ablancha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,13 +120,13 @@ void Server::start() {
             i++;
             //fin test 
             clients.push_back(new Client(indexedName,indexedName,new_socket));
+            sendRPL_WELCOME(new_socket, "tester");
         }
         //verifier les connexions
         displayInfo(); 
         
         for (size_t i = 0; i < clients.size(); ++i) {
             int clientFD = clients[i]->getSocket();
-            sendRPL_WELCOME(clientFD, "tester");
             if (FD_ISSET(clientFD, &fds)) {
                 char buffer[1024] = {0};
                 int valread = read(clientFD, buffer, 1024);
