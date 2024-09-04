@@ -6,10 +6,12 @@
 /*   By: ablancha <ablancha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 16:24:28 by ablancha          #+#    #+#             */
-/*   Updated: 2024/08/27 14:07:23 by ablancha         ###   ########.fr       */
+/*   Updated: 2024/09/04 14:25:03 by ablancha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#ifndef CHANNEL_HPP
+#define CHANNEL_HPP
 
 #include <iostream>
 
@@ -22,5 +24,7 @@ private:
 public:
 	channel(std::string name);
 	~channel();
+	std::string getname();
 };
 
+#endif

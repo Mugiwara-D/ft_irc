@@ -6,7 +6,7 @@
 /*   By: ablancha <ablancha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 15:10:15 by ablancha          #+#    #+#             */
-/*   Updated: 2024/09/04 13:36:42 by ablancha         ###   ########.fr       */
+/*   Updated: 2024/09/04 16:24:53 by ablancha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,52 @@ void sendRPL_WELCOME(int clientSocket, const std::string& nick) {
     sendReply(clientSocket, reply);
 }
 
+std::string get_irc_password(const std::string& command) {
+    std::istringstream stream(command);
+    std::string line;
+    while (std::getline(stream, line)) {
+        if (line.substr(0, 4) == "PASS") {
+            std::string password = line.substr(5);
+            return password;
+        }
+    }
+    return "";
+}
+
+void Server::MessageParsing(char buffer[1024], Client& Client, int i)
+{
+    std::string message(buffer);
+    if(Client.isRegistered() == false)
+    {
+        if(message.find("PASS") != std::string::npos)
+        {
+            std::cout << get_irc_password(message)<< std::endl;
+            std::cout << getPassword()<< std::endl;
+            
+            if(get_irc_password(message) == getPassword())
+            {
+                Client.setRegistered(true);
+                // std::cout << bien
+            }
+            else
+            {
+                sendMessageToClient(Client.getSocket(), "Password required for connexion"); 
+                close(Client.getSocket());
+                clients.erase(clients.begin() + i);
+            }
+        }
+        else
+        {
+            sendMessageToClient(Client.getSocket(), "Password required for connexion"); 
+            close(Client.getSocket());
+            clients.erase(clients.begin() + i);
+        }
+    }
+    else{
+        std::cout << "Message : "<< buffer <<  std::endl;
+        sendMessageToClient(Client.getSocket(), "Okay");
+    }
+}
 void Server::start() {
     fd_set fds;
     int i = 0;
@@ -91,7 +137,7 @@ void Server::start() {
 
     while (1) {
         FD_ZERO(&fds); //reset les fds
-        FD_SET(server_socket, &fds); //mets le fd du socket serv dqns lq liste
+        FD_SET(server_socket, &fds); //mets le fd du socket serv dqns la liste
         maxFD = server_socket;
 
         for (size_t i = 0; i < clients.size(); ++i) {
@@ -132,12 +178,14 @@ void Server::start() {
                 int valread = read(clientFD, buffer, 1024);
                 if (valread >= 0) {
                     // Mettre la fonction pour les messages
-                    std::cout << "Message : "<< buffer <<  std::endl;
-                    sendMessageToClient(clientFD, "bienn recu chef");
-                    std::cout << "ok"<< std::endl;
+                    MessageParsing(buffer, *clients[i], i);
+                    // if(MessageParsing(buffer, *clients[i], i) == 0)
+                    // {
+                    //     close(clientFD);
+                    //     clients.erase(clients.begin() + i);
+                    // }
                     
                 } else {
-                    sendMessageToClient(clientFD, "rienn recu chef");
                     close(clientFD);
                     clients.erase(clients.begin() + i);
                 }

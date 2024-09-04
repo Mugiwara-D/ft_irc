@@ -6,7 +6,7 @@
 /*   By: ablancha <ablancha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 14:07:08 by ablancha          #+#    #+#             */
-/*   Updated: 2024/08/27 14:07:10 by ablancha         ###   ########.fr       */
+/*   Updated: 2024/09/04 14:24:53 by ablancha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,4 +22,9 @@ channel::channel(std::string name) : name(name)
 channel::~channel()
 {
     std::cout << "Channel \"" << name << "\" destroyed." << std::endl;
+}
+
+std::string channel::getname()
+{
+    return(this->name);
 }

@@ -6,7 +6,7 @@
 /*   By: ablancha <ablancha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 15:08:46 by ablancha          #+#    #+#             */
-/*   Updated: 2024/08/28 14:41:22 by ablancha         ###   ########.fr       */
+/*   Updated: 2024/09/04 14:53:50 by ablancha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,14 @@
 #define CLIENT_HPP
 
 #include <string>
+#include "channel.hpp"
 
 class Client {
 private:
     std::string username;
     std::string nickname;
+    std::string Currentchannel;
+    bool Registered;
     int socket;
 
 public:
@@ -38,6 +41,10 @@ public:
     void setNickname(const std::string &nick);
 
     void displayInfo() const;
+
+    bool isRegistered() const;
+
+    void setRegistered(bool val);
 };
 
 #endif
