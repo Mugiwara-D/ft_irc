@@ -182,12 +182,6 @@ void Server::start() {
                 if (valread >= 0) {
                     // Mettre la fonction pour les messages
                     MessageParsing(buffer, *clients[i], i);
-                    // if(MessageParsing(buffer, *clients[i], i) == 0)
-                    // {
-                    //     close(clientFD);
-                    //     clients.erase(clients.begin() + i);
-                    // }
-                    
                 } else {
                     close(clientFD);
                     clients.erase(clients.begin() + i);
