@@ -93,40 +93,69 @@ std::string get_irc_password(const std::string& command) {
     return "";
 }
 
-void Server::MessageParsing(char buffer[1024], Client& Client, int i)
+/*
+bool checkCommand( std::string str )
 {
-    std::string message(buffer);
-    if(Client.isRegistered() == false)
-    {
-        if(message.find("PASS") != std::string::npos)
-        {
-            std::cout << get_irc_password(message)<< std::endl;
-            std::cout << getPassword()<< std::endl;
-            
-            if(get_irc_password(message) == getPassword())
-            {
-                Client.setRegistered(true);
-                // std::cout << bien
-            }
-            else
-            {
-                sendMessageToClient(Client.getSocket(), "Password required for connexion"); 
-                close(Client.getSocket());
-                clients.erase(clients.begin() + i);
-            }
-        }
-        else
-        {
-            sendMessageToClient(Client.getSocket(), "Password required for connexion"); 
-            close(Client.getSocket());
-            clients.erase(clients.begin() + i);
-        }
-    }
-    else{
-        std::cout << "Message : "<< buffer <<  std::endl;
-        sendMessageToClient(Client.getSocket(), "Okay");
-    }
+	std::set<std::string> keywrd;
+	keywrd.insert("KICK");
+	keywrd.insert("INVITE");
+	keywrd.insert("TOPIC");
+	keywrd.insert("MODE");
+	keywrd.insert("JOIN");
+
+	std::set<std::string>::iterator i;
+	for (i = keywrd.begin(); i != keywrd.end(); ++i){
+		if (str.find(*i) != std::string::npos)
+			return true;
+	}
+	return false;
 }
+*/
+
+void	Server::MessageParsing(char buffer[1024], Client& Client, int i)
+{
+	std::string	str = buffer;
+	std::string prefix;
+	(void) i;
+
+	//std::cout << "\nThy buffer is:\n" << str << std::endl;
+
+	std::size_t start = str.find_first_not_of(" \t\n\r");
+	if (start == std::string::npos)
+		prefix = "";
+
+	std::string trimstr = str.substr(start);
+
+	std::size_t firstSpace = trimstr.find(' ');
+	if (firstSpace != std::string::npos) {
+			prefix = trimstr.substr(0, firstSpace);
+			trimstr = trimstr.substr(firstSpace + 1);
+		}
+	else
+		prefix = "";
+
+	std::cout << "\n\nThy prefix is:\n" << prefix << std::endl; 
+	std::map<std::string, std::string> cmdsMap;
+	cmdsMap["KICK"] = "KICK command call";
+	cmdsMap["INVITE"] = "INVITE command call";
+	cmdsMap["TOPIC"] = "TOPIC command call";
+	cmdsMap["MODE"] = "MODE command call";
+	cmdsMap["JOIN"] = "JOIN command call";
+
+	std::map<std::string, std::string>::iterator itr = cmdsMap.find(prefix);
+	if (itr != cmdsMap.end()) {
+		std::cout << Client.getUsername() << std::endl;
+		std::cout << itr->second << std::endl;
+	} else {
+		std::cout << "\nInvalide command" << std::endl;
+	}
+}
+
+void	rawDump(std::string msg)
+{
+	std::cout << "\nRaw Dump:\n"<< msg << std::endl;
+}
+
 void Server::start() {
     fd_set fds;
     int i = 0;
@@ -182,6 +211,7 @@ void Server::start() {
                 if (valread >= 0) {
                     // Mettre la fonction pour les messages
                     MessageParsing(buffer, *clients[i], i);
+				
                 } else {
                     close(clientFD);
                     clients.erase(clients.begin() + i);
