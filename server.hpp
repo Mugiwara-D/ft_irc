@@ -36,6 +36,13 @@ private:
     int port;
     int server_socket;
     struct sockaddr_in socket_adr;
+
+	////////parsing/////////
+	
+	typedef void	(Server::*HandlerCmd)(std::string);
+	std::map<std::string, HandlerCmd> commandMap;
+	void initHandler();
+
 public:
 
     Server(int prt , const std::string &pwd);
@@ -52,6 +59,10 @@ public:
     void displayInfo() const;
     void sendMessageToClient(int client_fd, const std::string& message);
     void MessageParsing(char buffer[1024], Client& Client, int i);
+	void	cmdMode( const std::string cmdArgs );
+	void	cmdTopic( const std::string cmdArgs );
+	void	cmdPong( const std::string cmdArgs );
+	void	cmdPing( const std::string cmdArgs );
 };
 
 #endif

@@ -112,11 +112,45 @@ bool checkCommand( std::string str )
 }
 */
 
+void	Server::cmdMode( const std::string cmdArgs )
+{
+	std::cout << "MODE arg = " << cmdArgs << std::endl;
+}
+
+void	Server::cmdTopic( const std::string cmdArgs )
+{
+	std::cout << "Topic arg = " << cmdArgs << std::endl;
+}
+
+void	Server::cmdPong( std::string cmdArgs )
+{
+	std::cout << cmdArgs << "\nPING\n" << std::endl;
+}
+
+void	Server::cmdPing( std::string cmdArgs )
+{
+
+	std::cout << cmdArgs << "\nPONG\n" << std::endl;
+}
+
+void	Server::initHandler()
+{
+	commandMap["KICK"] = &Server::cmdTopic;
+	commandMap["TOPIC"] = &Server::cmdTopic;
+	commandMap["INVITE"] = &Server::cmdTopic;
+	commandMap["MODE"] = &Server::cmdMode;
+	commandMap["JOIN"] = &Server::cmdTopic;
+	commandMap["PRIVMSG"] = &Server::cmdTopic;
+	commandMap["PING"] = &Server::cmdPing;
+	commandMap["PONG"] = &Server::cmdPong;
+}
+
 void	Server::MessageParsing(char buffer[1024], Client& Client, int i)
 {
 	std::string	str = buffer;
 	std::string prefix;
 	(void) i;
+	(void) Client;
 
 	//std::cout << "\nThy buffer is:\n" << str << std::endl;
 
@@ -134,20 +168,18 @@ void	Server::MessageParsing(char buffer[1024], Client& Client, int i)
 	else
 		prefix = "";
 
-	std::cout << "\n\nThy prefix is:\n" << prefix << std::endl; 
-	std::map<std::string, std::string> cmdsMap;
-	cmdsMap["KICK"] = "KICK command call";
-	cmdsMap["INVITE"] = "INVITE command call";
-	cmdsMap["TOPIC"] = "TOPIC command call";
-	cmdsMap["MODE"] = "MODE command call";
-	cmdsMap["JOIN"] = "JOIN command call";
+	if (trimstr.empty())
+		trimstr = "RINE";
 
-	std::map<std::string, std::string>::iterator itr = cmdsMap.find(prefix);
-	if (itr != cmdsMap.end()) {
-		std::cout << Client.getUsername() << std::endl;
-		std::cout << itr->second << std::endl;
+	if (commandMap.empty())
+		initHandler();
+
+	std::map<std::string, HandlerCmd>::iterator itr = commandMap.find(prefix);
+	if (itr != commandMap.end()) {
+		HandlerCmd	handler = itr->second;
+		(this->*handler)(trimstr);
 	} else {
-		std::cout << "\nInvalide command" << std::endl;
+		std::cout << "\nInvalide command: " << str <<std::endl;
 	}
 }
 
