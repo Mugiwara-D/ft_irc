@@ -14,7 +14,7 @@
 
 /*######################fonction utiles : ###########################################*/
 Server::Server(const Server &other)
-    : password(other.password), clients(other.clients), port(other.port) {}
+    : password(other.password), clients(other.clients), port(other.port), running(false){}
 
 
 std::string Server::getPassword() const {
@@ -68,6 +68,7 @@ Server::Server(int port, const std::string &pwd) : password(pwd), port(port){
         close(server_socket);
         exit(1);
     }
+	running = true;
     std::cout << "Server initialized" << std::endl;
 }
 
@@ -122,15 +123,15 @@ void	Server::cmdTopic( const std::string cmdArgs )
 	std::cout << "Topic arg = " << cmdArgs << std::endl;
 }
 
-void	Server::cmdPong( std::string cmdArgs )
-{
-	std::cout << cmdArgs << "\nPING\n" << std::endl;
-}
-
 void	Server::cmdPing( std::string cmdArgs )
 {
 
 	std::cout << cmdArgs << "\nPONG\n" << std::endl;
+}
+
+void	Server::PingPong( Client& client )
+{
+	if (client.getLastPing() < std::time(0) - PING_TIMEOUT)
 }
 
 void	Server::initHandler()
@@ -141,8 +142,7 @@ void	Server::initHandler()
 	commandMap["MODE"] = &Server::cmdMode;
 	commandMap["JOIN"] = &Server::cmdTopic;
 	commandMap["PRIVMSG"] = &Server::cmdTopic;
-	commandMap["PING"] = &Server::cmdPing;
-	commandMap["PONG"] = &Server::cmdPong;
+	commandMap["PING"] = &Server::cmdTopic;
 }
 
 void	Server::MessageParsing(char buffer[1024], Client& Client, int i)
@@ -151,8 +151,6 @@ void	Server::MessageParsing(char buffer[1024], Client& Client, int i)
 	std::string prefix;
 	(void) i;
 	(void) Client;
-
-	//std::cout << "\nThy buffer is:\n" << str << std::endl;
 
 	std::size_t start = str.find_first_not_of(" \t\n\r");
 	if (start == std::string::npos)
@@ -196,7 +194,7 @@ void Server::start() {
     struct sockaddr_in client_addr;
     socklen_t client_len = sizeof(client_addr);
 
-    while (1) {
+    while (running) {
         FD_ZERO(&fds); //reset les fds
         FD_SET(server_socket, &fds); //mets le fd du socket serv dqns la liste
         maxFD = server_socket;
@@ -242,9 +240,12 @@ void Server::start() {
                 int valread = read(clientFD, buffer, 1024);
                 if (valread >= 0) {
                     // Mettre la fonction pour les messages
-                    MessageParsing(buffer, *clients[i], i);
-				
-                } else {
+					PingPong();
+					if (clients[i]->checkPing(std::time(0), 120))
+						MessageParsing(buffer, *clients[i], i);
+					else
+						std::cout << "\nNo bitches" << std::endl;
+				} else {
                     close(clientFD);
                     clients.erase(clients.begin() + i);
                 }

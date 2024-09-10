@@ -28,6 +28,9 @@
 #include <unistd.h>
 #include <sstream> 
 
+const int	PING_INTERVAL = 120;
+const int	PING_TIMEOUT = 240;
+
 class Server {
 private:
     std::string password;
@@ -36,6 +39,8 @@ private:
     int port;
     int server_socket;
     struct sockaddr_in socket_adr;
+
+	bool	running;
 
 	////////parsing/////////
 	
@@ -63,6 +68,8 @@ public:
 	void	cmdTopic( const std::string cmdArgs );
 	void	cmdPong( const std::string cmdArgs );
 	void	cmdPing( const std::string cmdArgs );
+
+	void	PingPong( Client& client );
 };
 
 #endif

@@ -15,7 +15,8 @@
 #include <iostream>
 #include <unistd.h>
 
-Client::Client(const std::string &user, const std::string &nick, int socket): username(user), nickname(nick), socket(socket)
+Client::Client(const std::string &user, const std::string &nick, int socket): 
+	username(user), nickname(nick), socket(socket), lastPing(std::time(0)), pinged(true)
 {
     this->Registered = false;
 }
@@ -60,4 +61,14 @@ bool Client::isRegistered() const{
 void Client::setRegistered(bool val){
     this->Registered = val;
 }
-;
+
+bool	Client::checkPing( std::time_t instTime, int pingInter )
+{
+	if (pinged){
+		std::cout << "\nalready Pinged" << std::endl;
+		return false;
+	} else {
+		std::cout << "\nPing sent to " << username << std::endl;
+		return (instTime - lastPing) >= pingInter;
+	}
+}
