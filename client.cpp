@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ablancha <ablancha@student.42.fr>          +#+  +:+       +#+        */
+/*   By: olcoste <olcoste@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 15:08:37 by ablancha          #+#    #+#             */
-/*   Updated: 2024/09/04 14:54:19 by ablancha         ###   ########.fr       */
+/*   Updated: 2024/09/10 15:59:36 by olcoste          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,4 +60,13 @@ bool Client::isRegistered() const{
 void Client::setRegistered(bool val){
     this->Registered = val;
 }
+
+time_t	Client::getLastNicknameChange() const {
+    return lastNicknameChange;
+}
+
+void	Client::setLastNicknameChange(const time_t newChange){
+    lastNicknameChange = newChange;
+}
+
 ;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ablancha <ablancha@student.42.fr>          +#+  +:+       +#+        */
+/*   By: olcoste <olcoste@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 15:10:15 by ablancha          #+#    #+#             */
-/*   Updated: 2024/09/10 14:29:31 by ablancha         ###   ########.fr       */
+/*   Updated: 2024/09/10 15:56:26 by olcoste          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,9 +94,12 @@ std::string get_irc_password(const std::string& command) {
     return "";
 }
 
+
+
 void Server::MessageParsing(char buffer[1024], Client& Client, int i)
 {
     std::string message(buffer);
+    //std::cout << "Message : "<< message <<  std::endl;
     if(Client.isRegistered() == false)
     {
         if(message.find("PASS") != std::string::npos)
@@ -118,6 +121,11 @@ void Server::MessageParsing(char buffer[1024], Client& Client, int i)
             // close(Client.getSocket());
             // clients.erase(clients.begin() + i);
         }
+    }
+    else if (Client.isRegistered() == true && !(message.find("NICK")))
+    {
+        std::cout << "NICK TROUVER" <<  std::endl;
+        cmdNick(message, Client.getSocket());
     }
     else{
         std::cout << "Message : "<< buffer <<  std::endl;

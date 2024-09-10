@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ablancha <ablancha@student.42.fr>          +#+  +:+       +#+        */
+/*   By: olcoste <olcoste@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 15:08:46 by ablancha          #+#    #+#             */
-/*   Updated: 2024/09/04 14:53:50 by ablancha         ###   ########.fr       */
+/*   Updated: 2024/09/10 16:00:20 by olcoste          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ private:
     std::string username;
     std::string nickname;
     std::string Currentchannel;
+    time_t lastNicknameChange;
     bool Registered;
     int socket;
 
@@ -45,6 +46,11 @@ public:
     bool isRegistered() const;
 
     void setRegistered(bool val);
+
+    time_t getLastNicknameChange() const;
+    void setLastNicknameChange(const time_t newChange);
+
+    
 };
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ablancha <ablancha@student.42.fr>          +#+  +:+       +#+        */
+/*   By: olcoste <olcoste@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 15:09:23 by ablancha          #+#    #+#             */
-/*   Updated: 2024/09/04 16:09:56 by ablancha         ###   ########.fr       */
+/*   Updated: 2024/09/10 15:57:39 by olcoste          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,8 @@ public:
     void displayInfo() const;
     void sendMessageToClient(int client_fd, const std::string& message);
     void MessageParsing(char buffer[1024], Client& Client, int i);
+
+    void	cmdNick(std::string buffer, int clienSocket);
 };
 
 #endif
