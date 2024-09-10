@@ -246,10 +246,7 @@ void Server::start() {
                 if (valread >= 0) {
                     // Mettre la fonction pour les messages
 					PingPong(*clients[i]);
-					if (clients[i]->checkPing(std::time(0), 120))
-						MessageParsing(buffer, *clients[i], i);
-					else
-						std::cout << "\nNo bitches" << std::endl;
+					MessageParsing(buffer, *clients[i], i);
 				} else {
                     close(clientFD);
                     clients.erase(clients.begin() + i);
