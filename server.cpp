@@ -6,7 +6,7 @@
 /*   By: ablancha <ablancha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 15:10:15 by ablancha          #+#    #+#             */
-/*   Updated: 2024/09/04 16:24:53 by ablancha         ###   ########.fr       */
+/*   Updated: 2024/09/10 14:29:31 by ablancha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,8 @@ std::string get_irc_password(const std::string& command) {
     std::string line;
     while (std::getline(stream, line)) {
         if (line.substr(0, 4) == "PASS") {
-            std::string password = line.substr(5);
+            std::string password = line.substr(5, line.size()-6);
+            std::cout << password.size()<< std::endl;
             return password;
         }
     }
@@ -100,17 +101,13 @@ void Server::MessageParsing(char buffer[1024], Client& Client, int i)
     {
         if(message.find("PASS") != std::string::npos)
         {
-            std::cout << get_irc_password(message)<< std::endl;
-            std::cout << getPassword()<< std::endl;
-            
             if(get_irc_password(message) == getPassword())
             {
                 Client.setRegistered(true);
-                // std::cout << bien
             }
             else
             {
-                sendMessageToClient(Client.getSocket(), "Password required for connexion"); 
+                sendMessageToClient(Client.getSocket(), "Password required for connexion pas le bon mdp mon reuf"); 
                 close(Client.getSocket());
                 clients.erase(clients.begin() + i);
             }
@@ -118,8 +115,8 @@ void Server::MessageParsing(char buffer[1024], Client& Client, int i)
         else
         {
             sendMessageToClient(Client.getSocket(), "Password required for connexion"); 
-            close(Client.getSocket());
-            clients.erase(clients.begin() + i);
+            // close(Client.getSocket());
+            // clients.erase(clients.begin() + i);
         }
     }
     else{
