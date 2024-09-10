@@ -132,6 +132,11 @@ void	Server::cmdPing( std::string cmdArgs )
 void	Server::PingPong( Client& client )
 {
 	if (client.getLastPing() < std::time(0) - PING_TIMEOUT)
+		std::cout << client.getNickname() << " Timed Out" << std::endl;
+	else if (client.getLastPing() < std::time(0) - PING_INTERVAL)
+		std::cout << client.getNickname() << " need Ping" << std::endl;
+	else
+		std::cout << client.getNickname() << " all good" << std::endl;
 }
 
 void	Server::initHandler()
@@ -240,7 +245,7 @@ void Server::start() {
                 int valread = read(clientFD, buffer, 1024);
                 if (valread >= 0) {
                     // Mettre la fonction pour les messages
-					PingPong();
+					PingPong(*clients[i]);
 					if (clients[i]->checkPing(std::time(0), 120))
 						MessageParsing(buffer, *clients[i], i);
 					else

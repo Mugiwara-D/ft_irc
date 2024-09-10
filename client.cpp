@@ -72,3 +72,7 @@ bool	Client::checkPing( std::time_t instTime, int pingInter )
 		return (instTime - lastPing) >= pingInter;
 	}
 }
+
+std::time_t	Client::getLastPing(){
+	return lastPing;
+}
