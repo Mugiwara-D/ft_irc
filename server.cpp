@@ -6,7 +6,7 @@
 /*   By: ablancha <ablancha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 15:10:15 by ablancha          #+#    #+#             */
-/*   Updated: 2024/09/04 16:24:53 by ablancha         ###   ########.fr       */
+/*   Updated: 2024/09/10 15:43:23 by maderuel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,25 +94,6 @@ std::string get_irc_password(const std::string& command) {
     return "";
 }
 
-/*
-bool checkCommand( std::string str )
-{
-	std::set<std::string> keywrd;
-	keywrd.insert("KICK");
-	keywrd.insert("INVITE");
-	keywrd.insert("TOPIC");
-	keywrd.insert("MODE");
-	keywrd.insert("JOIN");
-
-	std::set<std::string>::iterator i;
-	for (i = keywrd.begin(); i != keywrd.end(); ++i){
-		if (str.find(*i) != std::string::npos)
-			return true;
-	}
-	return false;
-}
-*/
-
 void	Server::cmdMode( const std::string cmdArgs )
 {
 	std::cout << "MODE arg = " << cmdArgs << std::endl;
@@ -133,9 +114,10 @@ void	Server::PingPong( Client& client )
 {
 	if (client.getLastPing() < std::time(0) - PING_TIMEOUT)
 		std::cout << client.getNickname() << " Timed Out" << std::endl;
-	else if (client.getLastPing() < std::time(0) - PING_INTERVAL)
-		std::cout << client.getNickname() << " need Ping" << std::endl;
-	else
+	else if (client.getLastPing() < std::time(0) - PING_INTERVAL){
+		sendMessageToClient(client.getSocket(), "PING: server");
+		std::cout << client.getNickname() << " ping sent" << std::endl;
+    } else
 		std::cout << client.getNickname() << " all good" << std::endl;
 }
 
@@ -214,7 +196,11 @@ void Server::start() {
             }
         }
 
-        FDready = select(maxFD + 1, &fds, NULL, NULL, NULL); // check les fd prets pour la lecture
+        struct timeval timeout;
+        timeout.tv_sec = 2;
+        timeout.tv_usec = 0;
+
+        FDready = select(maxFD + 1, &fds, NULL, NULL, &timeout); // check les fd prets pour la lecture
 		if (FDready < 0){
 			continue ;
 		}
