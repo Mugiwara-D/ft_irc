@@ -14,7 +14,7 @@
 
 /*######################fonction utiles : ###########################################*/
 Server::Server(const Server &other)
-    : password(other.password), clients(other.clients), port(other.port) {}
+    : password(other.password), clients(other.clients), port(other.port), running(false){}
 
 
 std::string Server::getPassword() const {
@@ -68,6 +68,7 @@ Server::Server(int port, const std::string &pwd) : password(pwd), port(port){
         close(server_socket);
         exit(1);
     }
+	running = true;
     std::cout << "Server initialized" << std::endl;
 }
 
@@ -94,9 +95,7 @@ std::string get_irc_password(const std::string& command) {
     return "";
 }
 
-
-
-void Server::MessageParsing(char buffer[1024], Client& Client, int i)
+/*void Server::MessageParsing(char buffer[1024], Client& Client, int i)
 {
     std::string message(buffer);
     //std::cout << "Message : "<< message <<  std::endl;
@@ -130,8 +129,81 @@ void Server::MessageParsing(char buffer[1024], Client& Client, int i)
     else{
         std::cout << "Message : "<< buffer <<  std::endl;
         sendMessageToClient(Client.getSocket(), "Okay");
-    }
+    }*/
+void	Server::cmdMode( const std::string cmdArgs )
+{
+	std::cout << "MODE arg = " << cmdArgs << std::endl;
 }
+
+void	Server::cmdTopic( Client& client )
+{
+	std::cout << "Topic arg = " << client.getNickname() << std::endl;
+}
+
+void	Server::cmdPong( Client& client )
+{
+	sendMessageToClient(client.getSocket(), "PING: server");
+}
+
+void	Server::PingPong( Client& client )
+{
+	if (client.getLastPing() < std::time(0) - PING_TIMEOUT)
+		std::cout << client.getNickname() << " Timed Out" << std::endl;
+	else if (client.getLastPing() < std::time(0) - PING_INTERVAL){
+		sendMessageToClient(client.getSocket(), "PING: server");
+		std::cout << client.getNickname() << " ping sent" << std::endl;
+    } else
+		std::cout << client.getNickname() << " all good" << std::endl;
+}
+
+void	Server::initHandler( Server& serv , Client& client )
+{
+	commandMap["KICK"] = new Handler<Server, Client>
+		(&serv, &Server::cmdTopic, client);
+	commandMap["PING"] = new Handler<Server, Client>
+		(&serv, &Server::cmdPong, client);
+}
+
+void	Server::MessageParsing(char buffer[1024], Client& Client, int i)
+{
+	std::string	str = buffer;
+	std::string prefix;
+	(void) i;
+	(void) Client;
+
+	std::size_t start = str.find_first_not_of(" \t\n\r");
+	if (start == std::string::npos)
+		prefix = "";
+
+	std::string trimstr = str.substr(start);
+
+	std::size_t firstSpace = trimstr.find(' ');
+	if (firstSpace != std::string::npos) {
+			prefix = trimstr.substr(0, firstSpace);
+			trimstr = trimstr.substr(firstSpace + 1);
+		}
+	else
+		prefix = "";
+
+	if (trimstr.empty())
+		trimstr = "RINE";
+	if (commandMap.empty())
+		initHandler(*this, Client);
+
+	std::map<std::string, AHandler*>::iterator itr = commandMap.find(prefix);
+	if (itr != commandMap.end()) {
+		AHandler*	handler = itr->second;
+		handler->execute();
+	} else {
+		std::cout << "\nInvalide command: " << str <<std::endl;
+	}
+}
+
+void	rawDump(std::string msg)
+{
+	std::cout << "\nRaw Dump:\n"<< msg << std::endl;
+}
+
 void Server::start() {
     fd_set fds;
     int i = 0;
@@ -140,7 +212,7 @@ void Server::start() {
     struct sockaddr_in client_addr;
     socklen_t client_len = sizeof(client_addr);
 
-    while (1) {
+    while (running) {
         FD_ZERO(&fds); //reset les fds
         FD_SET(server_socket, &fds); //mets le fd du socket serv dqns la liste
         maxFD = server_socket;
@@ -155,7 +227,14 @@ void Server::start() {
             }
         }
 
-        FDready = select(maxFD + 1, &fds, NULL, NULL, NULL); // check les fd prets pour la lecture
+        struct timeval timeout;
+        timeout.tv_sec = 2;
+        timeout.tv_usec = 0;
+
+        FDready = select(maxFD + 1, &fds, NULL, NULL, &timeout); // check les fd prets pour la lecture
+		if (FDready < 0){
+			continue ;
+		}
 
         if (FD_ISSET(server_socket, &fds)) {
             int new_socket = accept(server_socket, (struct sockaddr*)&client_addr, &client_len);
@@ -183,14 +262,9 @@ void Server::start() {
                 int valread = read(clientFD, buffer, 1024);
                 if (valread >= 0) {
                     // Mettre la fonction pour les messages
-                    MessageParsing(buffer, *clients[i], i);
-                    // if(MessageParsing(buffer, *clients[i], i) == 0)
-                    // {
-                    //     close(clientFD);
-                    //     clients.erase(clients.begin() + i);
-                    // }
-                    
-                } else {
+					PingPong(*clients[i]);
+					MessageParsing(buffer, *clients[i], i);
+				} else {
                     close(clientFD);
                     clients.erase(clients.begin() + i);
                 }
@@ -208,6 +282,10 @@ void Server::sendMessageToClient(int client_fd, const std::string& message) {
 }
 
 Server::~Server() {
+	for (std::map<std::string, AHandler*>::iterator it = commandMap.begin();
+			it != commandMap.end(); ++it){
+		delete it->second;
+	}
     stop();
 }
 

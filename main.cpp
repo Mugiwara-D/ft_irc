@@ -65,6 +65,7 @@ int	main(int argc, char **argv)
 		// Client c1("Alexandre", "Alex"); 
 		// Client c2("Olivier", "Olcoste");
 		Server Server(port, argv[2]);
+		//Server.initHandler(Server);
 		Server.start();
 		// Server.addClient(c1);
 		// Server.addClient(c2);

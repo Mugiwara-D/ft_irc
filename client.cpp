@@ -15,7 +15,8 @@
 #include <iostream>
 #include <unistd.h>
 
-Client::Client(const std::string &user, const std::string &nick, int socket): username(user), nickname(nick), socket(socket)
+Client::Client(const std::string &user, const std::string &nick, int socket): 
+	username(user), nickname(nick), socket(socket), lastPing(std::time(0)), pinged(true)
 {
     this->Registered = false;
 }
@@ -69,4 +70,21 @@ void	Client::setLastNicknameChange(const time_t newChange){
     lastNicknameChange = newChange;
 }
 
-;
+bool	Client::checkPing( std::time_t instTime, int pingInter )
+{
+	if (pinged){
+		std::cout << "\nalready Pinged" << std::endl;
+		return false;
+	} else {
+		std::cout << "\nPing sent to " << username << std::endl;
+		return (instTime - lastPing) >= pingInter;
+	}
+}
+
+std::time_t	Client::getLastPing(){
+	return lastPing;
+}
+
+void	Client::setLastPing( std::time_t timeT){
+	lastPing = timeT;
+}

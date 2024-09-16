@@ -1,0 +1,16 @@
+<< CAP LS
+<< NICK matiya
+<< USER matiya matiya localhost :matiya
+>> :irc.example.com 001 tester :Welcome to the Internet Relay Network tester
+<< MODE tester +i
+<< WHOIS matiya
+<< PING irc.example.com
+<< JOIN #me
+<< PRIVMSG #me :yo
+<< PRIVMSG #me :yo
+<< PRIVMSG #me :yo
+<< PRIVMSG #me :dgfdg
+>> PING: server
+<< MODE #me -i
+>> PING: server
+<< QUIT :leaving

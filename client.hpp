@@ -14,6 +14,7 @@
 #define CLIENT_HPP
 
 #include <string>
+#include <ctime>
 #include "channel.hpp"
 
 class Client {
@@ -24,6 +25,10 @@ private:
     time_t lastNicknameChange;
     bool Registered;
     int socket;
+
+	////////Ping Pong/////////
+	std::time_t	lastPing;
+	bool		pinged;
 
 public:
     Client(const std::string &user, const std::string &nick, int socket);
@@ -51,6 +56,10 @@ public:
     void setLastNicknameChange(const time_t newChange);
 
     
+	bool	checkPing( std::time_t instTime, int pingInter );
+
+	std::time_t	getLastPing();
+	void		setLastPing( std::time_t timeT );
 };
 
 #endif
