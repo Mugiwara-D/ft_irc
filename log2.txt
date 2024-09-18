@@ -1,7 +1,0 @@
-<< CAP LS
-<< NICK maderuel
-<< USER maderuel maderuel localhost :Matiya DERUELLE
->> bienn recu chef
->> bienn recu chef
-<< lol
->> bienn recu chef

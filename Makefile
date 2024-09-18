@@ -1,14 +1,12 @@
-SRC = main.cpp server.cpp channel.cpp client.cpp
+SRC = main.cpp server.cpp channel.cpp client.cpp nick.cpp
 
 NAME = ft_irc
 
 OBJ = $(SRC:.cpp=.o)
 
-DEP = $(SRC:.cpp=.d)
-
 INC = ./Include
 
-FLAG = -Werror -Wall -Wextra -std=c++98 -MMD
+FLAG = -Werror -Wall -Wextra -std=c++98
 
 CC = c++ 
 
@@ -22,10 +20,10 @@ $(NAME) : $(OBJ)
 
 
 clean :
-	rm -f $(OBJ) $(DEP)
+	rm -f $(OBJ)
 
 fclean:
-	rm -f $(OBJ) $(DEP) $(NAME)
+	rm -f $(OBJ) $(NAME)
 
 re : fclean all
 

@@ -95,9 +95,35 @@ std::string get_irc_password(const std::string& command) {
     return "";
 }
 
-/*void Server::MessageParsing(char buffer[1024], Client& Client, int i)
+void	Server::cmdMode( const std::string cmdArgs )
 {
-    std::string message(buffer);
+	std::cout << "MODE arg = " << cmdArgs << std::endl;
+}
+
+void	Server::cmdTopic( Client& client )
+{
+	std::cout << "Topic arg = " << client.getNickname() << std::endl;
+}
+
+void	Server::cmdPong( Client& client )
+{
+	sendMessageToClient(client.getSocket(), "PONG: server");
+}
+
+void	Server::PingPong( Client& client )
+{
+	if (client.getLastPing() < std::time(0) - PING_TIMEOUT)
+		std::cout << client.getNickname() << " Timed Out" << std::endl;
+	else if (client.getLastPing() < std::time(0) - PING_INTERVAL){
+		sendMessageToClient(client.getSocket(), "PING: server");
+		std::cout << client.getNickname() << " ping sent" << std::endl;
+    } else
+		std::cout << client.getNickname() << " all good" << std::endl;
+}
+
+bool	Server::checkPassWord( std::string buffer, Client& Client, int i )
+{
+	std::string message(buffer);
     //std::cout << "Message : "<< message <<  std::endl;
     if(Client.isRegistered() == false)
     {
@@ -109,9 +135,11 @@ std::string get_irc_password(const std::string& command) {
             }
             else
             {
-                sendMessageToClient(Client.getSocket(), "Password required for connexion pas le bon mdp mon reuf"); 
+                sendMessageToClient(Client.getSocket(), 
+						"Password required for connexion pas le bon mdp mon reuf"); 
                 close(Client.getSocket());
                 clients.erase(clients.begin() + i);
+				return false;
             }
         }
         else
@@ -129,47 +157,17 @@ std::string get_irc_password(const std::string& command) {
     else{
         std::cout << "Message : "<< buffer <<  std::endl;
         sendMessageToClient(Client.getSocket(), "Okay");
-    }*/
-void	Server::cmdMode( const std::string cmdArgs )
-{
-	std::cout << "MODE arg = " << cmdArgs << std::endl;
-}
-
-void	Server::cmdTopic( Client& client )
-{
-	std::cout << "Topic arg = " << client.getNickname() << std::endl;
-}
-
-void	Server::cmdPong( Client& client )
-{
-	sendMessageToClient(client.getSocket(), "PING: server");
-}
-
-void	Server::PingPong( Client& client )
-{
-	if (client.getLastPing() < std::time(0) - PING_TIMEOUT)
-		std::cout << client.getNickname() << " Timed Out" << std::endl;
-	else if (client.getLastPing() < std::time(0) - PING_INTERVAL){
-		sendMessageToClient(client.getSocket(), "PING: server");
-		std::cout << client.getNickname() << " ping sent" << std::endl;
-    } else
-		std::cout << client.getNickname() << " all good" << std::endl;
-}
-
-void	Server::initHandler( Server& serv , Client& client )
-{
-	commandMap["KICK"] = new Handler<Server, Client>
-		(&serv, &Server::cmdTopic, client);
-	commandMap["PING"] = new Handler<Server, Client>
-		(&serv, &Server::cmdPong, client);
+    }
+	return true;
 }
 
 void	Server::MessageParsing(char buffer[1024], Client& Client, int i)
 {
 	std::string	str = buffer;
 	std::string prefix;
-	(void) i;
-	(void) Client;
+	
+	if (!checkPassWord(str, Client, i))
+		return;
 
 	std::size_t start = str.find_first_not_of(" \t\n\r");
 	if (start == std::string::npos)
@@ -181,19 +179,21 @@ void	Server::MessageParsing(char buffer[1024], Client& Client, int i)
 	if (firstSpace != std::string::npos) {
 			prefix = trimstr.substr(0, firstSpace);
 			trimstr = trimstr.substr(firstSpace + 1);
-		}
+	}
 	else
 		prefix = "";
 
 	if (trimstr.empty())
 		trimstr = "RINE";
-	if (commandMap.empty())
-		initHandler(*this, Client);
 
-	std::map<std::string, AHandler*>::iterator itr = commandMap.find(prefix);
-	if (itr != commandMap.end()) {
-		AHandler*	handler = itr->second;
-		handler->execute();
+	if (prefix == "MODE"){
+		cmdMode(trimstr);
+	} else if (prefix == "PING"){
+		cmdPong(Client);
+	} else if (prefix == "NICK") {
+		cmdNick(str, Client.getSocket());
+	} else if (prefix == "QUIT") {
+		removeClient(Client.getUsername());
 	} else {
 		std::cout << "\nInvalide command: " << str <<std::endl;
 	}
@@ -282,10 +282,6 @@ void Server::sendMessageToClient(int client_fd, const std::string& message) {
 }
 
 Server::~Server() {
-	for (std::map<std::string, AHandler*>::iterator it = commandMap.begin();
-			it != commandMap.end(); ++it){
-		delete it->second;
-	}
     stop();
 }
 

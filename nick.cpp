@@ -48,8 +48,9 @@ void	Server::cmdNick(std::string buffer, int clientSocket)
 	}
 	/*check la norme IRC: 9 caract max, caract non autorise, le nick ne commence pas par un nombre*/
 	for (size_t i = 0; i < (nickname.length()) ; ++i) {
-		if ((nickname[0] >= '0' && nickname[0] <= '9') || (!isalnum(nickname[i]) && !(nickname[i] >= '[' && nickname[i] <= '`')
-		&& nickname[i] != '-' && nickname[i] != '{' && nickname[i] != '}' || i >= 9))
+		if ((nickname[0] >= '0' && nickname[0] <= '9') || (!isalnum(nickname[i]) 
+						&& !(nickname[i] >= '[' && nickname[i] <= '`')
+		&& nickname[i] != '-' && nickname[i] != '{' && nickname[i] != '}') || i >= 9)
 			{
 				std::string fullMessage = ": <serverName(a remplacer)> ERR_ERRONEUSNICKNAME 432 Nickname: " + nickname + " norme IRC invalide.\r\n";
 				if (send(clientSocket, fullMessage.c_str(), fullMessage.length(), 0) < 0) {
