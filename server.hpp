@@ -69,7 +69,7 @@ public:
 	void	cmdPong( Client& client );
 	void	cmdPing( const std::string cmdArgs );
 
-	void	PingPong( Client& client );
+	bool	PingPong( Client& client );
 };
 
 #endif

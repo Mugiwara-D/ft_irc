@@ -110,15 +110,25 @@ void	Server::cmdPong( Client& client )
 	sendMessageToClient(client.getSocket(), "PONG: server");
 }
 
-void	Server::PingPong( Client& client )
+bool	Server::PingPong( Client& client )
 {
-	if (client.getLastPing() < std::time(0) - PING_TIMEOUT)
+	std::string	servMsg;
+
+	if (client.getLastPing() < std::time(0) - PING_TIMEOUT) {
 		std::cout << client.getNickname() << " Timed Out" << std::endl;
-	else if (client.getLastPing() < std::time(0) - PING_INTERVAL){
-		sendMessageToClient(client.getSocket(), "PING: server");
+		servMsg = "ERROR :closing link: [" + client.getUsername() + 
+			"] (Ping timeout: 120 seconds)";
+		sendMessageToClient(client.getSocket(), servMsg);
+		removeClient(client.getUsername());
+		return false;
+	} else if (client.getLastPing() < std::time(0) - PING_INTERVAL){
+		servMsg = "PING :" + client.getUsername();
+		sendMessageToClient(client.getSocket(), servMsg);
+		client.setLastPing(std::time(0));
 		std::cout << client.getNickname() << " ping sent" << std::endl;
     } else
 		std::cout << client.getNickname() << " all good" << std::endl;
+	return true;
 }
 
 bool	Server::checkPassWord( std::string buffer, Client& Client, int i )
@@ -259,10 +269,13 @@ void Server::start() {
             int clientFD = clients[i]->getSocket();
             if (FD_ISSET(clientFD, &fds)) {
                 char buffer[1024] = {0};
+				if (PingPong(*clients[i]) == false)
+					continue ;
                 int valread = read(clientFD, buffer, 1024);
                 if (valread >= 0) {
                     // Mettre la fonction pour les messages
-					PingPong(*clients[i]);
+					if (clients[i]->isRegistered() == false)
+						checkPassWord(buffer, *clients[i], i);
 					MessageParsing(buffer, *clients[i], i);
 				} else {
                     close(clientFD);
