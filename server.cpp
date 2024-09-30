@@ -171,14 +171,12 @@ bool	Server::checkPassWord( std::string buffer, Client& Client, int i )
 	return true;
 }
 
-void	Server::MessageParsing(char buffer[1024], Client& Client, int i)
+void	Server::MessageParsing(std::string buffer, Client& Client, int i)
 {
 	std::string	str = buffer;
 	std::string prefix;
+	(void) i;
 	
-	if (!checkPassWord(str, Client, i))
-		return;
-
 	std::size_t start = str.find_first_not_of(" \t\n\r");
 	if (start == std::string::npos)
 		prefix = "";
@@ -219,6 +217,7 @@ void Server::start() {
     int i = 0;
     int maxFD;
     int FDready;
+	std::string	buf;
     struct sockaddr_in client_addr;
     socklen_t client_len = sizeof(client_addr);
 
@@ -273,10 +272,18 @@ void Server::start() {
 					continue ;
                 int valread = read(clientFD, buffer, 1024);
                 if (valread >= 0) {
+					buf += buffer;
+					if( buf.find('\r') == std::string::npos 
+							|| buf.find('\n') == std::string::npos )
+					{
+						std::cout << "\nsomething wrong i can feel it\n" << buf << std::endl;
+						continue;
+					}
                     // Mettre la fonction pour les messages
 					if (clients[i]->isRegistered() == false)
-						checkPassWord(buffer, *clients[i], i);
-					MessageParsing(buffer, *clients[i], i);
+						checkPassWord(buf, *clients[i], i);
+					MessageParsing(buf, *clients[i], i);
+					buf.clear();
 				} else {
                     close(clientFD);
                     clients.erase(clients.begin() + i);

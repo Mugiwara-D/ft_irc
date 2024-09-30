@@ -61,7 +61,7 @@ public:
     void 	sendMessageToClient(int client_fd, const std::string& message);
 
 	bool	checkPassWord( std::string buffer, Client& Client, int i );
-    void 	MessageParsing(char buffer[1024], Client& Client, int i);
+    void 	MessageParsing(std::string buffer, Client& Client, int i);
 
     void	cmdNick(std::string buffer, int clienSocket);
 	void	cmdMode( const std::string cmdArgs );

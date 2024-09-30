@@ -14,12 +14,17 @@
 #define CHANNEL_HPP
 
 #include <iostream>
+#include "client.hpp"
 
 class channel
 
 {
 private:
 	std::string name;
+	bool		inviteOnly;
+	std::string	topic;
+	std::string	key;
+	int			userLimit;
 	
 public:
 	channel(std::string name);
