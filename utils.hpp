@@ -15,7 +15,7 @@ class utils
 		void	get() const;
 		void	set() const;
 
-		std::string	preParsing( std::string rawStr )
+		// std::string	preParsing( std::string rawStr );
 };
 
 std::ostream&   operator<<( std::ostream& o, const utils& rhs );

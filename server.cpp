@@ -171,6 +171,53 @@ bool	Server::checkPassWord( std::string buffer, Client& Client, int i )
 	return true;
 }
 
+void Server::cmdPrivMsg(Client& sender, const std::string& targetChannel, const std::string& message) {
+    bool channelFound = false;
+
+    // Correct message formatting according to IRC standards
+    std::string privmsg_command = ":" + sender.getNickname() + "!" + sender.getUsername() + "@server PRIVMSG " + targetChannel + " :" + message + "\r\n";
+    std::cout << privmsg_command << std::endl;
+
+    // Send message to all clients in the target channel
+    for (size_t i = 0; i < clients.size(); ++i) {
+        if (clients[i]->getCurrentChannel() == targetChannel) {
+            channelFound = true;
+            // Don't send the message back to the sender
+            if (clients[i]->getUsername() != sender.getUsername()) {
+                sendMessageToClient(clients[i]->getSocket(), privmsg_command);
+            }
+        }
+    }
+
+    // If no channel was found, notify the sender
+    if (!channelFound) {
+        std::string errorMsg = "No such channel: " + targetChannel;
+        sendMessageToClient(sender.getSocket(), errorMsg);
+    }
+}
+
+
+
+
+void Server::cmdJoin(Client& client, const std::string& channelName) {
+    client.setCurrentChannel(channelName);
+    std::cout << client.getNickname() << " has joined channel: " << channelName << std::endl;
+    std::string reply = ":" + client.getNickname() + " JOIN :" + channelName;
+    sendMessageToClient(client.getSocket(), reply);
+    cmdPrivMsg(client, channelName, "salut a touss");
+}
+
+void Server::sendMessageToChannel(const std::string& channel, const std::string& message, Client& sender) {
+    for (size_t i = 0; i < clients.size(); ++i) {
+        if (clients[i]->getCurrentChannel() == channel) {  // Check if the client is in the target channel
+            if (clients[i]->getUsername() != sender.getUsername()) {  // Avoid sending the message back to the sender
+                sendMessageToClient(clients[i]->getSocket(), message);  // Send the formatted message
+            }
+        }
+    }
+}
+
+
 void	Server::MessageParsing(std::string buffer, Client& Client, int i)
 {
 	std::string	str = buffer;
@@ -202,7 +249,12 @@ void	Server::MessageParsing(std::string buffer, Client& Client, int i)
 		cmdNick(str, Client.getSocket());
 	} else if (prefix == "QUIT") {
 		removeClient(Client.getUsername());
-	} else {
+	}
+    else if (prefix == "JOIN") {
+		std::string channelName = trimstr;
+        cmdJoin(Client, channelName);
+    }
+    else {
 		std::cout << "\nInvalide command: " << str <<std::endl;
 	}
 }
@@ -296,6 +348,7 @@ void Server::start() {
 void Server::sendMessageToClient(int client_fd, const std::string& message) {
     // Envoyer un message au client
     std::string formattedMessage = message + "\r\n";
+    std::cout << formattedMessage <<std::endl;
     if (send(client_fd, formattedMessage.c_str(), formattedMessage.length(), 0) < 0) {
         std::cerr << "Failed to send message to client " << client_fd << std::endl;
     }

@@ -60,6 +60,8 @@ public:
 
 	std::time_t	getLastPing();
 	void		setLastPing( std::time_t timeT );
+      std::string getCurrentChannel() const;
+    void setCurrentChannel(const std::string &channel); 
 };
 
 #endif

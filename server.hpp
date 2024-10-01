@@ -42,10 +42,8 @@ private:
 
 	bool	running;
 
-
 public:
-
-	Server(){}
+    Server(){}
     Server(int prt , const std::string &pwd);
     Server(const Server &other);
     ~Server();
@@ -63,13 +61,16 @@ public:
 	bool	checkPassWord( std::string buffer, Client& Client, int i );
     void 	MessageParsing(std::string buffer, Client& Client, int i);
 
-    void	cmdNick(std::string buffer, int clienSocket);
-	void	cmdMode( const std::string cmdArgs );
-	void	cmdTopic( Client& client );
-	void	cmdPong( Client& client );
-	void	cmdPing( const std::string cmdArgs );
+    void	cmdNick(std::string buffer, int clientSocket);
+	void	cmdMode(const std::string cmdArgs);
+	void	cmdTopic(Client& client);
+	void	cmdPong(Client& client);
+	void	cmdPing(const std::string cmdArgs);
+    void	cmdJoin(Client& client, const std::string& channelName);
+    void	cmdPrivMsg(Client& sender, const std::string& targetChannel, const std::string& message);
 
-	bool	PingPong( Client& client );
+    void	sendMessageToChannel(const std::string& channel, const std::string& message, Client& sender);
+	bool	PingPong(Client& client);
 };
 
 #endif
