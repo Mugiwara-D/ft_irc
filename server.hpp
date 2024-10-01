@@ -27,6 +27,7 @@
 #include <netinet/in.h>
 #include <unistd.h>
 #include <sstream> 
+#include <cstdlib> 
 
 const int	PING_INTERVAL = 60;
 const int	PING_TIMEOUT = 120;
@@ -64,7 +65,7 @@ public:
     void 	MessageParsing(std::string buffer, Client& Client, int i);
 
     void	cmdNick(std::string buffer, int clienSocket);
-	void	cmdMode( const std::string cmdArgs );
+	bool	cmdMode( std::string arg, channel& chan );
 	void	cmdTopic( Client& client );
 	void	cmdPong( Client& client );
 	void	cmdPing( const std::string cmdArgs );

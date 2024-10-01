@@ -88,3 +88,7 @@ std::time_t	Client::getLastPing(){
 void	Client::setLastPing( std::time_t timeT){
 	lastPing = timeT;
 }
+
+channel*	Client::getChan(){
+	return &_chan;
+}

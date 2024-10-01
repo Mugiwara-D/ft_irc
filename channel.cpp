@@ -13,18 +13,48 @@
 #include "channel.hpp"
 
 // Constructor
-channel::channel(std::string name) : name(name)
-{
+channel::channel( std::string name, bool inviteOnly, bool lockTopic ) : 
+	name(name), _inviteOnly(inviteOnly), _lockTopic(lockTopic){
     std::cout << "Channel \"" << name << "\" created." << std::endl;
 }
 
 // Destructor
-channel::~channel()
-{
+channel::~channel(){
     std::cout << "Channel \"" << name << "\" destroyed." << std::endl;
 }
 
-std::string channel::getname()
-{
+std::string channel::getname(){
     return(this->name);
+}
+
+bool	channel::getInviteOnly(){
+	return _inviteOnly;
+}
+
+void	channel::setInviteOnly( bool val ){
+	_inviteOnly = val;
+}
+
+bool	channel::getLockTopic(){
+	return _lockTopic;
+}
+
+void	channel::setLockTopic( bool val ){
+	_lockTopic = val;
+}
+
+void	channel::setKey( std::string key ){
+	_key = key;
+}
+
+void	channel::setLocked( bool val ){
+	_locked = val;
+}
+
+void	channel::setUserLim( int val ){
+	_userLimit = val;
+}
+
+void	channel::setOps( std::string ops ){
+	_operator = ops;
 }

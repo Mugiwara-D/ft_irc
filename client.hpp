@@ -22,9 +22,10 @@ private:
     std::string username;
     std::string nickname;
     std::string Currentchannel;
-    time_t lastNicknameChange;
-    bool Registered;
-    int socket;
+	channel&	_chan;
+    time_t		lastNicknameChange;
+    bool		Registered;
+    int			socket;
 
 	////////Ping Pong/////////
 	std::time_t	lastPing;
@@ -37,14 +38,14 @@ public:
 
 
     std::string getUsername() const;
+    std::string getNickname() const;
 
+    void setNickname(const std::string &nick);
     void setUsername(const std::string &user);
     
     int getSocket() const;
 
-    std::string getNickname() const;
-
-    void setNickname(const std::string &nick);
+	channel*	getChan();
 
     void displayInfo() const;
 
