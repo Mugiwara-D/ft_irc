@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: olcoste <olcoste@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ablancha <ablancha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 15:10:15 by ablancha          #+#    #+#             */
-/*   Updated: 2024/09/10 15:56:26 by olcoste          ###   ########.fr       */
+/*   Updated: 2024/10/02 15:48:45 by ablancha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "server.hpp"
 
+#include "server.hpp"
 /*######################fonction utiles : ###########################################*/
 Server::Server(const Server &other)
     : password(other.password), clients(other.clients), port(other.port), running(false){}
@@ -199,10 +199,19 @@ void Server::cmdPrivMsg(Client& sender, const std::string& targetChannel, const 
 
 
 void Server::cmdJoin(Client& client, const std::string& channelName) {
+    channel newChannel(channelName, false, false);
+    client.addChannelClient(newChannel);
+    addChannel(newChannel);
+     std::vector<channel*> clientChannels = client.getChannelList();  // Assuming Client has a getChannelList() method
+    std::cout << client.getNickname() << " is currently in the following channels: " << std::endl;
+    
+    for (std::vector<channel*>::iterator it = clientChannels.begin(); it != clientChannels.end(); ++it) {
+        std::cout << "- " << (*it)->getname() << std::endl;  // Assuming channel class has a getName() method
+    }
     client.setCurrentChannel(channelName);
     std::cout << client.getNickname() << " has joined channel: " << channelName << std::endl;
     std::string reply = ":" + client.getNickname() + " JOIN :" + channelName;
-    sendMessageToClient(client.getSocket(), reply);
+    // sendMessageToClient(client.getSocket(), reply);
     cmdPrivMsg(client, channelName, "salut a touss");
 }
 
@@ -352,6 +361,18 @@ void Server::sendMessageToClient(int client_fd, const std::string& message) {
         std::cerr << "Failed to send message to client " << client_fd << std::endl;
     }
 }
+
+void Server::addChannel(channel& newChannel) {
+    for (size_t i = 0; i < channels.size(); ++i) {
+        if (channels[i].getname() == newChannel.getname()) {
+            std::cout << "Channel " << newChannel.getname() << " already exists." << std::endl;
+            return;
+        }
+    }
+    channels.push_back(newChannel);
+    std::cout << "Channel " << newChannel.getname() << " added successfully." << std::endl;
+}
+
 
 Server::~Server() {
     stop();

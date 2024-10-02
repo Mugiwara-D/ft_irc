@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: olcoste <olcoste@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ablancha <ablancha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 15:09:23 by ablancha          #+#    #+#             */
-/*   Updated: 2024/09/10 15:57:39 by olcoste          ###   ########.fr       */
+/*   Updated: 2024/10/02 15:33:08 by ablancha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,9 @@ public:
 
     void	sendMessageToChannel(const std::string& channel, const std::string& message, Client& sender);
 	bool	PingPong(Client& client);
+
+    void addChannel(channel& newChannel);
+
 };
 
 #endif
