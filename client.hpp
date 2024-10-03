@@ -15,16 +15,18 @@
 
 #include <string>
 #include <ctime>
+#include <map>
 #include "channel.hpp"
 
 class Client {
 private:
     std::string username;
     std::string nickname;
-    std::string Currentchannel;
     time_t lastNicknameChange;
     bool Registered;
     int socket;
+	std::map<std::string, channel> channels;
+	
 
 	////////Ping Pong/////////
 	std::time_t	lastPing;
@@ -55,7 +57,8 @@ public:
     time_t getLastNicknameChange() const;
     void setLastNicknameChange(const time_t newChange);
 
-    
+    channel&	getCurentChan( std::string chanName );
+
 	bool	checkPing( std::time_t instTime, int pingInter );
 
 	std::time_t	getLastPing();

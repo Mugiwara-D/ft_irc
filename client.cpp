@@ -89,10 +89,6 @@ void	Client::setLastPing( std::time_t timeT){
 	lastPing = timeT;
 }
 
-std::string Client::getCurrentChannel() const {
-    return Currentchannel;
-}
-
-void Client::setCurrentChannel(const std::string &channel) {
-    Currentchannel = channel;
+channel&	Client::getCurentChan( std::string chanName ){
+	return channels[chanName];
 }

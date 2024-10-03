@@ -62,7 +62,7 @@ public:
     void 	MessageParsing(std::string buffer, Client& Client, int i);
 
     void	cmdNick(std::string buffer, int clientSocket);
-	void	cmdMode(const std::string cmdArgs);
+	bool	cmdMode( std::string arg, Client& client );
 	void	cmdTopic(Client& client);
 	void	cmdPong(Client& client);
 	void	cmdPing(const std::string cmdArgs);

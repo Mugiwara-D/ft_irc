@@ -94,11 +94,6 @@ std::string get_irc_password(const std::string& command) {
     return "";
 }
 
-void	Server::cmdMode( const std::string cmdArgs )
-{
-	std::cout << "MODE arg = " << cmdArgs << std::endl;
-}
-
 void	Server::cmdTopic( Client& client )
 {
 	std::cout << "Topic arg = " << client.getNickname() << std::endl;
@@ -241,7 +236,7 @@ void	Server::MessageParsing(std::string buffer, Client& Client, int i)
 		trimstr = "RINE";
 
 	if (prefix == "MODE"){
-		cmdMode(trimstr);
+		cmdMode(trimstr, Client);
 	} else if (prefix == "PING"){
 		cmdPong(Client);
 	} else if (prefix == "NICK") {
