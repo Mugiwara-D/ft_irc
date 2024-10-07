@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ablancha <ablancha@student.42.fr>          +#+  +:+       +#+        */
+/*   By: olcoste <olcoste@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 15:09:23 by ablancha          #+#    #+#             */
-/*   Updated: 2024/10/02 15:33:08 by ablancha         ###   ########.fr       */
+/*   Updated: 2024/10/04 14:43:43 by olcoste          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,18 +62,24 @@ public:
     void 	MessageParsing(std::string buffer, Client& Client, int i);
 
     void	cmdNick(std::string buffer, int clientSocket);
-	void	cmdMode(const std::string cmdArgs);
+	void	cmdMode(std::string cmdArgs);
 	void	cmdTopic(Client& client);
 	void	cmdPong(Client& client);
 	void	cmdPing(const std::string cmdArgs);
     void	cmdJoin(Client& client, const std::string& channelName);
     void	cmdPrivMsg(Client& sender, const std::string& targetChannel, const std::string& message);
+    void    addChannelClient(channel &newChannel);
+    void    addChannel(channel& newChannel);
+
+
 
     void	sendMessageToChannel(const std::string& channel, const std::string& message, Client& sender);
 	bool	PingPong(Client& client);
 
-    void addChannel(channel& newChannel);
-
+    /*PRIVMSG*/
+    void	cmdPrivMsgg(std::string buffer, int clientSocket);
+    std::string trimPriMsg(std::string& str);
+    void	cmdPrivMsgServ(std::string line, int clientSocket);
 };
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ablancha <ablancha@student.42.fr>          +#+  +:+       +#+        */
+/*   By: olcoste <olcoste@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 15:10:15 by ablancha          #+#    #+#             */
-/*   Updated: 2024/10/02 15:48:45 by ablancha         ###   ########.fr       */
+/*   Updated: 2024/10/07 15:20:31 by olcoste          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -174,7 +174,7 @@ void Server::cmdPrivMsg(Client& sender, const std::string& targetChannel, const 
     bool channelFound = false;
 
     // Correct message formatting according to IRC standards
-    std::string privmsg_command = ":" + sender.getNickname() + "!" + sender.getUsername() + "@server PRIVMSG " + targetChannel + " :" + message + "\r\n";
+    std::string privmsg_command = ":" + sender.getNickname() + "!" + sender.getUsername() + "@server PRIVMSG " + targetChannel + " :" + message;
     std::cout << privmsg_command << std::endl;
 
     // Send message to all clients in the target channel
@@ -196,7 +196,20 @@ void Server::cmdPrivMsg(Client& sender, const std::string& targetChannel, const 
 }
 
 
+// void Server::cmdJoin(Client& client, const std::string& channelName) {
+//     client.setCurrentChannel(channelName); // Enregistrer l'utilisateur dans le canal
+//     std::cout << client.getNickname() << " has joined channel: " << channelName << std::endl;
 
+//     // Message JOIN à envoyer à tous les utilisateurs du canal
+//     std::string joinMessage = ":" + client.getNickname() + " JOIN " + channelName + "\r\n";
+
+//     // Envoyer le message JOIN à tous les clients du canal
+//     for (size_t i = 0; i < clients.size(); ++i) {
+//         if (clients[i]->getCurrentChannel() == channelName) {
+//             sendMessageToClient(clients[i]->getSocket(), joinMessage); // Notifier chaque client
+//         }
+//     }
+// }
 
 void Server::cmdJoin(Client& client, const std::string& channelName) {
     channel newChannel(channelName, false, false);
@@ -209,10 +222,16 @@ void Server::cmdJoin(Client& client, const std::string& channelName) {
         std::cout << "- " << (*it)->getname() << std::endl;  // Assuming channel class has a getName() method
     }
     client.setCurrentChannel(channelName);
+
     std::cout << client.getNickname() << " has joined channel: " << channelName << std::endl;
     std::string reply = ":" + client.getNickname() + " JOIN :" + channelName;
+    for (size_t i = 0; i < clients.size(); ++i) {
+        if (clients[i]->getCurrentChannel() == channelName) {
+            sendMessageToClient(clients[i]->getSocket(), reply); // Notifier chaque client
+        }
+    }
     // sendMessageToClient(client.getSocket(), reply);
-    cmdPrivMsg(client, channelName, "salut a touss");
+    //cmdPrivMsg(client, channelName, "salut a touss");
 }
 
 void Server::sendMessageToChannel(const std::string& channel, const std::string& message, Client& sender) {
@@ -262,6 +281,8 @@ void	Server::MessageParsing(std::string buffer, Client& Client, int i)
 		std::string channelName = trimstr;
         cmdJoin(Client, channelName);
     }
+    else if (prefix == "PRIVMSG")
+        cmdPrivMsgg(str, Client.getSocket());
     else {
 		std::cout << "\nInvalide command: " << str <<std::endl;
 	}
@@ -319,7 +340,7 @@ void Server::start() {
             i++;
             //fin test 
             clients.push_back(new Client(indexedName,indexedName,new_socket));
-            sendRPL_WELCOME(new_socket, "tester");
+            sendRPL_WELCOME(new_socket, "testeuuuur");
         }
         //verifier les connexions
         displayInfo(); 

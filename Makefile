@@ -1,4 +1,4 @@
-SRC = main.cpp server.cpp channel.cpp client.cpp nick.cpp
+SRC = main.cpp server.cpp channel.cpp client.cpp nick.cpp privmsg.cpp
 
 NAME = ft_irc
 
