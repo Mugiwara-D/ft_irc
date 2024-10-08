@@ -27,6 +27,9 @@ Client::Client(const Client &source): username(source.username), nickname(source
 }
 
 Client::~Client() {
+    for (std::vector<channel*>::iterator it = Channel_list.begin(); it != Channel_list.end(); ++it) {
+        delete *it;  // Free the memory of each channel pointer
+    }
 }
 
 int Client::getSocket() const {
@@ -89,6 +92,44 @@ void	Client::setLastPing( std::time_t timeT){
 	lastPing = timeT;
 }
 
-channel&	Client::getCurentChan( std::string chanName ){
-	return channels[chanName];
+channel&	Client::getCurrentChan( std::string chanName ){
+	for (size_t i = 0; i < Channel_list.size(); ++i){
+		if (Channel_list[i]->getname() == chanName)
+			return *Channel_list[i];
+	}
+	return *Channel_list[0];
 }
+
+std::string	Client::getCurrentChanName(){
+	return Currentchannel;
+}
+
+void Client::addChannelClient(channel &newChannel) {
+    for (size_t i = 0; i < Channel_list.size(); ++i) {
+        if (Channel_list[i]->getname() == newChannel.getname()) {
+            std::cout << "Client " << nickname << " is already in channel: " << newChannel.getname() << std::endl;
+            return;
+        }
+    }
+    Channel_list.push_back(new channel(newChannel)); // Assuming you have a copy constructor
+    std::cout << "Client " << nickname << " added to channel: " << newChannel.getname() << std::endl;
+}
+
+void Client::removeChannelClient(const std::string &channelName) {
+    for (size_t i = 0; i < Channel_list.size(); ++i) {
+        if (Channel_list[i]->getname() == channelName) {
+            Channel_list.erase(Channel_list.begin() + i);
+            std::cout << "Client " << nickname << " removed from channel: " << channelName << std::endl;
+            return;
+        }
+    }
+}
+
+std::vector<channel*> Client::getChannelList() const {
+        return Channel_list; 
+}
+
+void	Client::setCurrentChannel(const std::string &channel){
+	Currentchannel = channel;
+}
+

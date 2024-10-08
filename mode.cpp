@@ -26,20 +26,20 @@ bool 	Server::cmdMode( std::string arg, Client& client )
 
 	std::cout << "\ncommande MODE called with : " << arg << std::endl;
 	if (arg == "+i")
-		client.getCurentChan(arg).setInviteOnly(!client.getCurentChan(arg).getInviteOnly());
+		client.getCurrentChan(arg).setInviteOnly(!client.getCurrentChan(arg).getInviteOnly());
 	else if (arg == "+t")
-		client.getCurentChan(arg).setLockTopic(!client.getCurentChan(arg).getLockTopic());
+		client.getCurrentChan(arg).setLockTopic(!client.getCurrentChan(arg).getLockTopic());
 	else if (arg == "+k" && !val.empty())
 	{
-		client.getCurentChan(arg).setKey(val);
-		client.getCurentChan(arg).setLocked(true);
+		client.getCurrentChan(arg).setKey(val);
+		client.getCurrentChan(arg).setLocked(true);
 	}
 	else if (arg == "+o")
 	{
-		client.getCurentChan(arg).setOps(val);
+		client.getCurrentChan(arg).setOps(val);
 	}
 	else if (arg == "+l" && isNum(val))
-		client.getCurentChan(arg).setUserLim(atoi(val.c_str()));
+		client.getCurrentChan(arg).setUserLim(atoi(val.c_str()));
 
 
 	return true;

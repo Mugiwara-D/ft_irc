@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: olcoste <olcoste@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ablancha <ablancha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 15:09:23 by ablancha          #+#    #+#             */
-/*   Updated: 2024/09/10 15:57:39 by olcoste          ###   ########.fr       */
+/*   Updated: 2024/10/02 15:33:08 by ablancha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@
 
 const int	PING_INTERVAL = 60;
 const int	PING_TIMEOUT = 120;
+#define	_NAME_ "Server_Name";
 
 class Server {
 private:
@@ -58,6 +59,9 @@ public:
     void 	displayInfo() const;
     void 	sendMessageToClient(int client_fd, const std::string& message);
 
+	void	whoRpl( Client& client );
+	void	RplWelcome( Client& client );
+
 	bool	checkPassWord( std::string buffer, Client& Client, int i );
     void 	MessageParsing(std::string buffer, Client& Client, int i);
 
@@ -71,6 +75,9 @@ public:
 
     void	sendMessageToChannel(const std::string& channel, const std::string& message, Client& sender);
 	bool	PingPong(Client& client);
+
+    void addChannel(channel& newChannel);
+
 };
 
 #endif
