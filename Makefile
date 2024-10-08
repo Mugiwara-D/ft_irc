@@ -1,5 +1,5 @@
 SRC = main.cpp server.cpp channel.cpp client.cpp nick.cpp mode.cpp \
-	  Rpl_senders.cpp parssing.cpp
+	  Rpl_senders.cpp parssing.cpp privmsg.cpp
 
 NAME = ft_irc
 
