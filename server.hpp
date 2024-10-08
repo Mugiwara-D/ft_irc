@@ -6,7 +6,7 @@
 /*   By: olcoste <olcoste@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 15:09:23 by ablancha          #+#    #+#             */
-/*   Updated: 2024/10/04 14:43:43 by olcoste          ###   ########.fr       */
+/*   Updated: 2024/10/08 16:07:01 by maderuel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ public:
     void 	MessageParsing(std::string buffer, Client& Client, int i);
 
     void	cmdNick(std::string buffer, int clientSocket);
-	void	cmdMode(std::string cmdArgs);
+	bool	cmdMode(std::string arg, Client& client);
 	void	cmdTopic(Client& client);
 	void	cmdPong(Client& client);
 	void	cmdPing(const std::string cmdArgs);

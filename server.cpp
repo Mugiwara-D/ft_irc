@@ -6,7 +6,7 @@
 /*   By: olcoste <olcoste@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 15:10:15 by ablancha          #+#    #+#             */
-/*   Updated: 2024/10/07 15:20:31 by olcoste          ###   ########.fr       */
+/*   Updated: 2024/10/08 15:42:53 by maderuel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,11 +92,6 @@ std::string get_irc_password(const std::string& command) {
         }
     }
     return "";
-}
-
-void	Server::cmdMode( const std::string cmdArgs )
-{
-	std::cout << "MODE arg = " << cmdArgs << std::endl;
 }
 
 void	Server::cmdTopic( Client& client )
@@ -269,7 +264,7 @@ void	Server::MessageParsing(std::string buffer, Client& Client, int i)
 		trimstr = "RINE";
 
 	if (prefix == "MODE"){
-		cmdMode(trimstr);
+		cmdMode(trimstr, Client);
 	} else if (prefix == "PING"){
 		cmdPong(Client);
 	} else if (prefix == "NICK") {

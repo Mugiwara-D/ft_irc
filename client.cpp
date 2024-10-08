@@ -6,7 +6,7 @@
 /*   By: olcoste <olcoste@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 15:08:37 by ablancha          #+#    #+#             */
-/*   Updated: 2024/09/10 15:59:36 by olcoste          ###   ########.fr       */
+/*   Updated: 2024/10/08 16:01:47 by maderuel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,7 +121,17 @@ void Client::removeChannelClient(const std::string &channelName) {
     }
 }
 
-    std::vector<channel*> Client::getChannelList() const {
-        return Channel_list; 
+std::vector<channel*> Client::getChannelList() const {
+    return Channel_list; 
+}
+
+channel&    Client::getCurrentChan( std::string channelName )
+{
+    for (size_t it = 0; it < Channel_list.size(); ++it){
+        if (Channel_list[it]->getname() == channelName) {
+            return *Channel_list[it];
+        }
     }
+    return *Channel_list[0];
+}
 

@@ -10,9 +10,10 @@ bool	isNum( std::string str )
 	return true;
 }
 
-bool 	Server::cmdMode( std::string arg, channel& chan )
+bool 	Server::cmdMode( std::string arg, Client& client )
 {
 	std::string	val;
+    std::string chan;
 
 	std::size_t start = arg.find_first_not_of(" ");
 	if (start == std::string::npos)
@@ -21,24 +22,24 @@ bool 	Server::cmdMode( std::string arg, channel& chan )
 	{
 		start = arg.find(' ');
 		val = arg.substr(start + 1);
-		arg = arg.substr(0, start);
+		chan = arg.substr(0, start);
 	}
 
 	if (arg == "+i")
-		chan.setInviteOnly(!chan.getInviteOnly());
+		client.getCurrentChan(chan).setInviteOnly(true);
 	else if (arg == "+t")
-		chan.setLockTopic(!chan.getLockTopic());
+		client.getCurrentChan(chan).setLockTopic(true);
 	else if (arg == "+k" && !val.empty())
 	{
-		chan.setKey(val);
-		chan.setLocked(true);
+		client.getCurrentChan(chan).setKey(val);
+		client.getCurrentChan(chan).setLocked(true);
 	}
 	else if (arg == "+o")
 	{
-		chan.setOps(val);
+		client.getCurrentChan(chan).setOps(val);
 	}
 	else if (arg == "+l" && isNum(val))
-		chan.setUserLim(atoi(val.c_str()));
+		client.getCurrentChan(chan).setUserLim(atoi(val.c_str()));
 
 
 	return true;
