@@ -211,7 +211,7 @@ void Server::cmdJoin(Client& client, const std::string& channelName) {
     std::cout << client.getNickname() << " has joined channel: " << channelName << std::endl;
     std::string reply = ":" + client.getNickname() + " JOIN :" + channelName;
     for (size_t i = 0; i < clients.size(); ++i) {
-        if (clients[i]->getCurrentChannel() == channelName) {
+        if (clients[i]->getCurrentChan(channelName) == channelName) {
             sendMessageToClient(clients[i]->getSocket(), reply); // Notifier chaque client
         }
     }
