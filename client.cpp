@@ -92,16 +92,12 @@ void	Client::setLastPing( std::time_t timeT){
 	lastPing = timeT;
 }
 
-channel&	Client::getCurrentChan( std::string chanName ){
-	for (size_t i = 0; i < Channel_list.size(); ++i){
-		if (Channel_list[i]->getname() == chanName)
-			return *Channel_list[i];
-	}
-	return *Channel_list[0];
+std::string Client::getCurrentChannel() const {
+    return Currentchannel;
 }
 
-std::string	Client::getCurrentChanName(){
-	return Currentchannel;
+void Client::setCurrentChannel(const std::string &channel) {
+    Currentchannel = channel;
 }
 
 void Client::addChannelClient(channel &newChannel) {
@@ -125,11 +121,7 @@ void Client::removeChannelClient(const std::string &channelName) {
     }
 }
 
-std::vector<channel*> Client::getChannelList() const {
+    std::vector<channel*> Client::getChannelList() const {
         return Channel_list; 
-}
-
-void	Client::setCurrentChannel(const std::string &channel){
-	Currentchannel = channel;
-}
+    }
 

@@ -3,7 +3,6 @@
 
 #include <string>
 #include <ctime>
-#include <map>
 #include <vector> 
 #include "channel.hpp"
 
@@ -18,7 +17,6 @@ private:
     time_t lastNicknameChange;
     bool Registered;
     int socket;
-	
 
 	////////Ping Pong/////////
 	std::time_t	lastPing;
@@ -40,14 +38,11 @@ public:
     time_t getLastNicknameChange() const;
     void setLastNicknameChange(const time_t newChange);
 
-
     bool checkPing( std::time_t instTime, int pingInter );
     std::time_t getLastPing();
     void setLastPing( std::time_t timeT );
-	
-	std::string	getCurrentChanName();
 
-    channel& getCurrentChan( std::string chanName );
+    std::string getCurrentChannel() const;
     void setCurrentChannel(const std::string &channel);
 
     void addChannelClient(channel &newChannel);

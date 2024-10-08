@@ -14,8 +14,10 @@
 #define CHANNEL_HPP
 
 #include <iostream>
+#include "client.hpp"
 
 class channel
+
 {
 private:
 	std::string name;
@@ -28,7 +30,7 @@ private:
 	int			_userLimit;
 	
 public:
-	channel( std::string name, bool inviteOnly, bool lockTopic );
+	channel( std::string name, bool inviteOnly, bool lockTopic);
 	~channel();
 
 	std::string	getname();

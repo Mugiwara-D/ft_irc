@@ -30,7 +30,6 @@
 
 const int	PING_INTERVAL = 60;
 const int	PING_TIMEOUT = 120;
-#define	_NAME_ "Server_Name";
 
 class Server {
 private:
@@ -59,14 +58,11 @@ public:
     void 	displayInfo() const;
     void 	sendMessageToClient(int client_fd, const std::string& message);
 
-	void	whoRpl( Client& client );
-	void	RplWelcome( Client& client );
-
 	bool	checkPassWord( std::string buffer, Client& Client, int i );
     void 	MessageParsing(std::string buffer, Client& Client, int i);
 
     void	cmdNick(std::string buffer, int clientSocket);
-	bool	cmdMode( std::string arg, Client& client );
+	void	cmdMode(std::string cmdArgs);
 	void	cmdTopic(Client& client);
 	void	cmdPong(Client& client);
 	void	cmdPing(const std::string cmdArgs);

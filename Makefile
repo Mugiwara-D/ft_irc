@@ -1,12 +1,10 @@
-SRC = source/channel.cpp source/client.cpp source/main.cpp source/mode.cpp \
-	  source/nick.cpp source/parssing.cpp source/privmsg.cpp \
-	  source/Rpl_senders.cpp source/server.cpp source/utils.cpp 
+SRC = main.cpp server.cpp channel.cpp client.cpp nick.cpp privmsg.cpp
 
 NAME = ft_irc
 
 OBJ = $(SRC:.cpp=.o)
 
-INC = ./include
+INC = ./Include
 
 FLAG = -Werror -Wall -Wextra -std=c++98
 
@@ -15,10 +13,10 @@ CC = c++
 all : $(NAME) 
 
 $(NAME) : $(OBJ) 
-	$(CC) $(OBJ) -o $(NAME)
+	$(CC) $(FLAG) $(OBJ) -o $(NAME)
 	
 %.o : %.cpp
-	$(CC) -I$(INC) $(FLAG) -c $< -o $@
+	$(CC) $(FLAG) -c $< -o $@
 
 
 clean :

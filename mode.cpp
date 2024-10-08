@@ -10,7 +10,7 @@ bool	isNum( std::string str )
 	return true;
 }
 
-bool 	Server::cmdMode( std::string arg, Client& client )
+bool 	Server::cmdMode( std::string arg, channel& chan )
 {
 	std::string	val;
 
@@ -24,22 +24,21 @@ bool 	Server::cmdMode( std::string arg, Client& client )
 		arg = arg.substr(0, start);
 	}
 
-	std::cout << "\ncommande MODE called with : " << arg << std::endl;
 	if (arg == "+i")
-		client.getCurrentChan(arg).setInviteOnly(!client.getCurrentChan(arg).getInviteOnly());
+		chan.setInviteOnly(!chan.getInviteOnly());
 	else if (arg == "+t")
-		client.getCurrentChan(arg).setLockTopic(!client.getCurrentChan(arg).getLockTopic());
+		chan.setLockTopic(!chan.getLockTopic());
 	else if (arg == "+k" && !val.empty())
 	{
-		client.getCurrentChan(arg).setKey(val);
-		client.getCurrentChan(arg).setLocked(true);
+		chan.setKey(val);
+		chan.setLocked(true);
 	}
 	else if (arg == "+o")
 	{
-		client.getCurrentChan(arg).setOps(val);
+		chan.setOps(val);
 	}
 	else if (arg == "+l" && isNum(val))
-		client.getCurrentChan(arg).setUserLim(atoi(val.c_str()));
+		chan.setUserLim(atoi(val.c_str()));
 
 
 	return true;
