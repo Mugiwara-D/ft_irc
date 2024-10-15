@@ -21,7 +21,6 @@ bool	changeNickTime(std::vector<Client*>::iterator itClient)
 
 void	Server::cmdNick(std::string buffer, int clientSocket)
 {
-
 	/*separe le nickname du reste*/
 	size_t firstSpace = buffer.find(' ');
 	std::string nickname = trim(buffer.substr(firstSpace));
@@ -32,14 +31,17 @@ void	Server::cmdNick(std::string buffer, int clientSocket)
 /***********************PARSING**************************/
 	/*check si le nickname est deja utiliser*/
 	std::vector<Client*>::iterator itClient;
+	Client& client = *clients[0];
 
 	for (std::vector<Client*>::iterator it = clients.begin(); it != clients.end(); ++it) {
 		std::cout << (*it)->getNickname() << "    " <<  nickname << std::endl;
-		if (clientSocket == (*it)->getSocket())
+		if (clientSocket == (*it)->getSocket()){
 			itClient = it;
+			client = **it;
+		}
 		if ((*it)->getNickname() == nickname)
 		{
-			std::string fullMessage = ": <serverName(a remplacer)> ERR_NICKNAMEINUSE 433 Nickname: " + nickname + " is already in use.\r\n";
+			std::string fullMessage = CLIENT_ERROR::NICKNAMEINUSE((*it)->getNickname(), nickname);
 			if (send(clientSocket, fullMessage.c_str(), fullMessage.length(), 0) < 0) {
 				std::cerr << "Failed to send error message to client" << std::endl;
 			}
@@ -52,7 +54,8 @@ void	Server::cmdNick(std::string buffer, int clientSocket)
 						&& !(nickname[i] >= '[' && nickname[i] <= '`')
 		&& nickname[i] != '-' && nickname[i] != '{' && nickname[i] != '}') || i >= 9)
 			{
-				std::string fullMessage = ": <serverName(a remplacer)> ERR_ERRONEUSNICKNAME 432 Nickname: " + nickname + " norme IRC invalide.\r\n";
+				std::string fullMessage = 
+					CLIENT_ERROR::ERRONEUSNICKNAME(client.getNickname());
 				if (send(clientSocket, fullMessage.c_str(), fullMessage.length(), 0) < 0) {
 					std::cerr << "Failed to send error message to client" << std::endl;
 				}

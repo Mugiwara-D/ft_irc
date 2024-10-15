@@ -75,11 +75,11 @@ void sendReply(int clientSocket, const std::string& reply) {
     std::string message = reply + "\r\n"; // IRC protocol requires CRLF at the end of the message
     send(clientSocket, message.c_str(), message.size(), 0);
 }
-
+/*
 void sendRPL_WELCOME(int clientSocket, const std::string& nick) {
-    std::string reply = ":irc.example.com 001 " + nick + " :Welcome to the Internet Relay Network " + nick;
+    std::string reply = RPL::WELCOME();
     sendReply(clientSocket, reply);
-}
+}*/
 
 std::string get_irc_password(const std::string& command) {
     std::istringstream stream(command);
@@ -239,13 +239,121 @@ void Server::sendMessageToChannel(const std::string& channel, const std::string&
     }
 }
 
+void	Server::CAPresponse( std::string arg, Client& client )
+{
+	if (arg.find("REQ") != std::string::npos)
+		sendMessageToClient(client.getSocket(), RPL::CAPREQ(client.getNickname()));
+	if (arg.find("END") != std::string::npos)
+		sendMessageToClient(client.getSocket(), RPL::WELCOME(client.getNickname(), client.getUsername(), "server name"));
+}
+
+std::vector<std::string>	splitBuffer(const std::string& buffer)
+{
+	std::vector<std::string> commands;
+	std::string::size_type	start = 0;
+	std::string::size_type	end = 0;
+
+	while ((end = buffer.find("\r\n", start)) != std::string::npos)
+	{
+			commands.push_back(buffer.substr(start, end - start));
+			start = end + 2;
+	}
+
+	if (start < buffer.size())
+		commands.push_back(buffer.substr(start));
+	return commands;
+}
+
+Command_s	parseCommand( const std::string rawCmd )
+{
+	Command_s	command;
+	size_t		pos = 0;
+
+	if (rawCmd[pos] == ':') {
+		size_t	prefixEnd = rawCmd.find(' ', pos);
+		if (prefixEnd != std::string::npos){
+			command.prefix = rawCmd.substr(1, prefixEnd - 1);
+			pos = prefixEnd + 1;
+		}
+	}
+
+	size_t	cmdEnd = rawCmd.find(' ', pos);
+	if (cmdEnd != std::string::npos) {
+		command.command = rawCmd.substr(pos, cmdEnd - pos);
+		pos = cmdEnd + 1;
+	} else {
+		command.command = rawCmd.substr(pos);
+		return command;
+	}
+
+	while (pos < rawCmd.size())
+	{
+		if (rawCmd[pos] == ':') {
+			command.trailing = rawCmd.substr(pos + 1);
+			break;
+		}
+
+		size_t	paramEnd = rawCmd.find(' ', pos);
+		if (paramEnd != std::string::npos) {
+			command.params.push_back(rawCmd.substr(pos, paramEnd - pos));
+			pos = paramEnd + 1;
+		} else {
+			command.params.push_back(rawCmd.substr(pos));
+			break;
+		}
+	}
+
+	return command;
+}
+
+void	Server::executeCmd(Command_s command, Client& client)
+{
+	std::cout << "\nCommand : " << command.command 
+		<< "\nprefix : " << command.prefix <<
+		"\nparams : " << command.params[0] <<
+		"\ntrailing : " << command.trailing << std::endl;
+	if (command.command == "CAP")
+		CAPresponse(command.params[0], client);
+	else if (command.command == "JOIN")
+        cmdJoin(client, command.params[0]);
+	else if (command.command == "PING")
+		cmdPong(client);
+	else if (command.command == "MODE")
+		cmdMode(command.params[0], client);
+	else if (command.command == "NICK")
+		std::cout << "\nNICK a refaire\n" << std::endl;
+	else if (command.command == "QUIT")
+		removeClient(client.getUsername());
+	else if (command.command == "PRIVMSG")
+		std::cout << "\nPRIVMSG a refaire\n" << std::endl;
+	else {
+		std::cout << "\nInvalide Command" << std::endl;
+		sendMessageToClient(client.getSocket(), CLIENT_ERROR::UNKNOWNCOMMAND(client.getUsername(), command.command));
+	}
+}
 
 void	Server::MessageParsing(std::string buffer, Client& Client, int i)
 {
+	std::vector<std::string>	rawCommands;
+	Command_s	parsedCmd;
+
+	(void) i;
+	rawCommands = splitBuffer(buffer);
+
+	for (size_t i = 0; i < rawCommands.size(); ++i)
+	{
+		parsedCmd = parseCommand(rawCommands[i]);
+		executeCmd(parsedCmd, Client);
+	}
+}
+/*void	Server::MessageParsing(std::string buffer, Client& Client, int i)
+{
 	std::string	str = buffer;
 	std::string prefix;
+	std::vector<std::string> commands;
 	(void) i;
 	
+	commands = splitBuffer(buffer);
 	std::size_t start = str.find_first_not_of(" \t\n\r");
 	if (start == std::string::npos)
 		prefix = "";
@@ -278,11 +386,22 @@ void	Server::MessageParsing(std::string buffer, Client& Client, int i)
     }
     else if (prefix == "PRIVMSG")
         cmdPrivMsgg(str, Client.getSocket());
+	else if (prefix == "CAP")
+		CAPresponse(trimstr, Client);
     else {
 		std::cout << "\nInvalide command: " << str <<std::endl;
 	}
 }
+*/
+bool	Server::initialHandShake( std::string buffer, int fd )
+{
+	if (buffer.find("CAP") != std::string::npos){
+		sendMessageToClient(fd, RPL::CAP302("*"));
+		return true;
+	}
 
+	return false;
+}
 void	rawDump(std::string msg)
 {
 	std::cout << "\nRaw Dump:\n"<< msg << std::endl;
@@ -318,24 +437,35 @@ void Server::start() {
 
         FDready = select(maxFD + 1, &fds, NULL, NULL, &timeout); // check les fd prets pour la lecture
 		if (FDready < 0){
+			std::cout << "select failed" << std::endl;
 			continue ;
 		}
 
         if (FD_ISSET(server_socket, &fds)) {
             int new_socket = accept(server_socket, (struct sockaddr*)&client_addr, &client_len);
-            if (new_socket < 0) {
-                std::cout << "Accept failed." << std::endl;
-                exit(1);
-            }
-            //partir de test a modifier pour recuperer les noms des differents clients !
-            std::string baseName = "Name";
+			if (new_socket < 0) {
+				if (errno == EAGAIN || errno == EWOULDBLOCK){
+					continue ;
+				} else {
+                	std::cout << "Accept failed: " << errno << std::endl;
+                	exit(1);
+				}
+			} 
+			//partir de test a modifier pour recuperer les noms des differents clients !
+			char buffer[1024] = {0};
+			int bitread = read(new_socket, buffer, 1024);
+			if (bitread <= 0)
+				std::cout << "\nproblem" << std::endl;
+			else { 
+				initialHandShake(buffer, new_socket);
+			}
+            std::string baseName = "Guest";
             std::stringstream ss;
             ss << baseName << i;
-              std::string indexedName = ss.str();
+            std::string indexedName = ss.str();
             i++;
             //fin test 
             clients.push_back(new Client(indexedName,indexedName,new_socket));
-            sendRPL_WELCOME(new_socket, "testeuuuur");
         }
         //verifier les connexions
         displayInfo(); 
@@ -349,17 +479,16 @@ void Server::start() {
                 int valread = read(clientFD, buffer, 1024);
                 if (valread >= 0) {
 					buf += buffer;
-					if( buf.find('\r') == std::string::npos 
-							|| buf.find('\n') == std::string::npos )
+					if(buf.find("\r\n") != std::string::npos)
 					{
-						std::cout << "\nsomething wrong i can feel it\n" << buf << std::endl;
-						continue;
+						if (clients[i]->isRegistered() == false)
+							checkPassWord(buf, *clients[i], i);
+						MessageParsing(buf, *clients[i], i);
+						buf.clear();
+					} else {
+						removeClient(clients[i]->getUsername());
+						continue ;
 					}
-                    // Mettre la fonction pour les messages
-					if (clients[i]->isRegistered() == false)
-						checkPassWord(buf, *clients[i], i);
-					MessageParsing(buf, *clients[i], i);
-					buf.clear();
 				} else {
                     close(clientFD);
                     clients.erase(clients.begin() + i);

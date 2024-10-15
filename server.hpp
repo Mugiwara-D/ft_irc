@@ -15,8 +15,6 @@
 
 #include <vector>
 #include <string>
-#include "client.hpp"
-#include "channel.hpp"
 #include <stdlib.h>
 #include <iostream>
 #include <vector>
@@ -27,9 +25,20 @@
 #include <netinet/in.h>
 #include <unistd.h>
 #include <sstream> 
+#include "client.hpp"
+#include "channel.hpp"
+#include "RPL_list.hpp"
+#include <cerrno>
 
 const int	PING_INTERVAL = 60;
 const int	PING_TIMEOUT = 120;
+
+struct	Command_s{
+	std::string					command;
+	std::string					prefix;
+	std::vector<std::string>	params;
+	std::string					trailing;
+};
 
 class Server {
 private:
@@ -80,6 +89,12 @@ public:
     void	cmdPrivMsgg(std::string buffer, int clientSocket);
     std::string trimPriMsg(std::string& str);
     void	cmdPrivMsgServ(std::string line, int clientSocket);
+
+	bool	initialHandShake( std::string buffer, int fd );
+	void	CAPresponse( std::string arg, Client& client );
+
+	void	executeCmd(Command_s command, Client& client);
+
 };
 
 #endif
