@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: olcoste <olcoste@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ablancha <ablancha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 15:09:23 by ablancha          #+#    #+#             */
-/*   Updated: 2024/10/08 16:07:01 by maderuel         ###   ########.fr       */
+/*   Updated: 2024/10/16 13:33:27 by ablancha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ public:
 	void	CAPresponse( std::string arg, Client& client );
 
 	void	executeCmd(Command_s command, Client& client);
-
+    channel* getChannelByName(const std::string& channelName);
 };
 
 #endif

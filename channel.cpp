@@ -6,7 +6,7 @@
 /*   By: ablancha <ablancha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 14:07:08 by ablancha          #+#    #+#             */
-/*   Updated: 2024/10/16 12:47:26 by ablancha         ###   ########.fr       */
+/*   Updated: 2024/10/16 13:41:43 by ablancha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,4 +55,29 @@ void	channel::setUserLim( int val ){
 
 void	channel::setOps( std::string ops ){
 	_operator = ops;
+}
+
+void channel::addClient(Client& client) {
+    clientList.push_back(&client);
+    std::cout << "Client " << client.getNickname() << " added to channel \"" << name << "\"." << std::endl;
+}
+
+void channel::removeClient(Client& client) {
+    for (std::vector<Client*>::iterator it = clientList.begin(); it != clientList.end(); ++it) {
+        if (*it == &client) {
+            clientList.erase(it);
+            std::cout << "Client " << client.getNickname() << " removed from channel \"" << name << "\"." << std::endl;
+            break;
+        }
+    }
+}
+
+std::vector<Client*> channel::getClientList() {
+    return clientList;
+}
+std::vector<Client*> channel::getClientList() const {
+    return clientList;
+}
+std::string channel::getname() const {
+    return this->name;
 }

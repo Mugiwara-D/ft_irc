@@ -6,7 +6,7 @@
 /*   By: ablancha <ablancha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 15:10:15 by ablancha          #+#    #+#             */
-/*   Updated: 2024/10/16 12:48:36 by ablancha         ###   ########.fr       */
+/*   Updated: 2024/10/16 13:45:50 by ablancha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,12 +42,43 @@ void Server::removeClient(const std::string &username) {
 
 void Server::displayInfo() const {
     std::cout << "Password: " << password << std::endl;
+
+    // Display clients
     std::cout << "Clients:" << std::endl;
     for (std::vector<Client*>::const_iterator it = clients.begin(); it != clients.end(); ++it) {
-        (*it)->displayInfo();
+        (*it)->displayInfo(); // Assuming Client has a method to display its info
     }
+
     std::cout << "Port: " << port << std::endl;
+
+    // Check if there are any channels
+    if (channels.empty()) {
+        std::cout << "No channels exist." << std::endl;
+        return; // Return if there are no channels
+    }
+
+    // List users in all channels
+    std::cout << "List of users in all channels:" << std::endl;
+    for (size_t i = 0; i < channels.size(); ++i) {
+        const channel& chan = channels[i]; // Use 'const channel&' for a const reference
+        std::vector<Client*> clientsInChannel = chan.getClientList(); // Now this will work correctly
+
+        // Print the channel name
+        std::cout << "Channel: " << chan.getname() << std::endl; // Now this will work correctly
+
+        // Check if there are users in the channel
+        if (clientsInChannel.empty()) {
+            std::cout << "  No users in this channel." << std::endl;
+        } else {
+            std::cout << "  Users:" << std::endl;
+            for (size_t j = 0; j < clientsInChannel.size(); ++j) {
+                std::cout << "    - " << clientsInChannel[j]->getNickname() << std::endl; // Display each client's nickname
+            }
+        }
+    }
 }
+
+
 
 
 /*######################fonctionnement du serv : ###########################################*/
@@ -183,44 +214,68 @@ void Server::cmdPrivMsg(Client& sender, const std::string& targetChannel, const 
     }
 }
 
+channel* Server::getChannelByName(const std::string& channelName) {
+    for (size_t i = 0; i < channels.size(); ++i) {
+        if (channels[i].getname() == channelName) {
+            return &channels[i];
+        }
+    }
+    return NULL;
+}
 
-// void Server::cmdJoin(Client& client, const std::string& channelName) {
-//     client.setCurrentChannel(channelName); // Enregistrer l'utilisateur dans le canal
-//     std::cout << client.getNickname() << " has joined channel: " << channelName << std::endl;
-
-//     // Message JOIN à envoyer à tous les utilisateurs du canal
-//     std::string joinMessage = ":" + client.getNickname() + " JOIN " + channelName + "\r\n";
-
-//     // Envoyer le message JOIN à tous les clients du canal
-//     for (size_t i = 0; i < clients.size(); ++i) {
-//         if (clients[i]->getCurrentChannel() == channelName) {
-//             sendMessageToClient(clients[i]->getSocket(), joinMessage); // Notifier chaque client
-//         }
-//     }
-// }
 
 void Server::cmdJoin(Client& client, const std::string& channelName) {
-    channel newChannel(channelName, false, false);
-    client.addChannelClient(newChannel);
-    addChannel(newChannel);
-     std::vector<channel*> clientChannels = client.getChannelList();
-    std::cout << client.getNickname() << " is currently in the following channels: " << std::endl;
-    
-    for (std::vector<channel*>::iterator it = clientChannels.begin(); it != clientChannels.end(); ++it) {
-        std::cout << "- " << (*it)->getname() << std::endl;
+    channel* existingChannel = getChannelByName(channelName);
+
+    if (existingChannel) {
+        existingChannel->addClient(client);
+        client.addChannelClient(*existingChannel);
+    } else {
+
+        channel newChannel(channelName, false, false);
+        newChannel.addClient(client);
+        client.addChannelClient(newChannel);
+        addChannel(newChannel);
     }
-    client.setCurrentChannel(channelName);
 
     std::cout << client.getNickname() << " has joined channel: " << channelName << std::endl;
     std::string reply = ":" + client.getNickname() + " JOIN :" + channelName;
     for (size_t i = 0; i < clients.size(); ++i) {
         if (clients[i]->getCurrentChannel() == channelName) {
-            sendMessageToClient(clients[i]->getSocket(), reply); // Notifier chaque client
+            sendMessageToClient(clients[i]->getSocket(), reply);
         }
     }
-    // sendMessageToClient(client.getSocket(), reply);
-    //cmdPrivMsg(client, channelName, "salut a touss");
 }
+
+
+// void Server::cmdJoin(Client& client, const std::string& channelName) {
+//     channel newChannel(channelName, false, false);
+//     client.addChannelClient(newChannel);
+//     addChannel(newChannel);
+//     newChannel.addClient(client);
+
+
+//     /* Lister les channels de client pour debug */
+//     // std::vector<channel*> clientChannels = client.getChannelList();
+//     // std::cout << client.getNickname() << " is currently in the following channels: " << std::endl;
+    
+//     // for (std::vector<channel*>::iterator it = clientChannels.begin(); it != clientChannels.end(); ++it) {
+//     //     std::cout << "- " << (*it)->getname() << std::endl;
+//     // }
+//     // client.setCurrentChannel(channelName);
+
+
+
+//     std::cout << client.getNickname() << " has joined channel: " << channelName << std::endl;
+//     std::string reply = ":" + client.getNickname() + " JOIN :" + channelName;
+//     for (size_t i = 0; i < clients.size(); ++i) {
+//         if (clients[i]->getCurrentChannel() == channelName) {
+//             sendMessageToClient(clients[i]->getSocket(), reply); // Notifier chaque client
+//         }
+//     }
+//     // sendMessageToClient(client.getSocket(), reply);
+//     //cmdPrivMsg(client, channelName, "salut a touss");
+// }
 
 void Server::sendMessageToChannel(const std::string& channel, const std::string& message, Client& sender) {
     for (size_t i = 0; i < clients.size(); ++i) {
