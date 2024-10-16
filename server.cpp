@@ -6,7 +6,7 @@
 /*   By: ablancha <ablancha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 15:10:15 by ablancha          #+#    #+#             */
-/*   Updated: 2024/10/16 13:45:50 by ablancha         ###   ########.fr       */
+/*   Updated: 2024/10/16 15:56:14 by ablancha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -223,6 +223,18 @@ channel* Server::getChannelByName(const std::string& channelName) {
     return NULL;
 }
 
+void Server::cmdKick(Client& client, const std::string& channelName)
+{
+    channel* chan = getChannelByName(channelName);
+    if (chan == NULL) {
+        std::cout << "Channel \"" << channelName << "\" does not exist." << std::endl;
+        return;
+    }
+    if (!chan->isOperator(client)) {
+        std::cout << "Client " << client.getNickname() << " is not an operator in channel \"" << channelName << "\"." << std::endl;
+        return;
+    }
+}
 
 void Server::cmdJoin(Client& client, const std::string& channelName) {
     channel* existingChannel = getChannelByName(channelName);
@@ -234,6 +246,7 @@ void Server::cmdJoin(Client& client, const std::string& channelName) {
 
         channel newChannel(channelName, false, false);
         newChannel.addClient(client);
+        newChannel.addOps(client);
         client.addChannelClient(newChannel);
         addChannel(newChannel);
     }
@@ -387,6 +400,8 @@ void	Server::executeCmd(Command_s command, Client& client)
 		removeClient(client.getUsername());
 	else if (command.command == "PRIVMSG")
 		std::cout << "\nPRIVMSG a refaire\n" << std::endl;
+    else if (command.command == "KICK")
+        cmdKick(client, command.params[0]);
 	else {
 		std::cout << "\nInvalide Command" << std::endl;
 		sendMessageToClient(client.getSocket(), CLIENT_ERROR::UNKNOWNCOMMAND(client.getUsername(), command.command));
