@@ -28,7 +28,7 @@ Client::Client(const Client &source): username(source.username), nickname(source
 
 Client::~Client() {
     for (std::vector<channel*>::iterator it = Channel_list.begin(); it != Channel_list.end(); ++it) {
-        delete *it;  // Free the memory of each channel pointer
+        delete *it;
     }
 }
 
@@ -107,7 +107,7 @@ void Client::addChannelClient(channel &newChannel) {
             return;
         }
     }
-    Channel_list.push_back(new channel(newChannel)); // Assuming you have a copy constructor
+    Channel_list.push_back(new channel(newChannel));
     std::cout << "Client " << nickname << " added to channel: " << newChannel.getname() << std::endl;
 }
 

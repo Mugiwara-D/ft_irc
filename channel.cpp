@@ -6,19 +6,17 @@
 /*   By: ablancha <ablancha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 14:07:08 by ablancha          #+#    #+#             */
-/*   Updated: 2024/09/04 14:24:53 by ablancha         ###   ########.fr       */
+/*   Updated: 2024/10/16 12:47:26 by ablancha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "channel.hpp"
 
-// Constructor
 channel::channel( std::string name, bool inviteOnly, bool lockTopic ) : 
 	name(name), _inviteOnly(inviteOnly), _lockTopic(lockTopic){
     std::cout << "Channel \"" << name << "\" created." << std::endl;
 }
 
-// Destructor
 channel::~channel(){
     std::cout << "Channel \"" << name << "\" destroyed." << std::endl;
 }

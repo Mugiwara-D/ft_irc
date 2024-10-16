@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: olcoste <olcoste@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ablancha <ablancha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 15:10:15 by ablancha          #+#    #+#             */
-/*   Updated: 2024/10/08 15:42:53 by maderuel         ###   ########.fr       */
+/*   Updated: 2024/10/16 12:48:36 by ablancha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void Server::displayInfo() const {
     std::cout << "Password: " << password << std::endl;
     std::cout << "Clients:" << std::endl;
     for (std::vector<Client*>::const_iterator it = clients.begin(); it != clients.end(); ++it) {
-        (*it)->displayInfo();  // Access the object using the pointer
+        (*it)->displayInfo();
     }
     std::cout << "Port: " << port << std::endl;
 }
@@ -72,7 +72,7 @@ Server::Server(int port, const std::string &pwd) : password(pwd), port(port){
 }
 
 void sendReply(int clientSocket, const std::string& reply) {
-    std::string message = reply + "\r\n"; // IRC protocol requires CRLF at the end of the message
+    std::string message = reply + "\r\n";
     send(clientSocket, message.c_str(), message.size(), 0);
 }
 /*
@@ -167,23 +167,16 @@ bool	Server::checkPassWord( std::string buffer, Client& Client, int i )
 
 void Server::cmdPrivMsg(Client& sender, const std::string& targetChannel, const std::string& message) {
     bool channelFound = false;
-
-    // Correct message formatting according to IRC standards
     std::string privmsg_command = ":" + sender.getNickname() + "!" + sender.getUsername() + "@server PRIVMSG " + targetChannel + " :" + message;
     std::cout << privmsg_command << std::endl;
-
-    // Send message to all clients in the target channel
     for (size_t i = 0; i < clients.size(); ++i) {
         if (clients[i]->getCurrentChannel() == targetChannel) {
             channelFound = true;
-            // Don't send the message back to the sender
             if (clients[i]->getUsername() != sender.getUsername()) {
                 sendMessageToClient(clients[i]->getSocket(), privmsg_command);
             }
         }
     }
-
-    // If no channel was found, notify the sender
     if (!channelFound) {
         std::string errorMsg = "No such channel: " + targetChannel;
         sendMessageToClient(sender.getSocket(), errorMsg);
@@ -210,11 +203,11 @@ void Server::cmdJoin(Client& client, const std::string& channelName) {
     channel newChannel(channelName, false, false);
     client.addChannelClient(newChannel);
     addChannel(newChannel);
-     std::vector<channel*> clientChannels = client.getChannelList();  // Assuming Client has a getChannelList() method
+     std::vector<channel*> clientChannels = client.getChannelList();
     std::cout << client.getNickname() << " is currently in the following channels: " << std::endl;
     
     for (std::vector<channel*>::iterator it = clientChannels.begin(); it != clientChannels.end(); ++it) {
-        std::cout << "- " << (*it)->getname() << std::endl;  // Assuming channel class has a getName() method
+        std::cout << "- " << (*it)->getname() << std::endl;
     }
     client.setCurrentChannel(channelName);
 
@@ -231,9 +224,9 @@ void Server::cmdJoin(Client& client, const std::string& channelName) {
 
 void Server::sendMessageToChannel(const std::string& channel, const std::string& message, Client& sender) {
     for (size_t i = 0; i < clients.size(); ++i) {
-        if (clients[i]->getCurrentChannel() == channel) {  // Check if the client is in the target channel
-            if (clients[i]->getUsername() != sender.getUsername()) {  // Avoid sending the message back to the sender
-                sendMessageToClient(clients[i]->getSocket(), message);  // Send the formatted message
+        if (clients[i]->getCurrentChannel() == channel) {
+            if (clients[i]->getUsername() != sender.getUsername()) {
+                sendMessageToClient(clients[i]->getSocket(), message);
             }
         }
     }

@@ -12,8 +12,8 @@ class Client {
 private:
     std::string username;
     std::string nickname;
-    std::string Currentchannel;  // Current channel client is focused on
-    std::vector<channel*> Channel_list;  // List of channels client is part of
+    std::string Currentchannel;
+    std::vector<channel*> Channel_list;
     time_t lastNicknameChange;
     bool Registered;
     int socket;
