@@ -6,7 +6,7 @@ using std::string;
 namespace RPL 
 {
 	inline string	WELCOME( const string& nick, const string& user, const string& host ) {
-		return "001 :Welcome to the IRC Network, " + nick + "!" + user + "@" + host;
+		return ":irc.example.com 001 "+ nick +" :Welcome to the IRC Network, " + nick + "!" + user + "@" + host;
 	} // Sent after the client has successfully connected and logged in to the IRC server.
 
 	inline string	YOURHOST( const string& nick, const string& serverName, const string& version ){

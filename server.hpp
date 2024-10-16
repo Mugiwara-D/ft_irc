@@ -36,6 +36,7 @@ const int	PING_TIMEOUT = 120;
 struct	Command_s{
 	std::string					command;
 	std::string					prefix;
+	std::string					channel;
 	std::vector<std::string>	params;
 	std::string					trailing;
 };
@@ -71,7 +72,7 @@ public:
     void 	MessageParsing(std::string buffer, Client& Client, int i);
 
     void	cmdNick(std::string buffer, int clientSocket);
-	bool	cmdMode(std::string arg, Client& client);
+	bool	cmdMode(Command_s cmd, Client& client);
 	void	cmdTopic(Client& client);
 	void	cmdPong(Client& client);
 	void	cmdPing(const std::string cmdArgs);

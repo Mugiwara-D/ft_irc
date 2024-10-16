@@ -10,20 +10,19 @@ bool	isNum( std::string str )
 	return true;
 }
 
-bool 	Server::cmdMode( std::string arg, Client& client )
+bool 	Server::cmdMode( Command_s cmd, Client& client )
 {
-	std::string	val;
-    std::string chan;
-
-	std::size_t start = arg.find_first_not_of(" ");
-	if (start == std::string::npos)
-		val = arg;
-	else 
-	{
-		start = arg.find(' ');
-		val = arg.substr(start + 1);
-		chan = arg.substr(0, start);
+	(void) client;
+	std::cout << "\ncmd : " << cmd.command 
+		<< "\nprefix : " << cmd.prefix <<
+		"\ntrailing : " << cmd.trailing << std::endl;
+	std::cout << "Params : " << std::endl;
+	for (size_t i = 0; i < cmd.params.size() - 1; ++i){
+		std::cout << cmd.params[i] << std::endl;
 	}
+/*	std::string chan = cmd.prefix;
+	std::string arg = cmd.params[0];
+	std::string val = cmd.trailing;
 
 	if (arg == "+i")
 		client.getCurrentChan(chan).setInviteOnly(true);
@@ -41,6 +40,6 @@ bool 	Server::cmdMode( std::string arg, Client& client )
 	else if (arg == "+l" && isNum(val))
 		client.getCurrentChan(chan).setUserLim(atoi(val.c_str()));
 
-
+*/
 	return true;
 }

@@ -253,6 +253,8 @@ std::vector<std::string>	splitBuffer(const std::string& buffer)
 	std::string::size_type	start = 0;
 	std::string::size_type	end = 0;
 
+	std::cout << "\nparsing Buffer :\n" << buffer << std::endl;
+
 	while ((end = buffer.find("\r\n", start)) != std::string::npos)
 	{
 			commands.push_back(buffer.substr(start, end - start));
@@ -261,12 +263,19 @@ std::vector<std::string>	splitBuffer(const std::string& buffer)
 
 	if (start < buffer.size())
 		commands.push_back(buffer.substr(start));
+	std::cout << "\nsplited command :\n";
+	for (size_t i = 0; i < commands.size(); i++){
+		std::cout << "->" << commands[i] << std::endl;
+	}
 	return commands;
 }
 
 Command_s	parseCommand( const std::string rawCmd )
 {
 	Command_s	command;
+	command.prefix = "NULL";
+	command.command = "NULL";
+	command.trailing = "NULL";
 	size_t		pos = 0;
 
 	if (rawCmd[pos] == ':') {
@@ -302,6 +311,7 @@ Command_s	parseCommand( const std::string rawCmd )
 			break;
 		}
 	}
+	command.params.push_back("NULL");
 
 	return command;
 }
@@ -310,8 +320,11 @@ void	Server::executeCmd(Command_s command, Client& client)
 {
 	std::cout << "\nCommand : " << command.command 
 		<< "\nprefix : " << command.prefix <<
-		"\nparams : " << command.params[0] <<
 		"\ntrailing : " << command.trailing << std::endl;
+	std::cout << "Params : " << std::endl;
+	for (size_t i = 0; i < command.params.size() - 1; ++i){
+		std::cout << command.params[i] << std::endl;
+	}
 	if (command.command == "CAP")
 		CAPresponse(command.params[0], client);
 	else if (command.command == "JOIN")
@@ -319,7 +332,7 @@ void	Server::executeCmd(Command_s command, Client& client)
 	else if (command.command == "PING")
 		cmdPong(client);
 	else if (command.command == "MODE")
-		cmdMode(command.params[0], client);
+		cmdMode(command, client);
 	else if (command.command == "NICK")
 		std::cout << "\nNICK a refaire\n" << std::endl;
 	else if (command.command == "QUIT")

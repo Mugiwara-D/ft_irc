@@ -6,7 +6,7 @@ OBJ = $(SRC:.cpp=.o)
 
 INC = ./Include
 
-FLAG = -Werror -Wall -Wextra -std=c++98
+FLAG = -Werror -Wall -Wextra -std=c++98 -g3
 
 CC = c++ 
 
