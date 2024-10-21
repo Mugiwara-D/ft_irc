@@ -37,12 +37,32 @@ bool	channel::getLockTopic(){
 	return _lockTopic;
 }
 
+bool	channel::isLimited() {
+	return _limited;
+}
+
+void	channel::setLimited( bool val ) {
+	_limited = val;
+}
+
 void	channel::setLockTopic( bool val ){
 	_lockTopic = val;
 }
 
+bool	channel::getLock() {
+	return _locked;
+}
+
 void	channel::setKey( std::string key ){
 	_key = key;
+}
+
+void	channel::setTopic( std::string topic ){
+	_topic = topic;
+}
+
+std::string	channel::getTopic() {
+	return _topic;
 }
 
 void	channel::setLocked( bool val ){
@@ -51,6 +71,14 @@ void	channel::setLocked( bool val ){
 
 void	channel::setUserLim( int val ){
 	_userLimit = val;
+}
+
+Client&	channel::getClient(std::string clientNick){
+	for (size_t i = 0; i < clientList.size(); ++i) {
+		if (clientNick == clientList[i]->getNickname())
+			return *clientList[i];
+	}
+	return *clientList[0];
 }
 
 void channel::addClient(Client& client) {

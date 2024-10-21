@@ -41,7 +41,7 @@ void	Server::cmdNick(std::string buffer, int clientSocket)
 		}
 		if ((*it)->getNickname() == nickname)
 		{
-			std::string fullMessage = CLIENT_ERROR::NICKNAMEINUSE((*it)->getNickname(), nickname);
+			std::string fullMessage = ERROR::NICKNAMEINUSE((*it)->getNickname(), nickname);
 			if (send(clientSocket, fullMessage.c_str(), fullMessage.length(), 0) < 0) {
 				std::cerr << "Failed to send error message to client" << std::endl;
 			}
@@ -55,7 +55,7 @@ void	Server::cmdNick(std::string buffer, int clientSocket)
 		&& nickname[i] != '-' && nickname[i] != '{' && nickname[i] != '}') || i >= 9)
 			{
 				std::string fullMessage = 
-					CLIENT_ERROR::ERRONEUSNICKNAME(client.getNickname());
+					ERROR::ERRONEUSNICKNAME(client.getNickname());
 				if (send(clientSocket, fullMessage.c_str(), fullMessage.length(), 0) < 0) {
 					std::cerr << "Failed to send error message to client" << std::endl;
 				}

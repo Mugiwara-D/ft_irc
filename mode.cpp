@@ -12,34 +12,45 @@ bool	isNum( std::string str )
 
 bool 	Server::cmdMode( Command_s cmd, Client& client )
 {
-	(void) client;
-	std::cout << "\ncmd : " << cmd.command 
-		<< "\nprefix : " << cmd.prefix <<
-		"\ntrailing : " << cmd.trailing << std::endl;
-	std::cout << "Params : " << std::endl;
-	for (size_t i = 0; i < cmd.params.size() - 1; ++i){
-		std::cout << cmd.params[i] << std::endl;
-	}
-/*	std::string chan = cmd.prefix;
-	std::string arg = cmd.params[0];
-	std::string val = cmd.trailing;
+	size_t start = cmd.params[0].find('#');
 
-	if (arg == "+i")
-		client.getCurrentChan(chan).setInviteOnly(true);
-	else if (arg == "+t")
-		client.getCurrentChan(chan).setLockTopic(true);
-	else if (arg == "+k" && !val.empty())
-	{
-		client.getCurrentChan(chan).setKey(val);
-		client.getCurrentChan(chan).setLocked(true);
+	if (start == std::string::npos || cmd.params[0].length() <= start + 1) {
+		sendMessageToClient(client.getSocket(), ERROR::NEEDMOREPARAMS(client.getNickname()));
+		return false;
 	}
-	else if (arg == "+o")
-	{
-		client.getCurrentChan(chan).setOps(val);
-	}
-	else if (arg == "+l" && isNum(val))
-		client.getCurrentChan(chan).setUserLim(atoi(val.c_str()));
 
-*/
+	std::string	channel = cmd.params[0];
+
+	if (!isValidChan(channel)) {
+		sendMessageToClient(client.getSocket(), ERROR::NOSUCHCHANNEL(client.getNickname(), channel));
+		return false;
+	}
+	if (cmd.params[1] == "+i" && !client.getCurrentChan(channel).getInviteOnly()) {
+		client.getCurrentChan(channel).setInviteOnly(true);
+	} else if (cmd.params[1] == "-i" && client.getCurrentChan(channel).getInviteOnly()) {
+		client.getCurrentChan(channel).setInviteOnly(false);
+	} else if (cmd.params[1] == "+t" && !client.getCurrentChan(channel).getLockTopic()) {
+		client.getCurrentChan(channel).setLockTopic(true);
+	} else if (cmd.params[1] == "-t" && client.getCurrentChan(channel).getLockTopic()) {
+		client.getCurrentChan(channel).setLockTopic(false);
+	} else if (cmd.params[1] == "+k" && !client.getCurrentChan(channel).getLock()) {
+		client.getCurrentChan(channel).setKey(cmd.params[2]);
+		client.getCurrentChan(channel).setLocked(true);
+	} else if (cmd.params[1] == "-k" && client.getCurrentChan(channel).getLock()) {
+		client.getCurrentChan(channel).setLocked(false);
+	} else if (cmd.params[1] == "+o" && client.getCurrentChan(channel).isOperator(client)) {
+		client.getCurrentChan(channel).addOps(client.getCurrentChan(channel).getClient(cmd.params[2]));
+	} else if (cmd.params[1] == "-o" && client.getCurrentChan(channel).isOperator(client)) {
+		client.getCurrentChan(channel).removeOps(client.getCurrentChan(channel).getClient(cmd.params[2]));
+	} else if (cmd.params[1] == "+l" && !client.getCurrentChan(channel).isLimited()) {
+		client.getCurrentChan(channel).setLimited(true);
+		client.getCurrentChan(channel).setUserLim(atoi(cmd.params[2].c_str()));
+	} else if (cmd.params[1] == "-l" && client.getCurrentChan(channel).isLimited()) {
+		client.getCurrentChan(channel).setLimited(false);
+	} else {
+		sendMessageToClient(client.getSocket(), ERROR::UNKNOWNMODE(client.getNickname(), cmd.params[1]));
+		return false;
+	}
+
 	return true;
 }

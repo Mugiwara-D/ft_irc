@@ -125,11 +125,6 @@ std::string get_irc_password(const std::string& command) {
     return "";
 }
 
-void	Server::cmdTopic( Client& client )
-{
-	std::cout << "Topic arg = " << client.getNickname() << std::endl;
-}
-
 void	Server::cmdPong( Client& client )
 {
 	sendMessageToClient(client.getSocket(), "PONG: server");
@@ -300,6 +295,16 @@ void Server::sendMessageToChannel(const std::string& channel, const std::string&
     }
 }
 
+bool	Server::isValidChan(const std::string channel)
+{
+	for (size_t i = 0; i < channels.size(); ++i) {
+		if (channel == channels[i].getname())
+			return true;
+	}
+
+	return false;
+}
+
 void	Server::CAPresponse( std::string arg, Client& client )
 {
 	if (arg.find("REQ") != std::string::npos)
@@ -334,9 +339,6 @@ std::vector<std::string>	splitBuffer(const std::string& buffer)
 Command_s	parseCommand( const std::string rawCmd )
 {
 	Command_s	command;
-	command.prefix = "NULL";
-	command.command = "NULL";
-	command.trailing = "NULL";
 	size_t		pos = 0;
 
 	if (rawCmd[pos] == ':') {
@@ -402,9 +404,13 @@ void	Server::executeCmd(Command_s command, Client& client)
 		std::cout << "\nPRIVMSG a refaire\n" << std::endl;
     else if (command.command == "KICK")
         cmdKick(client, command.params[0]);
+	else if (command.command == "PONG")
+		cmdPong(client);
+	else if (command.command == "TOPIC")
+		cmdTopic(command, client);
 	else {
 		std::cout << "\nInvalide Command" << std::endl;
-		sendMessageToClient(client.getSocket(), CLIENT_ERROR::UNKNOWNCOMMAND(client.getUsername(), command.command));
+		sendMessageToClient(client.getSocket(), ERROR::UNKNOWNCOMMAND(client.getUsername(), command.command));
 	}
 }
 

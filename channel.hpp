@@ -17,9 +17,7 @@
 #include "client.hpp"
 
 class Client;
-class channel
-
-{
+class channel {
 private:
 	std::string name;
 	std::string	_topic;
@@ -27,6 +25,7 @@ private:
 	bool		_inviteOnly;
 	bool		_lockTopic;
 	bool		_locked;
+	bool		_limited;
 	int			_userLimit;
 	std::vector<Client*> clientList;
 	std::vector<Client*> operators;
@@ -38,12 +37,17 @@ public:
 	std::string	getname();
 	bool		getLockTopic();
 	bool		getInviteOnly();
+	bool		getLock();
+	std::string	getTopic();
+	bool		isLimited();
 
 	void		setLockTopic( bool val );
 	void		setInviteOnly( bool val );
 	void		setKey( std::string key );
 	void		setLocked( bool val );
 	void		setUserLim( int val );
+	void		setLimited( bool val );
+	void		setTopic( std::string topic );
 	void addClient(Client& client);
     void removeClient(Client& client);
     std::vector<Client*> getClientList(); 
@@ -51,7 +55,8 @@ public:
 	std::string getname() const;
 	void addOps(Client& client);
     void removeOps(Client& client);
-	 bool isOperator(const Client& client) const;
+	bool isOperator(const Client& client) const;
+	Client&	getClient(std::string clientNick);
 	
 };
 

@@ -1,4 +1,4 @@
-SRC = mode.cpp main.cpp server.cpp channel.cpp client.cpp nick.cpp privmsg.cpp
+SRC = mode.cpp main.cpp server.cpp channel.cpp client.cpp nick.cpp privmsg.cpp Topic.cpp
 
 NAME = ft_irc
 

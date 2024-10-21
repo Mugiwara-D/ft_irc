@@ -81,10 +81,6 @@ namespace RPL
     	return "341 " + nick + " " + invitedNick + " " + channel;
 	} // Sent to confirm that the user has successfully invited someone to a channel.
 	
-	inline string	NOTONCHANNEL(const std::string& nick, const std::string& channel) {
-    	return "442 " + nick + " " + channel + " :You're not on that channel";
-	} // Indicates that the user is trying to perform an action on a channel they are not in.
-
 	inline string	NAMREPLY( const string& nick, const string& channel ) {
 		return "353 "+ nick +" = "+ channel +" :<nick1> <nick2> <nick3>";
 	} // Displays the list of users in a channel.
@@ -109,6 +105,10 @@ namespace RPL
 		return "401 "+ nick +" "+ target +" :No such nick/channel";
 	} // Indicates that the target nick or channel does not exist.
 
+	inline string	NOTONCHANNEL(const std::string& nick, const std::string& channel) {
+    	return "442 " + nick + " " + channel + " :You're not on that channel";
+	} // Indicates that the user is trying to perform an action on a channel they are not in.
+
 	inline string	CAP302(const string& nickname) {
 		return "CAP " + nickname + " LS :";
 	} // respond to CAP LS 302
@@ -118,11 +118,20 @@ namespace RPL
 	}
 }
 
-namespace SERV_ERROR {
-}
+namespace ERROR{
 
-namespace CLIENT_ERROR {
+	inline string	CHANNELMODEIS(const string& nick, const string& chan, const string& mode) {
+		return ":server 324 "+ nick +" "+ chan +" "+ mode +" :Current channel modes";
+	} // The server returns the current modes of the channel but does not change anything because the user either didn't provide valid modes or doesn't have permission to change them.
 
+	inline string	NOSUCHCHANNEL(const string& nick, const string& channel) {
+		return ":server 403 "+ nick +" "+ channel +" :No such channel";
+	} // This error is returned when a user tries to perform an action on a channel that does not exist
+
+	inline string	UNKNOWNCOMMAND(const string& client, const string& command) {
+		return ":server_name 421  "+ client + " " + command + " :Unknown command";
+	} // the client sends a non-existing or unrecognized command.
+	
 	inline string	NONICKNAMEGIVEN() {
 		return "431 * :No Nickname given";
 	}
@@ -135,10 +144,31 @@ namespace CLIENT_ERROR {
 		return "433 "+ nick +" "+ nickname +" :Nickname is already in use";
 	} // Signals that the requested nickname is already in use.
 
+	inline string	USERNOTINCHANNEL(const string& nick, const string& user, const string& chan) {
+		return ":server 441 "+ nick + " "+ user + " "+ chan +" :They aren't on that channel";
+	} // The client is trying to perform an action on a user who is not in the specified channel, such as granting operator status to a non-existent user.
+	
+	inline string	NEEDMOREPARAMS(const string& nick) {
+		return ":server 461 "+ nick +" MODE :Not enough parameters";
+	} // The client didn't provide enough parameters for the MODE command.
+
+	inline string	KEYSET(const string& nick, const string& chan) {
+		return ":server 467 "+ nick + " "+ chan +" :Channel key already set";
+	} // The client attempted to set a password on a channel that already has one set, and the server rejected the request.
+
+	inline string	UNKNOWNMODE(const string& nick, const string& mode) {
+		return ":server 472 "+ nick + " "+ mode +" :is unknown mode "+ mode +" to me";
+	} // he mode specified by the client is not recognized by the server, and thus the mode change cannot be applied.
+
+	inline string	INVITEONLYCHAN(const string& nick, const string& chan) {
+		return ":server 473 "+ nick +" "+ chan +" :Cannot join channel (+i)";
+	} // The client is trying to join a channel that is set to invite-only, and they were not invited.
+
 	inline string	CHANOPRIVSNEEDED(const string& nick, const string& channel) {
 		return "482 "+ nick +" "+ channel +" :You're not channel operator";
 	} // Sent when a user tries to perform a channel operation but lacks the necessary privileges.
-	inline string	UNKNOWNCOMMAND(const string& client, const string& command) {
-		return ":server_name 421  "+ client + " " + command + " :Unknown command";
-	} // the client sends a non-existing or unrecognized command.
+	
+	inline string	USERSDONTMATCH(const string& nick) {
+		return ":server 502 "+ nick +" :Cannot change mode for other users";
+	} // The client attempted to modify a user mode, but they do not have the required privileges.
 }

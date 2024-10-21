@@ -73,7 +73,7 @@ public:
 
     void	cmdNick(std::string buffer, int clientSocket);
 	bool	cmdMode(Command_s cmd, Client& client);
-	void	cmdTopic(Client& client);
+	void	cmdTopic(Command_s cmd, Client& client);
 	void	cmdPong(Client& client);
 	void	cmdPing(const std::string cmdArgs);
     void	cmdJoin(Client& client, const std::string& channelName);
@@ -82,7 +82,7 @@ public:
     void    addChannelClient(channel &newChannel);
     void    addChannel(channel& newChannel);
 
-
+	bool	isValidChan(const std::string channel);
 
     void	sendMessageToChannel(const std::string& channel, const std::string& message, Client& sender);
 	bool	PingPong(Client& client);
