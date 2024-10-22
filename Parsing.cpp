@@ -1,0 +1,119 @@
+#include "server.hpp"
+
+std::vector<std::string>	splitBuffer(const std::string& buffer)
+{
+	std::vector<std::string> commands;
+	std::string::size_type	start = 0;
+	std::string::size_type	end = 0;
+
+	std::cout << "\nparsing Buffer :\n" << buffer << std::endl;
+
+	while ((end = buffer.find("\r\n", start)) != std::string::npos)
+	{
+			commands.push_back(buffer.substr(start, end - start));
+			start = end + 2;
+	}
+
+	if (start < buffer.size())
+		commands.push_back(buffer.substr(start));
+/*	std::cout << "\nsplited command :\n";
+	for (size_t i = 0; i < commands.size(); i++){
+		std::cout << "->" << commands[i] << std::endl;
+	}*/
+	return commands;
+}
+
+Command_s	parseCommand( const std::string rawCmd )
+{
+	Command_s	command;
+	size_t		pos = 0;
+
+	if (rawCmd[pos] == ':') {
+		size_t	prefixEnd = rawCmd.find(' ', pos);
+		if (prefixEnd != std::string::npos){
+			command.prefix = rawCmd.substr(1, prefixEnd - 1);
+			pos = prefixEnd + 1;
+		}
+	}
+
+	size_t	cmdEnd = rawCmd.find(' ', pos);
+	if (cmdEnd != std::string::npos) {
+		command.command = rawCmd.substr(pos, cmdEnd - pos);
+		pos = cmdEnd + 1;
+	} else {
+		command.command = rawCmd.substr(pos);
+		return command;
+	}
+
+	while (pos < rawCmd.size())
+	{
+		if (rawCmd[pos] == ':') {
+			command.trailing = rawCmd.substr(pos + 1);
+			break;
+		}
+
+		size_t	paramEnd = rawCmd.find(' ', pos);
+		if (paramEnd != std::string::npos) {
+			command.params.push_back(rawCmd.substr(pos, paramEnd - pos));
+			pos = paramEnd + 1;
+		} else {
+			command.params.push_back(rawCmd.substr(pos));
+			break;
+		}
+	}
+	command.params.push_back("NULL");
+
+	return command;
+}
+
+void	Server::executeCmd(Command_s command, Client& client)
+{
+	std::cout << "\nCommand : " << command.command 
+		<< "\nprefix : " << command.prefix <<
+		"\ntrailing : " << command.trailing << std::endl;
+	std::cout << "Params : " << std::endl;
+	for (size_t i = 0; i < command.params.size() - 1; ++i){
+		std::cout << command.params[i] << std::endl;
+	}
+	if (command.command == "CAP")
+		CAPresponse(command.params[0], client);
+	else if (command.command == "JOIN")
+        cmdJoin(client, command.params[0]);
+	else if (command.command == "PING")
+		cmdPong(client);
+	else if (command.command == "MODE")
+		cmdMode(command, client);
+	else if (command.command == "NICK")
+		std::cout << "\nNICK a refaire\n" << std::endl;
+	else if (command.command == "QUIT")
+		removeClient(client.getUsername());
+	else if (command.command == "PRIVMSG")
+		std::cout << "\nPRIVMSG a refaire\n" << std::endl;
+    else if (command.command == "KICK")
+        cmdKick(client, command.params[0]);
+	else if (command.command == "PONG")
+		cmdPong(client);
+	else if (command.command == "TOPIC")
+		cmdTopic(command, client);
+	else if (command.command == "WHOIS")
+		cmdWhois(command, client);
+	else {
+		std::cout << "\nInvalide Command" << std::endl;
+		sendMessageToClient(client.getSocket(), ERROR::UNKNOWNCOMMAND(client.getUsername(), command.command));
+	}
+}
+
+void	Server::MessageParsing(std::string buffer, Client& Client, int i)
+{
+	std::vector<std::string>	rawCommands;
+	Command_s	parsedCmd;
+
+	(void) i;
+	rawCommands = splitBuffer(buffer);
+
+	for (size_t i = 0; i < rawCommands.size(); ++i)
+	{
+		parsedCmd = parseCommand(rawCommands[i]);
+		executeCmd(parsedCmd, Client);
+	}
+}

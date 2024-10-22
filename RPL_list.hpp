@@ -101,10 +101,6 @@ namespace RPL
 		return "376 "+ nick +" :End of /MOTD command.";
 	} // Marks the end of the Message of the Day.
 
-	inline string	NOSUCHNICK(const string& nick, const string& target) {
-		return "401 "+ nick +" "+ target +" :No such nick/channel";
-	} // Indicates that the target nick or channel does not exist.
-
 	inline string	NOTONCHANNEL(const std::string& nick, const std::string& channel) {
     	return "442 " + nick + " " + channel + " :You're not on that channel";
 	} // Indicates that the user is trying to perform an action on a channel they are not in.
@@ -123,6 +119,10 @@ namespace ERROR{
 	inline string	CHANNELMODEIS(const string& nick, const string& chan, const string& mode) {
 		return ":server 324 "+ nick +" "+ chan +" "+ mode +" :Current channel modes";
 	} // The server returns the current modes of the channel but does not change anything because the user either didn't provide valid modes or doesn't have permission to change them.
+
+	inline string	NOSUCHNICK(const string& nick, const string& target) {
+		return "401 "+ nick +" "+ target +" :No such nick/channel";
+	} // Indicates that the target nick or channel does not exist.
 
 	inline string	NOSUCHCHANNEL(const string& nick, const string& channel) {
 		return ":server 403 "+ nick +" "+ channel +" :No such channel";
