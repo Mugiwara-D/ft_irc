@@ -106,11 +106,6 @@ void sendReply(int clientSocket, const std::string& reply) {
     std::string message = reply + "\r\n";
     send(clientSocket, message.c_str(), message.size(), 0);
 }
-/*
-void sendRPL_WELCOME(int clientSocket, const std::string& nick) {
-    std::string reply = RPL::WELCOME();
-    sendReply(clientSocket, reply);
-}*/
 
 std::string get_irc_password(const std::string& command) {
     std::istringstream stream(command);
@@ -151,15 +146,13 @@ bool	Server::PingPong( Client& client )
 	return true;
 }
 
-bool	Server::checkPassWord( std::string buffer, Client& Client, int i )
+bool	Server::checkPassWord( Command_s cmd, Client& Client)
 {
-	std::string message(buffer);
-    //std::cout << "Message : "<< message <<  std::endl;
     if(Client.isRegistered() == false)
     {
-        if(message.find("PASS") != std::string::npos)
+        if(cmd.command == "PASS")
         {
-            if(get_irc_password(message) == getPassword())
+            if(cmd.params[0] == getPassword())
             {
                 Client.setRegistered(true);
             }
@@ -168,7 +161,6 @@ bool	Server::checkPassWord( std::string buffer, Client& Client, int i )
                 sendMessageToClient(Client.getSocket(), 
 						"Password required for connexion pas le bon mdp mon reuf"); 
                 close(Client.getSocket());
-                clients.erase(clients.begin() + i);
 				return false;
             }
         }
@@ -179,13 +171,12 @@ bool	Server::checkPassWord( std::string buffer, Client& Client, int i )
             // clients.erase(clients.begin() + i);
         }
     }
-    else if (Client.isRegistered() == true && !(message.find("NICK")))
+    else if (Client.isRegistered() == true && cmd.command == "NICK")
     {
         std::cout << "NICK TROUVER" <<  std::endl;
-        cmdNick(message, Client.getSocket());
+        cmdNick(cmd.params[0], Client.getSocket());
     }
     else{
-        std::cout << "Message : "<< buffer <<  std::endl;
         sendMessageToClient(Client.getSocket(), "Okay");
     }
 	return true;
@@ -239,7 +230,7 @@ void Server::cmdJoin(Client& client, const std::string& channelName) {
         client.addChannelClient(*existingChannel);
     } else {
 
-        channel newChannel(channelName, false, false);
+        channel newChannel(channelName, false, false, false, false);
         newChannel.addClient(client);
         newChannel.addOps(client);
         client.addChannelClient(newChannel);
@@ -322,10 +313,6 @@ bool	Server::initialHandShake( std::string buffer, int fd )
 
 	return false;
 }
-void	rawDump(std::string msg)
-{
-	std::cout << "\nRaw Dump:\n"<< msg << std::endl;
-}
 
 void Server::start() {
     fd_set fds;
@@ -401,8 +388,6 @@ void Server::start() {
 					buf += buffer;
 					if(buf.find("\r\n") != std::string::npos)
 					{
-						if (clients[i]->isRegistered() == false)
-							checkPassWord(buf, *clients[i], i);
 						MessageParsing(buf, *clients[i], i);
 						buf.clear();
 					} else {

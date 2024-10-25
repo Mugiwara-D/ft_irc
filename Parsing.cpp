@@ -61,7 +61,6 @@ Command_s	parseCommand( const std::string rawCmd )
 			break;
 		}
 	}
-	command.params.push_back("NULL");
 
 	return command;
 }
@@ -72,7 +71,7 @@ void	Server::executeCmd(Command_s command, Client& client)
 		<< "\nprefix : " << command.prefix <<
 		"\ntrailing : " << command.trailing << std::endl;
 	std::cout << "Params : " << std::endl;
-	for (size_t i = 0; i < command.params.size() - 1; ++i){
+	for (size_t i = 0; i < command.params.size(); ++i){
 		std::cout << command.params[i] << std::endl;
 	}
 	if (command.command == "CAP")
@@ -97,6 +96,8 @@ void	Server::executeCmd(Command_s command, Client& client)
 		cmdTopic(command, client);
 	else if (command.command == "WHOIS")
 		cmdWhois(command, client);
+	else if (command.command == "PASS")
+		checkPassWord(command, client);
 	else {
 		std::cout << "\nInvalide Command" << std::endl;
 		sendMessageToClient(client.getSocket(), ERROR::UNKNOWNCOMMAND(client.getUsername(), command.command));

@@ -31,7 +31,7 @@ private:
 	std::vector<Client*> operators;
 	
 public:
-	channel( std::string name, bool inviteOnly, bool lockTopic);
+	channel( std::string name, bool inviteOnly, bool lockTopic, bool locked, bool limited);
 	~channel();
 
 	std::string	getname();

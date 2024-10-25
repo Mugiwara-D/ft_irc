@@ -12,8 +12,8 @@
 
 #include "channel.hpp"
 
-channel::channel( std::string name, bool inviteOnly, bool lockTopic ) : 
-	name(name), _inviteOnly(inviteOnly), _lockTopic(lockTopic){
+channel::channel( std::string name, bool inviteOnly, bool lockTopic, bool locked, bool limited ) : 
+	name(name), _inviteOnly(inviteOnly), _lockTopic(lockTopic), _locked(locked), _limited(limited){
     std::cout << "Channel \"" << name << "\" created." << std::endl;
 }
 

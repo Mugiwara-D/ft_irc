@@ -15,7 +15,10 @@ void	Server::cmdTopic(Command_s cmd, Client& client)
 			sendMessageToClient(client.getSocket(), ERROR::CHANOPRIVSNEEDED(client.getNickname(), cchan.getname()));
 		else {
 			cchan.setTopic(cmd.trailing);
-			sendMessageToChannel(cchan.getname(), ":" + client.getNickname() + " TOPIC " + cchan.getname() + " :" + cmd.trailing, client);
+		sendMessageToClient(client.getSocket(), RPL::TOPIC(client.getNickname(), cchan.getname(), cmd.trailing));
 		}
+	} else {
+		cchan.setTopic(cmd.trailing);
+		sendMessageToClient(client.getSocket(), RPL::TOPIC(client.getNickname(), cchan.getname(), cmd.trailing));
 	}
 }
