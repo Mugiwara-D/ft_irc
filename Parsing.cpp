@@ -98,6 +98,8 @@ void	Server::executeCmd(Command_s command, Client& client)
 		cmdWhois(command, client);
 	else if (command.command == "PASS")
 		checkPassWord(command, client);
+	else if (command.command == "USER")
+		cmdUser(command, client);
 	else {
 		std::cout << "\nInvalide Command" << std::endl;
 		sendMessageToClient(client.getSocket(), ERROR::UNKNOWNCOMMAND(client.getUsername(), command.command));

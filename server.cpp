@@ -300,8 +300,8 @@ void	Server::CAPresponse( std::string arg, Client& client )
 {
 	if (arg.find("REQ") != std::string::npos)
 		sendMessageToClient(client.getSocket(), RPL::CAPREQ(client.getNickname()));
-	if (arg.find("END") != std::string::npos)
-		sendMessageToClient(client.getSocket(), RPL::WELCOME(client.getNickname(), client.getUsername(), "server name"));
+//	if (arg.find("END") != std::string::npos)
+//		sendMessageToClient(client.getSocket(), RPL::WELCOME(client.getNickname(), client.getUsername(), "server name"));
 }
 
 bool	Server::initialHandShake( std::string buffer, int fd )

@@ -1,0 +1,76 @@
+<< CAP LS 302
+<< JOIN :
+>> CAP * LS :
+<< CAP END
+<< NICK matiya
+<< USER matiya matiya localhost :matiya
+>> :irc.example.com 001 Guest0 :Welcome to the IRC Network, Guest0!Guest0@server name
+>> :server_name 421  Guest0 USER :Unknown command
+<< MODE Guest0 +i
+>> :server 461 Guest0 MODE :Not enough parameters
+<< WHOIS matiya
+>> 401 Guest0 matiya :No such nick/channel
+--> event empty
+<< JOIN #test
+<< PING irc.example.com
+>> PONG: server
+<< QUIT :leaving
+<< CAP LS 302
+<< JOIN :
+>> CAP * LS :
+<< CAP END
+<< NICK matiya
+<< USER matiya matiya localhost :matiya
+>> :irc.example.com 001 Guest0 :Welcome to the IRC Network, Guest0!Guest0@server name
+<< MODE Guest0 +i
+>> :server 461 Guest0 MODE :Not enough parameters
+<< WHOIS matiya
+>> 311 Guest0 matiya host * :realname
+--> nickfind event whois
+<< PING irc.example.com
+>> PONG: server
+--> FAILED whois
+<< QUIT :leaving
+<< CAP LS 302
+<< JOIN :
+>> CAP * LS :
+<< CAP END
+<< NICK matiya
+<< USER matiya matiya localhost :matiya
+<< CAP LS 302
+<< JOIN :
+>> CAP * LS :
+<< CAP END
+<< PASS pwd
+<< NICK matiya
+<< USER matiya matiya localhost :matiya
+>> :irc.example.com 001 Guest0 :Welcome to the IRC Network, Guest0!matiya@host
+<< MODE Guest0 +i
+>> :server 461 Guest0 MODE :Not enough parameters
+<< WHOIS matiya
+>> 311 Guest0 matiya localhost * :matiya
+--> nickfind event whois
+<< PING irc.example.com
+>> PONG: server
+--> FAILED whois
+<< QUIT :leaving
+<< CAP LS 302
+<< JOIN :
+>> CAP * LS :
+<< CAP END
+<< PASS pwd
+<< NICK matiya
+<< USER matiya matiya localhost :matiya
+>> :irc.example.com 001 Guest0 :Welcome to the IRC Network, Guest0!matiya@host
+<< MODE Guest0 +i
+>> :server 461 Guest0 MODE :Not enough parameters
+<< WHOIS matiya
+>> 311 Guest0 matiya localhost * :matiya
+--> nickfind event whois
+>> 319 Guest0 :
+--> event empty
+>> 318 Guest0 :End of WHOIS list
+--> event empty
+<< PING irc.example.com
+>> PONG: server
+<< QUIT :leaving

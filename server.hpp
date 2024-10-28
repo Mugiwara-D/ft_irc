@@ -80,6 +80,7 @@ public:
     void	cmdKick(Client& client, const std::string& channelName);
     void	cmdPrivMsg(Client& sender, const std::string& targetChannel, const std::string& message);
 	void	cmdWhois(Command_s cmd, Client& client);
+	void	cmdUser(Command_s cmd, Client& client);
     void    addChannelClient(channel &newChannel);
     void    addChannel(channel& newChannel);
 

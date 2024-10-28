@@ -61,6 +61,10 @@ namespace RPL
     	return "313 " + nick + " :is an IRC operator";
 	} // Indicates the target user is an IRC operator.
 	
+	inline string	WHOISIDLE(const std::string& nick, const string& time){
+		return "317 "+ nick +" "+ time +" :seconds idle";
+	}
+
 	inline string	ENDOFWHOIS(const std::string& nick) {
     	return "318 " + nick + " :End of WHOIS list";
 	} // Marks the end of a WHOIS reply.

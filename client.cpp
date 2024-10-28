@@ -100,6 +100,14 @@ void Client::setCurrentChannel(const std::string &channel) {
     Currentchannel = channel;
 }
 
+void	Client::setRealname( std::string realname ){
+	_realname = realname;
+}
+
+std::string	Client::getRealname() {
+	return _realname;
+}
+
 void Client::addChannelClient(channel &newChannel) {
     for (size_t i = 0; i < Channel_list.size(); ++i) {
         if (Channel_list[i]->getname() == newChannel.getname()) {

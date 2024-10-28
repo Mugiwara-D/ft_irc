@@ -11,6 +11,7 @@ class channel;
 class Client {
 private:
     std::string username;
+    std::string _realname;
     std::string nickname;
     std::string Currentchannel;
     std::vector<channel*> Channel_list;
@@ -28,6 +29,8 @@ public:
     ~Client();
 
     std::string getUsername() const;
+	std::string	getRealname();
+	void		setRealname( std::string realname );
     void setUsername(const std::string &user);
     int getSocket() const;
     std::string getNickname() const;
