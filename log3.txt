@@ -1,0 +1,20 @@
+<< CAP LS
+<< PASS pwd
+<< NICK maderuel
+<< USER maderuel maderuel localhost :Matiya DERUELLE
+>> CAP * LS :
+<< CAP END
+>> :irc.example.com 001 Guest0 :Welcome to the IRC Network, Guest0!maderuel@host
+<< MODE Guest0 +i
+<< WHOIS maderuel
+>> :server 461 Guest0 MODE :Not enough parameters
+>> 311 Guest0 maderuel localhost * :Matiya DERUELLE
+--> nickfind event whois
+>> 319 Guest0 :
+--> event empty
+>> 318 Guest0 :End of WHOIS list
+--> event empty
+<< PING irc.example.com
+>> PONG irc.example.com
+--> lag pong
+<< QUIT :leaving
