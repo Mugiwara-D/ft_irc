@@ -41,7 +41,8 @@ public:
     time_t getLastNicknameChange() const;
     void setLastNicknameChange(const time_t newChange);
 
-    bool checkPing( std::time_t instTime, int pingInter );
+    bool	needPing(int interval, int timeout);
+	bool	isTimeout(int timeout);
     std::time_t getLastPing();
     void setLastPing( std::time_t timeT );
 

@@ -9,16 +9,16 @@ void	Server::cmdTopic(Command_s cmd, Client& client)
 		if (cchan.getTopic().empty())
 			sendMessageToClient(client.getSocket(), RPL::NOTOPIC(client.getNickname(), cchan.getname()));
 		else
-			sendMessageToClient(client.getSocket(), RPL::TOPIC(client.getNickname(), cchan.getname(), cchan.getTopic()));
+			sendMessageToClient(client.getSocket(), RPL::TOPIC(client.getNickname(), cchan.getname(), cmd.trailing));
 	} else if (cchan.getLockTopic()) {
 		if (cchan.isOperator(client) == false)
 			sendMessageToClient(client.getSocket(), ERROR::CHANOPRIVSNEEDED(client.getNickname(), cchan.getname()));
 		else {
 			cchan.setTopic(cmd.trailing);
-		sendMessageToClient(client.getSocket(), RPL::TOPIC(client.getNickname(), cchan.getname(), cmd.trailing));
+		sendMessageToChannel(cchan.getname(), RPL::TOPIC(client.getNickname(), cchan.getname(), cmd.trailing), client);
 		}
 	} else {
 		cchan.setTopic(cmd.trailing);
-		sendMessageToClient(client.getSocket(), RPL::TOPIC(client.getNickname(), cchan.getname(), cmd.trailing));
+		sendMessageToChannel(cchan.getname(), RPL::TOPIC(client.getNickname(), cchan.getname(), cmd.trailing), client);
 	}
 }

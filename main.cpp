@@ -17,8 +17,11 @@
 #include <sstream>
 #include <cstdlib>
 #include <iostream>
+#include <csignal>
 #include "server.hpp"
 #include "client.hpp"
+
+bool server_running = true;
 
 bool isnum(char *str)
 {
@@ -31,6 +34,7 @@ bool isnum(char *str)
 	}
 	return(true);
 }
+
 int validport(char *port)
 {
 	if((isnum(port) == false))
@@ -48,8 +52,15 @@ int validport(char *port)
 		return(Iport);
 }
 
+static void	signalHandler(int sig) {
+	std::cout << "\nInterupt signal (" << sig << ") received." << std::endl;
+	server_running = false;
+}
+
 int	main(int argc, char **argv)
 {
+	signal(SIGINT, signalHandler);
+
 	if(argc != 3)
 	{
 		std::cout << "Two arguments required" << std::endl;	

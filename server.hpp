@@ -25,6 +25,7 @@
 #include <netinet/in.h>
 #include <unistd.h>
 #include <sstream> 
+#include <csignal> 
 #include "client.hpp"
 #include "channel.hpp"
 #include "RPL_list.hpp"
@@ -32,7 +33,7 @@
 
 const int	PING_INTERVAL = 60;
 const int	PING_TIMEOUT = 120;
-
+extern bool server_running;
 struct	Command_s{
 	std::string					command;
 	std::string					prefix;
@@ -87,7 +88,10 @@ public:
 	bool	isValidChan(const std::string channel);
 
     void	sendMessageToChannel(const std::string& channel, const std::string& message, Client& sender);
-	bool	PingPong(Client& client);
+
+	bool	Pong(Client& client);
+	void	Ping(Client& client);
+	bool	PingRspd(Client& client);
 
     /*PRIVMSG*/
     void	cmdPrivMsgg(std::string buffer, int clientSocket);

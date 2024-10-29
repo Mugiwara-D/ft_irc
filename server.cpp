@@ -120,32 +120,6 @@ std::string get_irc_password(const std::string& command) {
     return "";
 }
 
-void	Server::cmdPong( Client& client )
-{
-	sendMessageToClient(client.getSocket(), "PONG: server");
-}
-
-bool	Server::PingPong( Client& client )
-{
-	std::string	servMsg;
-
-	if (client.getLastPing() < std::time(0) - PING_TIMEOUT) {
-		std::cout << client.getNickname() << " Timed Out" << std::endl;
-		servMsg = "ERROR :closing link: [" + client.getUsername() + 
-			"] (Ping timeout: 120 seconds)";
-		sendMessageToClient(client.getSocket(), servMsg);
-		removeClient(client.getUsername());
-		return false;
-	} else if (client.getLastPing() < std::time(0) - PING_INTERVAL){
-		servMsg = "PING :" + client.getUsername();
-		sendMessageToClient(client.getSocket(), servMsg);
-		client.setLastPing(std::time(0));
-		std::cout << client.getNickname() << " ping sent" << std::endl;
-    } else
-		std::cout << client.getNickname() << " all good" << std::endl;
-	return true;
-}
-
 bool	Server::checkPassWord( Command_s cmd, Client& Client)
 {
     if(Client.isRegistered() == false)
@@ -314,6 +288,8 @@ bool	Server::initialHandShake( std::string buffer, int fd )
 	return false;
 }
 
+
+
 void Server::start() {
     fd_set fds;
     int i = 0;
@@ -323,7 +299,7 @@ void Server::start() {
     struct sockaddr_in client_addr;
     socklen_t client_len = sizeof(client_addr);
 
-    while (running) {
+    while (server_running) {
         FD_ZERO(&fds); //reset les fds
         FD_SET(server_socket, &fds); //mets le fd du socket serv dqns la liste
         maxFD = server_socket;
@@ -351,12 +327,8 @@ void Server::start() {
         if (FD_ISSET(server_socket, &fds)) {
             int new_socket = accept(server_socket, (struct sockaddr*)&client_addr, &client_len);
 			if (new_socket < 0) {
-				if (errno == EAGAIN || errno == EWOULDBLOCK){
-					continue ;
-				} else {
-                	std::cout << "Accept failed: " << errno << std::endl;
-                	exit(1);
-				}
+				std::cout << "Accept failed: " << errno << std::endl;
+                exit(1);
 			} 
 			//partir de test a modifier pour recuperer les noms des differents clients !
 			char buffer[1024] = {0};
@@ -381,8 +353,12 @@ void Server::start() {
             int clientFD = clients[i]->getSocket();
             if (FD_ISSET(clientFD, &fds)) {
                 char buffer[1024] = {0};
-				if (PingPong(*clients[i]) == false)
-					continue ;
+				if (clients[i]->needPing(PING_INTERVAL, PING_TIMEOUT) == true){
+					Ping(*clients[i]);
+				} else if (clients[i]->isTimeout(PING_TIMEOUT)){
+					removeClient(clients[i]->getUsername());
+					continue;
+				}
                 int valread = read(clientFD, buffer, 1024);
                 if (valread >= 0) {
 					buf += buffer;

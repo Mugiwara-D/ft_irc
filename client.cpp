@@ -73,15 +73,17 @@ void	Client::setLastNicknameChange(const time_t newChange){
     lastNicknameChange = newChange;
 }
 
-bool	Client::checkPing( std::time_t instTime, int pingInter )
+bool	Client::needPing(int interval, int timeout)
 {
-	if (pinged){
-		std::cout << "\nalready Pinged" << std::endl;
-		return false;
-	} else {
-		std::cout << "\nPing sent to " << username << std::endl;
-		return (instTime - lastPing) >= pingInter;
-	}
+	if (lastPing < std::time(0) - interval && lastPing > std::time(0) - timeout)
+		return true;
+	return false;
+}
+
+bool	Client::isTimeout(int timeout) {
+	if (lastPing < std::time(0) - timeout)
+		return true;
+	return false;
 }
 
 std::time_t	Client::getLastPing(){
