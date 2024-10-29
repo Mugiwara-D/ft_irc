@@ -6,7 +6,7 @@
 /*   By: ablancha <ablancha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 15:10:15 by ablancha          #+#    #+#             */
-/*   Updated: 2024/10/29 15:23:00 by ablancha         ###   ########.fr       */
+/*   Updated: 2024/10/29 15:41:33 by maderuel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,6 +206,7 @@ void Server::cmdKick(Client& client, const std::string& channelName, const std::
         return;
     }
     chan->kickClient(cli);
+    sendMessageToChannel(channelName,":"+client.getUsername()+"!admin@host KICK "+Target+" :Breaking rules" , client);
 }
 
 void Server::cmdJoin(Client& client, const std::string& channelName) {
@@ -231,36 +232,6 @@ void Server::cmdJoin(Client& client, const std::string& channelName) {
         }
     }
 }
-
-
-// void Server::cmdJoin(Client& client, const std::string& channelName) {
-//     channel newChannel(channelName, false, false);
-//     client.addChannelClient(newChannel);
-//     addChannel(newChannel);
-//     newChannel.addClient(client);
-
-
-//     /* Lister les channels de client pour debug */
-//     // std::vector<channel*> clientChannels = client.getChannelList();
-//     // std::cout << client.getNickname() << " is currently in the following channels: " << std::endl;
-    
-//     // for (std::vector<channel*>::iterator it = clientChannels.begin(); it != clientChannels.end(); ++it) {
-//     //     std::cout << "- " << (*it)->getname() << std::endl;
-//     // }
-//     // client.setCurrentChannel(channelName);
-
-
-
-//     std::cout << client.getNickname() << " has joined channel: " << channelName << std::endl;
-//     std::string reply = ":" + client.getNickname() + " JOIN :" + channelName;
-//     for (size_t i = 0; i < clients.size(); ++i) {
-//         if (clients[i]->getCurrentChannel() == channelName) {
-//             sendMessageToClient(clients[i]->getSocket(), reply); // Notifier chaque client
-//         }
-//     }
-//     // sendMessageToClient(client.getSocket(), reply);
-//     //cmdPrivMsg(client, channelName, "salut a touss");
-// }
 
 void Server::sendMessageToChannel(const std::string& channel, const std::string& message, Client& sender) {
     for (size_t i = 0; i < clients.size(); ++i) {
@@ -365,12 +336,12 @@ void Server::start() {
             int clientFD = clients[i]->getSocket();
             if (FD_ISSET(clientFD, &fds)) {
                 char buffer[1024] = {0};
-				if (clients[i]->needPing(PING_INTERVAL, PING_TIMEOUT) == true){
-					Ping(*clients[i]);
-				} else if (clients[i]->isTimeout(PING_TIMEOUT)){
+				if (clients[i]->isTimeout(PING_TIMEOUT)){
 					removeClient(clients[i]->getUsername());
 					continue;
 				}
+				if (clients[i]->needPing(PING_INTERVAL, PING_TIMEOUT) == true)
+					Ping(*clients[i]);
                 int valread = read(clientFD, buffer, 1024);
                 if (valread >= 0) {
 					buf += buffer;
