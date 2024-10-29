@@ -6,7 +6,7 @@
 /*   By: ablancha <ablancha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 15:10:15 by ablancha          #+#    #+#             */
-/*   Updated: 2024/10/16 15:56:14 by ablancha         ###   ########.fr       */
+/*   Updated: 2024/10/29 15:23:00 by ablancha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,9 +183,20 @@ channel* Server::getChannelByName(const std::string& channelName) {
     return NULL;
 }
 
-void Server::cmdKick(Client& client, const std::string& channelName)
+Client& Server::getClientByName(const std::string& nickname) {
+    for (size_t i = 0; i < clients.size(); ++i) {
+        if (clients[i]->getNickname() == nickname) {
+            return *clients[i];
+        }
+    }
+    throw std::runtime_error("Client with nickname '" + nickname + "' not found.");
+}
+
+
+void Server::cmdKick(Client& client, const std::string& channelName, const std::string& Target)
 {
     channel* chan = getChannelByName(channelName);
+    Client& cli = getClientByName(Target);
     if (chan == NULL) {
         std::cout << "Channel \"" << channelName << "\" does not exist." << std::endl;
         return;
@@ -194,6 +205,7 @@ void Server::cmdKick(Client& client, const std::string& channelName)
         std::cout << "Client " << client.getNickname() << " is not an operator in channel \"" << channelName << "\"." << std::endl;
         return;
     }
+    chan->kickClient(cli);
 }
 
 void Server::cmdJoin(Client& client, const std::string& channelName) {

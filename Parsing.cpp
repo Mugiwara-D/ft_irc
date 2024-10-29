@@ -90,8 +90,6 @@ void	Server::executeCmd(Command_s command, Client& client)
 		removeClient(client.getUsername());
 	else if (command.command == "PRIVMSG")
 		std::cout << "\nPRIVMSG a refaire\n" << std::endl;
-    else if (command.command == "KICK")
-        cmdKick(client, command.params[0]);
 	else if (command.command == "TOPIC")
 		cmdTopic(command, client);
 	else if (command.command == "WHOIS")
@@ -100,6 +98,8 @@ void	Server::executeCmd(Command_s command, Client& client)
 		checkPassWord(command, client);
 	else if (command.command == "USER")
 		cmdUser(command, client);
+	else if (command.command == "KICK")
+		cmdKick(client, command.params[0], command.params[1]);
 	else {
 		std::cout << "\nInvalide Command" << std::endl;
 		sendMessageToClient(client.getSocket(), ERROR::UNKNOWNCOMMAND(client.getUsername(), command.command));

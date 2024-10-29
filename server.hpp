@@ -6,7 +6,7 @@
 /*   By: ablancha <ablancha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 15:09:23 by ablancha          #+#    #+#             */
-/*   Updated: 2024/10/16 15:25:23 by ablancha         ###   ########.fr       */
+/*   Updated: 2024/10/29 15:21:23 by ablancha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ public:
 	void	cmdPong(Client& client);
 	void	cmdPing(const std::string cmdArgs);
     void	cmdJoin(Client& client, const std::string& channelName);
-    void	cmdKick(Client& client, const std::string& channelName);
+     void	cmdKick(Client& client, const std::string& channelName, const std::string& target);
     void	cmdPrivMsg(Client& sender, const std::string& targetChannel, const std::string& message);
 	void	cmdWhois(Command_s cmd, Client& client);
 	void	cmdUser(Command_s cmd, Client& client);
@@ -103,6 +103,7 @@ public:
 
 	void	executeCmd(Command_s command, Client& client);
     channel* getChannelByName(const std::string& channelName);
+    Client& getClientByName(const std::string& nickname);
 };
 
 #endif

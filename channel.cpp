@@ -6,7 +6,7 @@
 /*   By: ablancha <ablancha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 14:07:08 by ablancha          #+#    #+#             */
-/*   Updated: 2024/10/16 15:58:57 by ablancha         ###   ########.fr       */
+/*   Updated: 2024/10/29 15:22:21 by ablancha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,3 +129,15 @@ bool channel::isOperator(const Client& client) const {
     }
     return false;
 }
+
+void channel::kickClient(Client& client) {
+    for (std::vector<Client*>::iterator it = clientList.begin(); it != clientList.end(); ++it) {
+        if (*it == &client) {
+            clientList.erase(it);
+            std::cout << "Client " << client.getNickname() << " kicked from channel \"" << name << "\"." << std::endl;
+            return;
+        }
+    }
+    std::cout << "Client " << client.getNickname() << " is not in the channel \"" << name << "\"." << std::endl;
+}
+

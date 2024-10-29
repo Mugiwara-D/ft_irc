@@ -6,7 +6,7 @@
 /*   By: ablancha <ablancha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 16:24:28 by ablancha          #+#    #+#             */
-/*   Updated: 2024/10/16 15:54:28 by ablancha         ###   ########.fr       */
+/*   Updated: 2024/10/29 15:22:05 by ablancha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ public:
     void removeOps(Client& client);
 	bool isOperator(const Client& client) const;
 	Client&	getClient(std::string clientNick);
+	void kickClient(Client& client);
 	
 };
 
