@@ -6,7 +6,7 @@
 /*   By: olcoste <olcoste@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 15:08:37 by ablancha          #+#    #+#             */
-/*   Updated: 2024/10/08 16:01:47 by maderuel         ###   ########.fr       */
+/*   Updated: 2024/10/29 14:09:35 by maderuel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include <unistd.h>
 
 Client::Client(const std::string &user, const std::string &nick, int socket): 
-	username(user), nickname(nick), socket(socket), lastPing(std::time(0)), pinged(true)
+	username(user), nickname(nick), socket(socket), lastPing(std::time(0))
 {
     this->Registered = false;
 }

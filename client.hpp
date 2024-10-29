@@ -21,7 +21,6 @@ private:
 
 	////////Ping Pong/////////
 	std::time_t	lastPing;
-	bool		pinged;
 
 public:
     Client(const std::string &user, const std::string &nick, int socket);
