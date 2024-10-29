@@ -6,7 +6,7 @@
 /*   By: olcoste <olcoste@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 15:08:37 by ablancha          #+#    #+#             */
-/*   Updated: 2024/10/29 14:09:35 by maderuel         ###   ########.fr       */
+/*   Updated: 2024/10/29 15:08:06 by maderuel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ void	Client::setLastNicknameChange(const time_t newChange){
 
 bool	Client::needPing(int interval, int timeout)
 {
-	if (lastPing < std::time(0) - interval && lastPing > std::time(0) - timeout)
+	if (lastPing > std::time(0) - interval && lastPing < std::time(0) - timeout)
 		return true;
 	return false;
 }
