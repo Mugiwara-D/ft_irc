@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: olcoste <olcoste@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ablancha <ablancha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 15:10:15 by ablancha          #+#    #+#             */
-/*   Updated: 2024/10/30 14:47:49 by olcoste          ###   ########.fr       */
+/*   Updated: 2024/10/30 16:12:25 by ablancha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,21 +170,29 @@ Client& Server::getClientByName(const std::string& nickname) {
 }
 
 
-void Server::cmdKick(Client& client, const std::string& channelName, const std::string& Target)
-{
+void Server::cmdKick(Client& client, const std::string& channelName, const std::string& target) {
     channel* chan = getChannelByName(channelName);
-    Client& cli = getClientByName(Target);
+    
     if (chan == NULL) {
         std::cout << "Channel \"" << channelName << "\" does not exist." << std::endl;
         return;
     }
+    
+    Client& cli = getClientByName(target);
     if (!chan->isOperator(client)) {
         std::cout << "Client " << client.getNickname() << " is not an operator in channel \"" << channelName << "\"." << std::endl;
         return;
     }
     chan->kickClient(cli);
-    sendMessageToChannel(channelName,":"+client.getUsername()+"!admin@host KICK "+Target+" :Breaking rules" , client);
+    std::string kickMessage = ":" + client.getUsername() + "!admin@host KICK " + target + " :Breaking rules";
+    std::cout << kickMessage << std::endl;
+
+    const std::vector<Client*>& clientsInChannel = chan->getClientList();
+    for (size_t i = 0; i < clientsInChannel.size(); ++i) {
+        sendMessageToClient(clientsInChannel[i]->getSocket(), kickMessage);
+    }
 }
+
 
 void Server::cmdJoin(Client& client, const std::string& channelName) {
     channel* existingChannel = getChannelByName(channelName);
@@ -193,22 +201,23 @@ void Server::cmdJoin(Client& client, const std::string& channelName) {
         existingChannel->addClient(client);
         client.addChannelClient(*existingChannel);
     } else {
-
         channel newChannel(channelName, false, false, false, false);
         newChannel.addClient(client);
         newChannel.addOps(client);
         client.addChannelClient(newChannel);
         addChannel(newChannel);
+        existingChannel = &newChannel;
     }
 
     std::cout << client.getNickname() << " has joined channel: " << channelName << std::endl;
     std::string reply = ":" + client.getNickname() + " JOIN :" + channelName;
-    for (size_t i = 0; i < clients.size(); ++i) {
-        if (clients[i]->getCurrentChannel() == channelName) {
-            sendMessageToClient(clients[i]->getSocket(), reply);
-        }
+
+    const std::vector<Client*>& clientsInChannel = existingChannel->getClientList();
+    for (size_t i = 0; i < clientsInChannel.size(); ++i) {
+        sendMessageToClient(clientsInChannel[i]->getSocket(), reply);
     }
 }
+
 
 void Server::sendMessageToChannel(const std::string& channel, const std::string& message, Client& sender) {
     for (size_t i = 0; i < clients.size(); ++i) {

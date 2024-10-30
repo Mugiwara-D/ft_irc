@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   privmsg.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: olcoste <olcoste@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ablancha <ablancha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 18:16:05 by olcoste           #+#    #+#             */
-/*   Updated: 2024/10/30 14:42:13 by olcoste          ###   ########.fr       */
+/*   Updated: 2024/10/30 16:02:18 by ablancha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,8 @@ void	Server::cmdPrivMsg(Command_s command, Client &Clt)//messag  vers d autre ch
 	bool	found = false;
 	std::vector<std::string>::iterator itDest = command.params.begin();
 
-	// if ((*itDest)[0] == '#') {
-	// 	cmdPrivMsgServ(command, Clt); return ;}
+	if ((*itDest)[0] == '#') {
+		cmdPrivMsgServ(command, Clt); return ;}
 
 	for (std::vector<Client*>::iterator it = clients.begin(); it != clients.end(); ++it) {
 		if ((*it)->getNickname() == (*itDest))
@@ -62,23 +62,37 @@ void	Server::cmdPrivMsg(Command_s command, Client &Clt)//messag  vers d autre ch
 	sendMessageToClient(destinataireSocket, msg);
 }
 
-// void	Server::cmdPrivMsgServ(std::string line, int clientSocket)
-// {
-// 	/*isole le destinataire*/
-// 	std::string tmp = line.substr(0, line.find(' '));
-// 	//std::cout << "tmp :" << tmp << std::endl;
-// 	std::string destinataire = trimPriMsg(tmp) ;
-// 	//std::cout << "destinataire :" << destinataire << ", size :" << destinataire.size() << std::endl<< std::endl;
 
-// 	/*isole le message* et forme le msg*/
-// 	tmp =  "@localhost PRIVMSG "  + destinataire + line.substr(line.find(' '));
-// 	for (size_t i = 0; i < clients.size(); ++i) {
-// 		if (clients[i]->getSocket() == clientSocket)
-// 				line = ":" + clients[i]->getNickname() + "!" + clients[i]->getNickname() + tmp + "\r\n";
-// 	}
-// 	for (size_t i = 0; i < clients.size(); ++i) {
-// 		if ((destinataire + "\r\n" ) == clients[i]->getCurrentChannel() && clients[i]->getSocket() != clientSocket)
-// 			if (send(clients[i]->getSocket(), line.c_str(), line.length(), 0) < 0)
-// 				std::cerr << "Failed to send error message to client" << std::endl;
-// 	}
-// }
+void Server::cmdPrivMsgServ(Command_s command, Client &Clt)
+{
+    std::vector<std::string>::iterator itDest = command.params.begin();
+    channel* chan = getChannelByName(*itDest);
+    
+    if (!chan) {
+        std::string errorMsg = "No such channel: " + *itDest;
+        sendMessageToClient(Clt.getSocket(), errorMsg);
+        return;
+    }
+    const std::vector<Client*>& clientsInChannel = chan->getClientList();
+    bool isMember = false;
+    for (size_t i = 0; i < clientsInChannel.size(); ++i) {
+        if (clientsInChannel[i] == &Clt) {
+            isMember = true;
+            break;
+        }
+    }
+    if (!isMember) {
+        std::string errorMsg = "You are not in the channel: " + *itDest;
+        sendMessageToClient(Clt.getSocket(), errorMsg);
+        return;
+    }
+    std::string line = ":" + Clt.getNickname() + " PRIVMSG " + *itDest + " :" + command.trailing;
+    std::cout << "Line ===========================:" << line << std::endl;
+    for (size_t i = 0; i < clientsInChannel.size(); ++i) {
+        if (clientsInChannel[i]->getNickname() != Clt.getNickname()) {
+            sendMessageToClient(clientsInChannel[i]->getSocket(), line);
+        }
+    }
+}
+
+

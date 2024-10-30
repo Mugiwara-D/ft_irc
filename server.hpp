@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: olcoste <olcoste@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ablancha <ablancha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 15:09:23 by ablancha          #+#    #+#             */
-/*   Updated: 2024/10/30 14:44:51 by olcoste          ###   ########.fr       */
+/*   Updated: 2024/10/30 15:09:32 by ablancha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ public:
     /*PRIVMSG*/
 	void	cmdPrivMsg(Command_s command, Client &Clt);
     std::string trimPriMsg(std::string& str);
-    void	cmdPrivMsgServ(std::string line, int clientSocket);
+    void cmdPrivMsgServ(Command_s command, Client &Clt);
 
 	bool	initialHandShake( std::string buffer, int fd );
 	void	CAPresponse( std::string arg, Client& client );
