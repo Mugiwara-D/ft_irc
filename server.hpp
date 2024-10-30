@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ablancha <ablancha@student.42.fr>          +#+  +:+       +#+        */
+/*   By: olcoste <olcoste@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 15:09:23 by ablancha          #+#    #+#             */
-/*   Updated: 2024/10/29 15:21:23 by ablancha         ###   ########.fr       */
+/*   Updated: 2024/10/30 14:44:51 by olcoste          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,15 +72,15 @@ public:
 	bool	checkPassWord( Command_s cmd, Client& Client );
     void 	MessageParsing(std::string buffer, Client& Client, int i);
 
-    void	cmdNick(std::string buffer, int clientSocket);
+    void	cmdNick(Command_s command, Client &Clt);
 	bool	cmdMode(Command_s cmd, Client& client);
 	void	cmdTopic(Command_s cmd, Client& client);
 	void	cmdPong(Client& client);
 	void	cmdPing(const std::string cmdArgs);
     void	cmdJoin(Client& client, const std::string& channelName);
      void	cmdKick(Client& client, const std::string& channelName, const std::string& target);
-    void	cmdPrivMsg(Client& sender, const std::string& targetChannel, const std::string& message);
-	void	cmdWhois(Command_s cmd, Client& client);
+
+    void	cmdWhois(Command_s cmd, Client& client);
 	void	cmdUser(Command_s cmd, Client& client);
     void    addChannelClient(channel &newChannel);
     void    addChannel(channel& newChannel);
@@ -94,7 +94,7 @@ public:
 	bool	PingRspd(Client& client);
 
     /*PRIVMSG*/
-    void	cmdPrivMsgg(std::string buffer, int clientSocket);
+	void	cmdPrivMsg(Command_s command, Client &Clt);
     std::string trimPriMsg(std::string& str);
     void	cmdPrivMsgServ(std::string line, int clientSocket);
 

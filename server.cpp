@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ablancha <ablancha@student.42.fr>          +#+  +:+       +#+        */
+/*   By: olcoste <olcoste@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 15:10:15 by ablancha          #+#    #+#             */
-/*   Updated: 2024/10/29 15:41:33 by maderuel         ###   ########.fr       */
+/*   Updated: 2024/10/30 14:47:49 by olcoste          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,33 +145,10 @@ bool	Server::checkPassWord( Command_s cmd, Client& Client)
             // clients.erase(clients.begin() + i);
         }
     }
-    else if (Client.isRegistered() == true && cmd.command == "NICK")
-    {
-        std::cout << "NICK TROUVER" <<  std::endl;
-        cmdNick(cmd.params[0], Client.getSocket());
-    }
     else{
         sendMessageToClient(Client.getSocket(), "Okay");
     }
 	return true;
-}
-
-void Server::cmdPrivMsg(Client& sender, const std::string& targetChannel, const std::string& message) {
-    bool channelFound = false;
-    std::string privmsg_command = ":" + sender.getNickname() + "!" + sender.getUsername() + "@server PRIVMSG " + targetChannel + " :" + message;
-    std::cout << privmsg_command << std::endl;
-    for (size_t i = 0; i < clients.size(); ++i) {
-        if (clients[i]->getCurrentChannel() == targetChannel) {
-            channelFound = true;
-            if (clients[i]->getUsername() != sender.getUsername()) {
-                sendMessageToClient(clients[i]->getSocket(), privmsg_command);
-            }
-        }
-    }
-    if (!channelFound) {
-        std::string errorMsg = "No such channel: " + targetChannel;
-        sendMessageToClient(sender.getSocket(), errorMsg);
-    }
 }
 
 channel* Server::getChannelByName(const std::string& channelName) {

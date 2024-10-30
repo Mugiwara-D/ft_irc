@@ -1,12 +1,5 @@
 #include "server.hpp"
 
-std::string trim(const std::string& str) {
-	size_t first = str.find_first_not_of(' ');
-	size_t last = str.find_last_not_of(' ');
-
-	return str.substr(first, (last - first + 1));
-}
-
 bool	changeNickTime(std::vector<Client*>::iterator itClient)
 {
 	time_t	currentTime = time(NULL);
@@ -19,64 +12,48 @@ bool	changeNickTime(std::vector<Client*>::iterator itClient)
 	return true;
 }
 
-void	Server::cmdNick(std::string buffer, int clientSocket)
+void	Server::cmdNick(Command_s command, Client &Clt)
 {
-	/*separe le nickname du reste*/
-	size_t firstSpace = buffer.find(' ');
-	std::string nickname = trim(buffer.substr(firstSpace));
-	std::string rest = trim(nickname.substr(0, nickname.find(' ')) );
-	nickname = trim(rest.substr(0, rest.find('\n') - 1));
-
-
 /***********************PARSING**************************/
-	/*check si le nickname est deja utiliser*/
 	std::vector<Client*>::iterator itClient;
-	Client& client = *clients[0];
 
+	std::vector<std::string>::iterator itSup = command.params.begin();
 	for (std::vector<Client*>::iterator it = clients.begin(); it != clients.end(); ++it) {
-		std::cout << (*it)->getNickname() << "    " <<  nickname << std::endl;
-		if (clientSocket == (*it)->getSocket()){
+
+		if (Clt.getSocket() == (*it)->getSocket())
 			itClient = it;
-			client = **it;
-		}
-		if ((*it)->getNickname() == nickname)
+		if ((*it)->getNickname() == (*itSup))
 		{
-			std::string fullMessage = ERROR::NICKNAMEINUSE((*it)->getNickname(), nickname);
-			if (send(clientSocket, fullMessage.c_str(), fullMessage.length(), 0) < 0) {
-				std::cerr << "Failed to send error message to client" << std::endl;
-			}
+			std::string fullMessage = ERROR::NICKNAMEINUSE((*it)->getNickname(), (*itSup));
+			sendMessageToClient(Clt.getSocket(), fullMessage);
 			return ;
 		}
 	}
-	/*check la norme IRC: 9 caract max, caract non autorise, le nick ne commence pas par un nombre*/
-	for (size_t i = 0; i < (nickname.length()) ; ++i) {
-		if ((nickname[0] >= '0' && nickname[0] <= '9') || (!isalnum(nickname[i]) 
-						&& !(nickname[i] >= '[' && nickname[i] <= '`')
-		&& nickname[i] != '-' && nickname[i] != '{' && nickname[i] != '}') || i >= 9)
+/*check la norme IRC: 9 caract max, caract non autorise, le nick ne commence pas par un nombre*/
+	for (size_t i = 0; i < ((*itSup).length()) ; ++i) {
+		if (((*itSup)[0] >= '0' && (*itSup)[0] <= '9') || (!isalnum((*itSup)[i]) 
+						&& !((*itSup)[i] >= '[' && (*itSup)[i] <= '`')
+		&& (*itSup)[i] != '-' && (*itSup)[i] != '{' && (*itSup)[i] != '}') || i >= 9)
 			{
 				std::string fullMessage = 
-					ERROR::ERRONEUSNICKNAME(client.getNickname());
-				if (send(clientSocket, fullMessage.c_str(), fullMessage.length(), 0) < 0) {
-					std::cerr << "Failed to send error message to client" << std::endl;
-				}
+					ERROR::ERRONEUSNICKNAME(Clt.getNickname());
+				sendMessageToClient(Clt.getSocket(), fullMessage);
 				return ;
 			}
 	}
 
-	/*changement de nom tout les X seconde*/
+/*changement de nom tout les X seconde*/
 	if (changeNickTime(itClient) == false)
 	{
-		std::string fullMessage = ": <serverName(a remplacer)> ERR_NICKTOOFAST 438 Nickname: " + nickname + " you change your name too quickly.\r\n";
-		if (send(clientSocket, fullMessage.c_str(), fullMessage.length(), 0) < 0) {
-			std::cerr << "Failed to send error message to client" << std::endl;
-		}
+		std::string fullMessage = ": <serverName(a remplacer)> ERR_NICKTOOFAST 438 Nickname: " + (*itSup) + " you change your name too quickly.";
+		sendMessageToClient(Clt.getSocket(), fullMessage);
 		return ;
 	}
 
-
 /**********************EXECUTION*************************/
-	//std::cout <<  " nickINT = " << nickname.size() << std::endl;
-	std::cout << "Last nick " << (*itClient)->getNickname() <<  " new nick " << nickname << std::endl;
-	//std::cout << "Last nick " << (*itClient)->getNickname() << std::endl;
-	(*itClient)->setNickname(nickname);
+
+ 	std::string newNick = ":" + (*itClient)->getNickname() + " NICK " + (*itSup) + "\r\n";
+
+	sendMessageToClient(Clt.getSocket(), newNick);
+	(*itClient)->setNickname((*itSup));
 }

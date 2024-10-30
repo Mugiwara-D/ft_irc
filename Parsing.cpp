@@ -85,11 +85,11 @@ void	Server::executeCmd(Command_s command, Client& client)
 	else if (command.command == "MODE")
 		cmdMode(command, client);
 	else if (command.command == "NICK")
-		std::cout << "\nNICK a refaire\n" << std::endl;
+		cmdNick(command, client);
 	else if (command.command == "QUIT")
 		removeClient(client.getUsername());
 	else if (command.command == "PRIVMSG")
-		std::cout << "\nPRIVMSG a refaire\n" << std::endl;
+		cmdPrivMsg(command, client);
 	else if (command.command == "TOPIC")
 		cmdTopic(command, client);
 	else if (command.command == "WHOIS")
