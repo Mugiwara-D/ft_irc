@@ -195,7 +195,12 @@ void Server::cmdKick(Client& client, const std::string& channelName, const std::
 
 
 void Server::cmdJoin(Client& client, const std::string& channelName) {
+	if (channelName.empty()) {
+		sendMessageToClient(client.getSocket(), ERROR::NEEDMOREPARAMS(client.getNickname(), "JOIN"));
+		return;
+	}
     channel* existingChannel = getChannelByName(channelName);
+
 
     if (existingChannel) {
         existingChannel->addClient(client);
@@ -218,7 +223,28 @@ void Server::cmdJoin(Client& client, const std::string& channelName) {
     }
 }
 
+void Server::sendMessageToChannel(const std::string& channelName, const std::string& message, const Client& sender) {
+    channel* chan = getChannelByName(channelName);
+    if (!chan) {
+        std::cerr << "Channel " << channelName << " not found for broadcasting." << std::endl;
+        return;
+    }
 
+    // Retrieve all clients in the channel
+    std::vector<Client*> clientsInChannel = chan->getClientList();
+
+    // Traditional for loop to iterate over all clients
+    for (std::vector<Client*>::iterator it = clientsInChannel.begin(); it != clientsInChannel.end(); ++it) {
+        Client* client = *it;
+        
+        // Optional: Skip the sender if needed, though not usually required for topic updates
+        if (client->getNickname() != sender.getNickname()) {
+            sendMessageToClient(client->getSocket(), message);
+        }
+    }
+}
+
+/*
 void Server::sendMessageToChannel(const std::string& channel, const std::string& message, Client& sender) {
     for (size_t i = 0; i < clients.size(); ++i) {
         if (clients[i]->getCurrentChannel() == channel) {
@@ -227,7 +253,7 @@ void Server::sendMessageToChannel(const std::string& channel, const std::string&
             }
         }
     }
-}
+}*/
 
 bool	Server::isValidChan(const std::string channel)
 {

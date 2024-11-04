@@ -2,6 +2,7 @@
 #include <string>
 
 using std::string;
+static string SERV_NAME = "irc.example.com";
 
 namespace RPL 
 {
@@ -78,7 +79,7 @@ namespace RPL
 	} // Indicates that a channel has no topic set.
 	
 	inline string	TOPIC( const string& nick, const string& channel, const string& topic ) {
-		return "332 " + nick + " " + channel + " :" + topic;
+		return ":" + SERV_NAME + " 332 " + nick + " " + channel + " :" + topic;
 	} // Sends the current topic of a channel to the client.
 	
 	inline string	INVITING(const std::string& nick, const std::string& invitedNick, const std::string& channel) {
@@ -152,8 +153,8 @@ namespace ERROR{
 		return ":server 441 "+ nick + " "+ user + " "+ chan +" :They aren't on that channel";
 	} // The client is trying to perform an action on a user who is not in the specified channel, such as granting operator status to a non-existent user.
 	
-	inline string	NEEDMOREPARAMS(const string& nick) {
-		return ":server 461 "+ nick +" MODE :Not enough parameters";
+	inline string	NEEDMOREPARAMS(const string& nick, const string& command) {
+		return ":server 461 "+ nick +" " + command + " :Not enough parameters";
 	} // The client didn't provide enough parameters for the MODE command.
 
 	inline string	KEYSET(const string& nick, const string& chan) {

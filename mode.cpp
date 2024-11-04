@@ -15,7 +15,7 @@ bool 	Server::cmdMode( Command_s cmd, Client& client )
 	size_t start = cmd.params[0].find('#');
 
 	if (start == std::string::npos || cmd.params[0].length() <= start + 1) {
-		sendMessageToClient(client.getSocket(), ERROR::NEEDMOREPARAMS(client.getNickname()));
+		sendMessageToClient(client.getSocket(), ERROR::NEEDMOREPARAMS(client.getNickname(), "MODE"));
 		return false;
 	}
 

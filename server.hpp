@@ -87,7 +87,9 @@ public:
 
 	bool	isValidChan(const std::string channel);
 
-    void	sendMessageToChannel(const std::string& channel, const std::string& message, Client& sender);
+    void	sendMessageToChannel(const std::string& channelName, const std::string& message, const Client& sender);
+   // void	sendMessageToChannel(const std::string& channel, const std::string& message, Client& sender);
+
 
 	bool	Pong(Client& client);
 	void	Ping(Client& client);
