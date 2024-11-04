@@ -60,7 +60,7 @@ void Server::displayInfo() const {
     // List users in all channels
     std::cout << "List of users in all channels:" << std::endl;
     for (size_t i = 0; i < channels.size(); ++i) {
-        const channel& chan = channels[i]; // Use 'const channel&' for a const reference
+        const channel& chan = *channels[i]; // Use 'const channel&' for a const reference
         std::vector<Client*> clientsInChannel = chan.getClientList(); // Now this will work correctly
 
         // Print the channel name
@@ -153,8 +153,8 @@ bool	Server::checkPassWord( Command_s cmd, Client& Client)
 
 channel* Server::getChannelByName(const std::string& channelName) {
     for (size_t i = 0; i < channels.size(); ++i) {
-        if (channels[i].getname() == channelName) {
-            return &channels[i];
+        if (channels[i]->getname() == channelName) {
+            return channels[i];
         }
     }
     return NULL;
@@ -201,12 +201,12 @@ void Server::cmdJoin(Client& client, const std::string& channelName) {
         existingChannel->addClient(client);
         client.addChannelClient(*existingChannel);
     } else {
-        channel newChannel(channelName, false, false, false, false);
-        newChannel.addClient(client);
-        newChannel.addOps(client);
-        client.addChannelClient(newChannel);
-        addChannel(newChannel);
-        existingChannel = &newChannel;
+        channel* newChannel = new channel(channelName, false, false, false, false);
+        newChannel->addClient(client);
+        newChannel->addOps(client);
+        client.addChannelClient(*newChannel);
+        addChannel(*newChannel);
+        existingChannel = newChannel;
     }
 
     std::cout << client.getNickname() << " has joined channel: " << channelName << std::endl;
@@ -232,7 +232,7 @@ void Server::sendMessageToChannel(const std::string& channel, const std::string&
 bool	Server::isValidChan(const std::string channel)
 {
 	for (size_t i = 0; i < channels.size(); ++i) {
-		if (channel == channels[i].getname())
+		if (channel == channels[i]->getname())
 			return true;
 	}
 
@@ -359,12 +359,12 @@ void Server::sendMessageToClient(int client_fd, const std::string& message) {
 
 void Server::addChannel(channel& newChannel) {
     for (size_t i = 0; i < channels.size(); ++i) {
-        if (channels[i].getname() == newChannel.getname()) {
+        if (channels[i]->getname() == newChannel.getname()) {
             std::cout << "Channel " << newChannel.getname() << " already exists." << std::endl;
             return;
         }
     }
-    channels.push_back(newChannel);
+    channels.push_back(&newChannel);
     std::cout << "Channel " << newChannel.getname() << " added successfully." << std::endl;
 }
 
@@ -378,5 +378,8 @@ void Server::stop() {
     for (size_t i = 0; i < clients.size(); ++i) {
         delete clients[i];
     }
+	for (size_t i = 0; i < channels.size(); ++i) {
+		delete channels[i];
+	}
     clients.clear();
 }

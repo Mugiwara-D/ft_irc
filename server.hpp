@@ -46,7 +46,7 @@ class Server {
 private:
     std::string password;
     std::vector<Client*> clients;
-	std::vector<channel> channels;
+	std::vector<channel*> channels;
     int port;
     int server_socket;
     struct sockaddr_in socket_adr;
