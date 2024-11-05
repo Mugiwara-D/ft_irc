@@ -1,0 +1,30 @@
+<< CAP LS 302
+<< JOIN :
+>> CAP * LS :
+<< CAP END
+<< PASS pwd
+<< NICK matiya
+<< USER matiya matiya localhost :matiya
+>> :Guest0 NICK matiya
+>> 
+>> :irc.example.com 001 matiya :Welcome to the IRC Network, matiya!matiya@host
+<< MODE matiya +i
+>> :server 461 matiya MODE :Not enough parameters
+<< PING irc.example.com
+>> PONG irc.example.com
+--> lag pong
+<< JOIN #test
+>> :matiya JOIN :#test
+>> :matiya_ JOIN :#test
+<< MODE #test +t
+>> :irc.example.com 332 matiya_ #test :yo
+<< PING irc.example.com
+>> PING irc.example.com
+<< PONG :irc.example.com
+>> PONG irc.example.com
+--> lag pong
+<< TOPIC #test :ya
+>> :irc.example.com 332 matiya #test :ya
+<< PING irc.example.com
+<< PRIVMSG #test :yo
+<< QUIT :leaving

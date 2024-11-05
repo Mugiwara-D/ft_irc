@@ -187,10 +187,10 @@ void Server::cmdKick(Client& client, const std::string& channelName, const std::
     std::string kickMessage = ":" + client.getUsername() + "!admin@host KICK " + target + " :Breaking rules";
     std::cout << kickMessage << std::endl;
 
-    const std::vector<Client*>& clientsInChannel = chan->getClientList();
-    for (size_t i = 0; i < clientsInChannel.size(); ++i) {
-        sendMessageToClient(clientsInChannel[i]->getSocket(), kickMessage);
-    }
+//    const std::vector<Client*>& clientsInChannel = chan->getClientList();
+  //  for (size_t i = 0; i < clientsInChannel.size(); ++i) {
+    //    sendMessageToClient(clientsInChannel[i]->getSocket(), kickMessage);
+	sendMessageToChannel(channelName, kickMessage, client); 
 }
 
 
