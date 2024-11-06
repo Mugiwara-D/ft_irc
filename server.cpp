@@ -6,7 +6,7 @@
 /*   By: ablancha <ablancha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 15:10:15 by ablancha          #+#    #+#             */
-/*   Updated: 2024/11/06 15:10:44 by ablancha         ###   ########.fr       */
+/*   Updated: 2024/11/06 15:13:43 by ablancha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -201,10 +201,7 @@ void Server::cmdJoin(Client& client, const std::string& channelName, const std::
 	}
     channel* existingChannel = getChannelByName(channelName);
     if (existingChannel) {
-        existingChannel->addClient(client);
-        client.addChannelClient(*existingChannel);
 
-        if (existingChannel) {
         if (!existingChannel->getKey().empty() && existingChannel->getKey() != key) {
             std::string errorMsg = "Wrong password" + channelName;
             sendMessageToClient(client.getSocket(), errorMsg);
@@ -221,8 +218,9 @@ void Server::cmdJoin(Client& client, const std::string& channelName, const std::
         //     sendMessageToClient(client.getSocket(), errorMsg);
         //     return;
         // }
-        }
 
+        existingChannel->addClient(client);
+        client.addChannelClient(*existingChannel);
     } 
     else {
         channel* newChannel = new channel(channelName, false, false, false, false);
