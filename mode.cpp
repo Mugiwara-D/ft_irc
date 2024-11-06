@@ -19,6 +19,11 @@ bool 	Server::cmdMode( Command_s cmd, Client& client )
 		return false;
 	}
 
+    if (cmd.params.size() < 2)
+    {
+		sendMessageToClient(client.getSocket(), ERROR::UNKNOWNMODE(client.getNickname(), cmd.params[0]));
+        return false
+    }
 	std::string	channel = cmd.params[0];
 
 	if (!isValidChan(channel)) {
