@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ablancha <ablancha@student.42.fr>          +#+  +:+       +#+        */
+/*   By: olcoste <olcoste@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 15:09:23 by ablancha          #+#    #+#             */
-/*   Updated: 2024/10/30 15:09:32 by ablancha         ###   ########.fr       */
+/*   Updated: 2024/11/06 15:49:42 by olcoste          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,8 @@ public:
 	void	executeCmd(Command_s command, Client& client);
     channel* getChannelByName(const std::string& channelName);
     Client& getClientByName(const std::string& nickname);
+
+    void	cmdInvite(Command_s command, Client &Clt);
 };
 
 #endif

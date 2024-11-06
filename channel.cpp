@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ablancha <ablancha@student.42.fr>          +#+  +:+       +#+        */
+/*   By: olcoste <olcoste@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 14:07:08 by ablancha          #+#    #+#             */
-/*   Updated: 2024/10/29 15:22:21 by ablancha         ###   ########.fr       */
+/*   Updated: 2024/11/06 16:24:57 by olcoste          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,11 @@ std::string channel::getname() const {
 
 void channel::addOps(Client& client) {
     operators.push_back(&client);
+    std::cout << "Client " << client.getNickname() << " added to channel \"" << name << "\"." << std::endl;
+}
+
+void channel::addInvite(Client& client) {
+    invite.push_back(&client);
     std::cout << "Client " << client.getNickname() << " added to channel \"" << name << "\"." << std::endl;
 }
 

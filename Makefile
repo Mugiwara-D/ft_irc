@@ -1,5 +1,6 @@
 SRC = mode.cpp main.cpp server.cpp channel.cpp client.cpp nick.cpp \
-	  privmsg.cpp Topic.cpp WhoCmd.cpp Parsing.cpp User.cpp pingpong.cpp
+	  privmsg.cpp Topic.cpp WhoCmd.cpp Parsing.cpp User.cpp pingpong.cpp \
+	  invite.cpp
 
 NAME = ft_irc
 

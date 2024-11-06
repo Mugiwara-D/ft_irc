@@ -100,6 +100,8 @@ void	Server::executeCmd(Command_s command, Client& client)
 		cmdUser(command, client);
 	else if (command.command == "KICK")
 		cmdKick(client, command.params[0], command.params[1]);
+	else if (command.command == "INVITE")
+		cmdInvite(command, client);
 	else {
 		std::cout << "\nInvalide Command" << std::endl;
 		sendMessageToClient(client.getSocket(), ERROR::UNKNOWNCOMMAND(client.getUsername(), command.command));

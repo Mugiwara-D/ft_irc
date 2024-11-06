@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ablancha <ablancha@student.42.fr>          +#+  +:+       +#+        */
+/*   By: olcoste <olcoste@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 16:24:28 by ablancha          #+#    #+#             */
-/*   Updated: 2024/10/29 15:22:05 by ablancha         ###   ########.fr       */
+/*   Updated: 2024/11/06 16:23:44 by olcoste          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ private:
 	bool		_locked;
 	bool		_limited;
 	int			_userLimit;
+	std::vector<Client*> invite;
 	std::vector<Client*> clientList;
 	std::vector<Client*> operators;
 	
@@ -54,6 +55,7 @@ public:
     std::vector<Client*> getClientList() const; 
 	std::string getname() const;
 	void addOps(Client& client);
+	void addInvite(Client& client);
     void removeOps(Client& client);
 	bool isOperator(const Client& client) const;
 	Client&	getClient(std::string clientNick);

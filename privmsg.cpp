@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   privmsg.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ablancha <ablancha@student.42.fr>          +#+  +:+       +#+        */
+/*   By: olcoste <olcoste@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 18:16:05 by olcoste           #+#    #+#             */
-/*   Updated: 2024/10/30 16:02:18 by ablancha         ###   ########.fr       */
+/*   Updated: 2024/11/06 14:55:00 by olcoste          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ void Server::cmdPrivMsgServ(Command_s command, Client &Clt)
         return;
     }
     std::string line = ":" + Clt.getNickname() + " PRIVMSG " + *itDest + " :" + command.trailing;
-    std::cout << "Line ===========================:" << line << std::endl;
+    //std::cout << "Line ===========================:" << line << std::endl;
     for (size_t i = 0; i < clientsInChannel.size(); ++i) {
         if (clientsInChannel[i]->getNickname() != Clt.getNickname()) {
             sendMessageToClient(clientsInChannel[i]->getSocket(), line);
