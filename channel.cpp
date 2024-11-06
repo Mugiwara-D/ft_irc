@@ -6,7 +6,7 @@
 /*   By: ablancha <ablancha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 14:07:08 by ablancha          #+#    #+#             */
-/*   Updated: 2024/10/29 15:22:21 by ablancha         ###   ########.fr       */
+/*   Updated: 2024/11/06 15:06:31 by ablancha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,14 @@ std::string channel::getname(){
 
 bool	channel::getInviteOnly(){
 	return _inviteOnly;
+}
+
+unsigned long channel::getUserLimit(){
+    return(this->_userLimit);
+}
+
+std::string channel::getKey(){
+    return(this->_key);
 }
 
 void	channel::setInviteOnly( bool val ){

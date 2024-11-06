@@ -6,7 +6,7 @@
 /*   By: ablancha <ablancha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 15:10:15 by ablancha          #+#    #+#             */
-/*   Updated: 2024/10/30 16:12:25 by ablancha         ###   ########.fr       */
+/*   Updated: 2024/11/06 15:10:44 by ablancha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -194,18 +194,37 @@ void Server::cmdKick(Client& client, const std::string& channelName, const std::
 }
 
 
-void Server::cmdJoin(Client& client, const std::string& channelName) {
+void Server::cmdJoin(Client& client, const std::string& channelName, const std::string& key) {
 	if (channelName.empty()) {
 		sendMessageToClient(client.getSocket(), ERROR::NEEDMOREPARAMS(client.getNickname(), "JOIN"));
 		return;
 	}
     channel* existingChannel = getChannelByName(channelName);
-
-
     if (existingChannel) {
         existingChannel->addClient(client);
         client.addChannelClient(*existingChannel);
-    } else {
+
+        if (existingChannel) {
+        if (!existingChannel->getKey().empty() && existingChannel->getKey() != key) {
+            std::string errorMsg = "Wrong password" + channelName;
+            sendMessageToClient(client.getSocket(), errorMsg);
+            return;
+        }
+        if (existingChannel->getUserLimit() > 0 && existingChannel->getClientList().size() >= existingChannel->getUserLimit()) {
+            std::string errorMsg = "User limit is reach";
+            sendMessageToClient(client.getSocket(), errorMsg);
+            return;
+        }
+        //partie invite
+        // if (existingChannel->isInviteOnly() && )) {
+        //     std::string errorMsg = "You need an invitation";
+        //     sendMessageToClient(client.getSocket(), errorMsg);
+        //     return;
+        // }
+        }
+
+    } 
+    else {
         channel* newChannel = new channel(channelName, false, false, false, false);
         newChannel->addClient(client);
         newChannel->addOps(client);

@@ -6,7 +6,7 @@
 /*   By: ablancha <ablancha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 15:09:23 by ablancha          #+#    #+#             */
-/*   Updated: 2024/10/30 15:09:32 by ablancha         ###   ########.fr       */
+/*   Updated: 2024/11/06 14:57:00 by ablancha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ public:
 	void	cmdTopic(Command_s cmd, Client& client);
 	void	cmdPong(Client& client);
 	void	cmdPing(const std::string cmdArgs);
-    void	cmdJoin(Client& client, const std::string& channelName);
+    void	cmdJoin(Client& client, const std::string& channelName, const std::string& key);
      void	cmdKick(Client& client, const std::string& channelName, const std::string& target);
 
     void	cmdWhois(Command_s cmd, Client& client);
