@@ -16,6 +16,7 @@ void	Server::cmdTopic(Command_s cmd, Client& client)
 		if (cchan->isOperator(client) == false)
 			sendMessageToClient(client.getSocket(), ERROR::CHANOPRIVSNEEDED(client.getNickname(), cchan->getname()));
 		else {
+			std::cout << "\n la " << std::endl;
 			cchan->setTopic(cmd.trailing);
 			sendMessageToClient(client.getSocket(), RPL::TOPIC(client.getNickname(), cchan->getname(), cchan->getTopic()));
 			sendMessageToChannel(cchan->getname(), RPL::TOPIC(client.getNickname(), cchan->getname(), cchan->getTopic()), client);

@@ -19,34 +19,39 @@ bool 	Server::cmdMode( Command_s cmd, Client& client )
 		return false;
 	}
 
+    if (cmd.params.size() < 2)
+    {
+		sendMessageToClient(client.getSocket(), ERROR::UNKNOWNMODE(client.getNickname(), cmd.params[0]));
+        return false
+    }
 	std::string	channel = cmd.params[0];
 
 	if (!isValidChan(channel)) {
 		sendMessageToClient(client.getSocket(), ERROR::NOSUCHCHANNEL(client.getNickname(), channel));
 		return false;
 	}
-	if (cmd.params[1] == "+i" && !client.getCurrentChan(channel).getInviteOnly()) {
-		client.getCurrentChan(channel).setInviteOnly(true);
-	} else if (cmd.params[1] == "-i" && client.getCurrentChan(channel).getInviteOnly()) {
-		client.getCurrentChan(channel).setInviteOnly(false);
-	} else if (cmd.params[1] == "+t" && !client.getCurrentChan(channel).getLockTopic()) {
-		client.getCurrentChan(channel).setLockTopic(true);
-	} else if (cmd.params[1] == "-t" && client.getCurrentChan(channel).getLockTopic()) {
-		client.getCurrentChan(channel).setLockTopic(false);
-	} else if (cmd.params[1] == "+k" && !client.getCurrentChan(channel).getLock()) {
-		client.getCurrentChan(channel).setKey(cmd.params[2]);
-		client.getCurrentChan(channel).setLocked(true);
-	} else if (cmd.params[1] == "-k" && client.getCurrentChan(channel).getLock()) {
-		client.getCurrentChan(channel).setLocked(false);
-	} else if (cmd.params[1] == "+o" && client.getCurrentChan(channel).isOperator(client)) {
-		client.getCurrentChan(channel).addOps(client.getCurrentChan(channel).getClient(cmd.params[2]));
-	} else if (cmd.params[1] == "-o" && client.getCurrentChan(channel).isOperator(client)) {
-		client.getCurrentChan(channel).removeOps(client.getCurrentChan(channel).getClient(cmd.params[2]));
-	} else if (cmd.params[1] == "+l" && !client.getCurrentChan(channel).isLimited()) {
-		client.getCurrentChan(channel).setLimited(true);
-		client.getCurrentChan(channel).setUserLim(atoi(cmd.params[2].c_str()));
-	} else if (cmd.params[1] == "-l" && client.getCurrentChan(channel).isLimited()) {
-		client.getCurrentChan(channel).setLimited(false);
+	if (cmd.params[1] == "+i" && !getChannelByName(channel)->getInviteOnly()) {
+		getChannelByName(channel)->setInviteOnly(true);
+	} else if (cmd.params[1] == "-i" && getChannelByName(channel)->getInviteOnly()) {
+		getChannelByName(channel)->setInviteOnly(false);
+	} else if (cmd.params[1] == "+t" && !getChannelByName(channel)->getLockTopic()) {
+		getChannelByName(channel)->setLockTopic(true);
+	} else if (cmd.params[1] == "-t" && getChannelByName(channel)->getLockTopic()) {
+		getChannelByName(channel)->setLockTopic(false);
+	} else if (cmd.params[1] == "+k" && !getChannelByName(channel)->getLock()) {
+		getChannelByName(channel)->setKey(cmd.params[2]);
+		getChannelByName(channel)->setLocked(true);
+	} else if (cmd.params[1] == "-k" && getChannelByName(channel)->getLock()) {
+		getChannelByName(channel)->setLocked(false);
+	} else if (cmd.params[1] == "+o" && getChannelByName(channel)->isOperator(client)) {
+		getChannelByName(channel)->addOps(getChannelByName(channel)->getClient(cmd.params[2]));
+	} else if (cmd.params[1] == "-o" && getChannelByName(channel)->isOperator(client)) {
+		getChannelByName(channel)->removeOps(getChannelByName(channel)->getClient(cmd.params[2]));
+	} else if (cmd.params[1] == "+l" && !getChannelByName(channel)->isLimited()) {
+		getChannelByName(channel)->setLimited(true);
+		getChannelByName(channel)->setUserLim(atoi(cmd.params[2].c_str()));
+	} else if (cmd.params[1] == "-l" && getChannelByName(channel)->isLimited()) {
+		getChannelByName(channel)->setLimited(false);
 	} else {
 		sendMessageToClient(client.getSocket(), ERROR::UNKNOWNMODE(client.getNickname(), cmd.params[1]));
 		return false;

@@ -6,7 +6,11 @@
 /*   By: olcoste <olcoste@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 16:24:28 by ablancha          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2024/11/06 16:23:44 by olcoste          ###   ########.fr       */
+=======
+/*   Updated: 2024/11/06 15:06:38 by ablancha         ###   ########.fr       */
+>>>>>>> 0e4ee69f0b862fa6ca5e0de62ffa1fd918f4faca
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +30,12 @@ private:
 	bool		_lockTopic;
 	bool		_locked;
 	bool		_limited;
+<<<<<<< HEAD
 	int			_userLimit;
 	std::vector<Client*> invite;
+=======
+>>>>>>> 0e4ee69f0b862fa6ca5e0de62ffa1fd918f4faca
+	unsigned long	_userLimit;
 	std::vector<Client*> clientList;
 	std::vector<Client*> operators;
 	
@@ -38,6 +46,8 @@ public:
 	std::string	getname();
 	bool		getLockTopic();
 	bool		getInviteOnly();
+	unsigned long			getUserLimit();
+	std::string getKey();
 	bool		getLock();
 	std::string	getTopic();
 	bool		isLimited();

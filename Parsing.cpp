@@ -76,8 +76,8 @@ void	Server::executeCmd(Command_s command, Client& client)
 	}
 	if (command.command == "CAP")
 		CAPresponse(command.params[0], client);
-	else if (command.command == "JOIN")
-        cmdJoin(client, command.params[0]);
+	else if (command.command == "JOIN" && command.params.size() != 0)
+        cmdJoin(client, command.params[0], command.params[2]);
 	else if (command.command == "PING")
 		PingRspd(client);
 	else if (command.command == "PONG")
