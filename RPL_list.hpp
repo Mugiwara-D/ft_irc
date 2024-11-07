@@ -176,4 +176,12 @@ namespace ERROR{
 	inline string	USERSDONTMATCH(const string& nick) {
 		return ":server 502 "+ nick +" :Cannot change mode for other users";
 	} // The client attempted to modify a user mode, but they do not have the required privileges.
+
+	inline string	NOTONCHANNEL(const string& nick, const string& chn) {
+		return ":server 473 " + nick + " " + chn + " :Cannot join channel (+i)";
+	}
+
+	inline string	CHANNELNOEXISTE(const string& nick, const string& chn) {
+		return ":server 403 " + nick + " " + chn + " :No such channel";
+	}
 }

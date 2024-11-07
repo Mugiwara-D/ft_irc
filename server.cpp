@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ablancha <ablancha@student.42.fr>          +#+  +:+       +#+        */
+/*   By: olcoste <olcoste@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 15:10:15 by ablancha          #+#    #+#             */
-/*   Updated: 2024/11/06 15:13:43 by ablancha         ###   ########.fr       */
+/*   Updated: 2024/11/07 13:35:15 by olcoste          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -194,14 +194,22 @@ void Server::cmdKick(Client& client, const std::string& channelName, const std::
 }
 
 
+
 void Server::cmdJoin(Client& client, const std::string& channelName, const std::string& key) {
 	if (channelName.empty()) {
 		sendMessageToClient(client.getSocket(), ERROR::NEEDMOREPARAMS(client.getNickname(), "JOIN"));
 		return;
 	}
     channel* existingChannel = getChannelByName(channelName);
-    if (existingChannel) {
 
+    if (existingChannel) {
+        std::cout << "Le channel est:" << existingChannel->getInviteOnly() << std::endl;
+        if (existingChannel->getInviteOnly() == true && existingChannel->checkInvite(&client) == false)/*check si le user est dans la liste*/ {
+                std::cout << "Le client ne rejoint pas le channel" << std::endl;
+                sendMessageToClient(client.getSocket(), ERROR::NOTONCHANNEL(client.getNickname(), channelName));
+                return ;
+        }
+            
         if (!existingChannel->getKey().empty() && existingChannel->getKey() != key) {
             std::string errorMsg = "Wrong password" + channelName;
             sendMessageToClient(client.getSocket(), errorMsg);

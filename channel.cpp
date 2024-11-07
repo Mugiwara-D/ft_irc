@@ -6,13 +6,10 @@
 /*   By: olcoste <olcoste@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 14:07:08 by ablancha          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2024/11/06 16:24:57 by olcoste          ###   ########.fr       */
-=======
-/*   Updated: 2024/11/06 15:06:31 by ablancha         ###   ########.fr       */
->>>>>>> 0e4ee69f0b862fa6ca5e0de62ffa1fd918f4faca
+/*   Updated: 2024/11/07 13:14:48 by olcoste          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #include "channel.hpp"
 
@@ -158,3 +155,17 @@ void channel::kickClient(Client& client) {
     std::cout << "Client " << client.getNickname() << " is not in the channel \"" << name << "\"." << std::endl;
 }
 
+bool channel::checkInvite(Client *client)
+{
+        //msg d erreur
+
+        for (std::vector<Client*>::iterator it = invite.begin(); it != invite.end(); ++it) {
+            if ((*it) == client)
+            {
+                std::cout << "Le client est dans la liste" << std::endl;
+                return (true);
+            }
+        }
+        std::cout << "Le client n'est PAS dans la liste" << std::endl;
+    return (false);
+}

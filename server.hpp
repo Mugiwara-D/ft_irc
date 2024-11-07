@@ -6,13 +6,10 @@
 /*   By: olcoste <olcoste@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 15:09:23 by ablancha          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2024/11/06 15:49:42 by olcoste          ###   ########.fr       */
-=======
-/*   Updated: 2024/11/06 14:57:00 by ablancha         ###   ########.fr       */
->>>>>>> 0e4ee69f0b862fa6ca5e0de62ffa1fd918f4faca
+/*   Updated: 2024/11/07 13:13:46 by olcoste          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #ifndef SERVER_HPP
 #define SERVER_HPP
@@ -112,6 +109,7 @@ public:
     Client& getClientByName(const std::string& nickname);
 
     void	cmdInvite(Command_s command, Client &Clt);
+
 };
 
 #endif
