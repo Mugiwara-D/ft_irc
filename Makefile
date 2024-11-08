@@ -1,32 +1,62 @@
-SRC = mode.cpp main.cpp server.cpp channel.cpp client.cpp nick.cpp \
-	  privmsg.cpp Topic.cpp WhoCmd.cpp Parsing.cpp User.cpp pingpong.cpp \
-	  invite.cpp Join.cpp
+# Directories
+SRC_DIR = source
+OBJ_DIR = obj
+INC_DIR = ./Include
 
+# Source files and target binary
+SRC = $(wildcard $(SRC_DIR)/*.cpp)
 NAME = ft_irc
 
-OBJ = $(SRC:.cpp=.o)
+# Compiler and flags
+CC = c++
+CFLAGS = -Werror -Wall -Wextra -std=c++98 -g3 -I$(INC_DIR)
 
-INC = ./Include
+# Object files and dependency files
+OBJ = $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRC))
+DEPS = $(OBJ:.o=.d)
 
-FLAG = -Werror -Wall -Wextra -std=c++98 -g3
+# Colors for output
+GREEN = \033[32m
+RED = \033[31m
+YELLOW = \033[33m
+RESET = \033[0m
 
-CC = c++ 
+# Default rule
+all: $(NAME)
 
-all : $(NAME) 
+# Build the executable
+$(NAME): $(OBJ)
+	@echo "$(YELLOW)[Linking]$(RESET) $@"
+	$(CC) $(CFLAGS) $(OBJ) -o $(NAME)
+	@echo "$(GREEN)[Build Complete]$(RESET)"
 
-$(NAME) : $(OBJ) 
-	$(CC) $(FLAG) $(OBJ) -o $(NAME)
-	
-%.o : %.cpp
-	$(CC) $(FLAG) -c $< -o $@
+# Compile source files to object files with dependencies
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
+	@mkdir -p $(OBJ_DIR)
+	@echo "$(YELLOW)[Compiling]$(RESET) $<"
+	$(CC) $(CFLAGS) -MMD -c $< -o $@
 
+# Include generated dependency files
+-include $(DEPS)
 
-clean :
-	rm -f $(OBJ)
+# Clean object files
+clean:
+	@echo "$(RED)[Cleaning]$(RESET)"
+	rm -rf $(OBJ_DIR)
 
-fclean:
-	rm -f $(OBJ) $(NAME)
+# Clean all, including the executable
+fclean: clean
+	rm -f $(NAME)
 
-re : fclean all
+# Rebuild everything
+re: fclean all
 
-.PHONY: all clean fclean re
+# Valgrind target for memory leak checks
+VALGRIND_ARGS = 
+valgrind: $(NAME)
+	@echo "$(YELLOW)[Running Valgrind]$(RESET)"
+	valgrind --leak-check=full --track-origins=yes ./$(NAME) $(VALGRIND_ARGS)
+
+# Use parallel build with -j flag (optional)
+.PHONY: all clean fclean re valgrind
+
