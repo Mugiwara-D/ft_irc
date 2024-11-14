@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ablancha <ablancha@student.42.fr>          +#+  +:+       +#+        */
+/*   By: olcoste <olcoste@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 15:10:15 by ablancha          #+#    #+#             */
-/*   Updated: 2024/11/07 16:19:43 by ablancha         ###   ########.fr       */
+/*   Updated: 2024/11/14 15:09:09 by olcoste          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,22 +157,28 @@ Client& Server::getClientByName(const std::string& nickname) {
             return *clients[i];
         }
     }
+	//return nullptr;
     throw std::runtime_error("Client with nickname '" + nickname + "' not found.");
 }
 
 
 void Server::cmdKick(Client& client, const std::string& channelName, const std::string& target) {
-    channel* chan = getChannelByName(channelName);
+    
+	try {
+	channel* chan = getChannelByName(channelName);
     
     if (chan == NULL) {
         std::cout << "Channel \"" << channelName << "\" does not exist." << std::endl;
+		sendMessageToClient(client.getSocket(), ERROR::CHANNELNOEXISTE(client.getNickname(), channelName));
         return;
     }
-    
-    Client& cli = getClientByName(target);
+
+	Client& cli = getClientByName(target);
+
     if (!chan->isOperator(client)) {
         std::cout << "Client " << client.getNickname() << " is not an operator in channel \"" << channelName << "\"." << std::endl;
-        return;
+        sendMessageToClient(client.getSocket(), ERROR::KICKNOOPERATOR(client.getNickname(), channelName));
+		return;
     }
     chan->kickClient(cli);
     std::string kickMessage = ":" + client.getUsername() + "!admin@host KICK " + target + " :Breaking rules";
@@ -181,7 +187,13 @@ void Server::cmdKick(Client& client, const std::string& channelName, const std::
 //    const std::vector<Client*>& clientsInChannel = chan->getClientList();
   //  for (size_t i = 0; i < clientsInChannel.size(); ++i) {
     //    sendMessageToClient(clientsInChannel[i]->getSocket(), kickMessage);
-	sendMessageToChannel(channelName, kickMessage, client); 
+	sendMessageToChannel(channelName, kickMessage, client);
+	}
+	catch(const std::exception& e)
+	{
+		std::cerr << e.what() << '\n';
+		sendMessageToClient(client.getSocket(), ERROR::USERNOEXISTE(client.getNickname(), channelName));
+	}
 }
 
 

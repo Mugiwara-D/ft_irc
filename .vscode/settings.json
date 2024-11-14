@@ -9,6 +9,7 @@
 		"cmath": "cpp",
 		"compare": "cpp",
 		"concepts": "cpp",
+		"csignal": "cpp",
 		"cstdarg": "cpp",
 		"cstddef": "cpp",
 		"cstdint": "cpp",
@@ -51,7 +52,6 @@
 		"sstream": "cpp",
 		"stdexcept": "cpp",
 		"streambuf": "cpp",
-		"typeinfo": "cpp",
-		"csignal": "cpp"
+		"typeinfo": "cpp"
 	}
 }
