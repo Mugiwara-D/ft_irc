@@ -184,4 +184,12 @@ namespace ERROR{
 	inline string	CHANNELNOEXISTE(const string& nick, const string& chn) {
 		return ":server 403 " + nick + " " + chn + " :No such channel";
 	}
+
+	inline string	USERNOEXISTE(const string& nick, const string& chn) {
+		return ":server 401 " + nick + " " + chn + " :No such nick/channel";
+	}
+
+	inline string	KICKNOOPERATOR(const string& nick, const string& chn) {
+		return ":server 482 " + nick + " " + chn + " :You're not channel operator";
+	}
 }

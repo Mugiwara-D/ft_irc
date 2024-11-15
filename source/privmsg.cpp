@@ -6,7 +6,7 @@
 /*   By: olcoste <olcoste@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 18:16:05 by olcoste           #+#    #+#             */
-/*   Updated: 2024/11/06 14:55:00 by olcoste          ###   ########.fr       */
+/*   Updated: 2024/11/08 16:03:25 by olcoste          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,9 +51,10 @@ void	Server::cmdPrivMsg(Command_s command, Client &Clt)//messag  vers d autre ch
 
 	/*check si le destinataire existe*/
 	if (!found) {
-		std::string fullMessage = ": <serverName(a remplacer)> ERR_NOSUCHNICK 401 your/channel: " + Clt.getNickname() + ": No such nick/channel.\r\n";
+		std::string fullMessage = ": server ERR_NOSUCHNICK 401 your/channel: " + Clt.getNickname() + ": No such nick/channel.\r\n";
 		if (send(Clt.getSocket(), fullMessage.c_str(), fullMessage.length(), 0) < 0) {
 			std::cerr << "Failed to send error message to client" << std::endl;
+            return ;
 		}
 	return;
 	}
