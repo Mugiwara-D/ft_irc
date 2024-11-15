@@ -49,7 +49,7 @@ void Server::cmdJoin(Client& client, const std::string& channelName, const std::
     }
 
     std::cout << client.getNickname() << " has joined channel: " << channelName << std::endl;
-    std::string reply = ":" + client.getNickname() + " JOIN :" + channelName;
+    std::string reply = ":" + client.getNickname() + "!" + client.getUsername() + "@" + client.getRealname() + " JOIN " + channelName;
 
     const std::vector<Client*>& clientsInChannel = existingChannel->getClientList();
     for (size_t i = 0; i < clientsInChannel.size(); ++i) {

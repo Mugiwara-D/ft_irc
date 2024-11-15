@@ -1,0 +1,24 @@
+<< CAP LS 302
+<< JOIN :
+>> CAP * LS :
+<< CAP END
+<< NICK matiya
+<< USER matiya matiya localhost :matiya
+>> 433 matiya matiya :Nickname is already in use
+<< NICK matiya_
+>> :irc.example.com 001 Guest1 :Welcome to the IRC Network, Guest1!matiya@host
+>> :Guest1 NICK matiya_
+>> 
+<< MODE Guest1 +i
+>> :server 461 matiya_ MODE :Not enough parameters
+<< WHOIS matiya
+>> 311 matiya_ matiya localhost * :matiya
+--> nickfind event whois
+>> 319 matiya_ :
+--> event empty
+>> 318 matiya_ :End of WHOIS list
+--> event empty
+<< PING irc.example.com
+>> PONG irc.example.com
+--> lag pong
+<< QUIT :leaving
