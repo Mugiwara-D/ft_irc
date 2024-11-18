@@ -13,7 +13,9 @@
 #include "server.hpp"
 /*######################fonction utiles : ###########################################*/
 Server::Server(const Server &other)
-    : password(other.password), clients(other.clients), port(other.port), running(false){}
+    : password(other.password), clients(other.clients), port(other.port), running(false){
+        creationDate = getStrDate();
+    }
 
 
 std::string Server::getPassword() const {

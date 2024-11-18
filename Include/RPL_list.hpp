@@ -2,28 +2,28 @@
 #include <string>
 
 using std::string;
-static string SERV_NAME = "irc.example.com";
+static string SERV_NAME = ":irc.example.com";
 
 namespace RPL 
 {
 	inline string	WELCOME( const string& nick, const string& user, const string& host ) {
-		return ":irc.example.com 001 "+ nick +" :Welcome to the IRC Network, " + nick + "!" + user + "@" + host;
+		return SERV_NAME + " 001 "+ nick +" :Welcome to the IRC Network, " + nick + "!" + user + "@" + host;
 	} // Sent after the client has successfully connected and logged in to the IRC server.
 
 	inline string	YOURHOST( const string& nick, const string& serverName, const string& version ){
-		return "002 " + nick + " :Your host is " + serverName + ", running version" + version;
+		return SERV_NAME + " 002 " + nick + " :Your host is " + serverName + ", running version" + version;
 	} // Describes the server the user is connected to and its version.
 
 	inline string	CREATED( const string& nick, const string& date ) {
-		return "003 " + nick + " :This server was created " + date;
+		return SERV_NAME + " 003 " + nick + " :This server was created " + date;
 	} // Shows the date and time when the IRC server was created.
 
 	inline string	MYINFO( const string& nick, const string& server, const string& version, const string& userMode, const string& channelMode) {
-		return "004 " + nick + " " + server + " " + version + " " + userMode + " " + channelMode;
+		return SERV_NAME + " 004 " + nick + " " + server + " " + version + " " + userMode + " " + channelMode;
 	} // Displays server-specific information like server name, version, available user modes, and channel modes.
 	
 	inline string	BOUNCE( const string& nick, const string& maxChan, const string& chanLim, const string& nickLen ) {
-		return "005 "+ nick +" MAXCHANNELS="+ maxChan +" CHANLIMIT=#&:"+ chanLim +" NICKLEN="+ nickLen +" :are supported by this server";
+		return SERV_NAME +" 005 "+ nick +" MAXCHANNELS="+ maxChan +" CHANLIMIT=#&:"+ chanLim +" NICKLEN="+ nickLen +" :are supported by this server";
 	} // Sent to show features and limits specific to the server.
 
 	inline string	USERCLIENT( const string& nick, const string& users, const string& invisible, const string& servers ){
@@ -95,15 +95,15 @@ namespace RPL
 	} // Sent after the list of users in a channel is complete.
 
 	inline string	MOTD(const string& nick, const string& message) {
-		return "372 "+ nick +" :- " + message;
+		return SERV_NAME + " 372 "+ nick +" :- " + message;
 	} // Message of the Day (MOTD) text line. Multiple lines may be sent.
 
 	inline string	MOTDSTART(const string& nick, const string& server) {
-		return "375 "+ nick +" :- "+ server +" Message of the Day -";
+		return SERV_NAME + " 375 "+ nick +" :- "+ server +" Message of the Day -";
 	} // Indicates the start of the Message of the Day.
 
 	inline string	ENDOFMOTD(const string& nick) {
-		return "376 "+ nick +" :End of /MOTD command.";
+		return SERV_NAME + " 376 "+ nick +" :End of /MOTD command.";
 	} // Marks the end of the Message of the Day.
 
 	inline string	NOTONCHANNEL(const std::string& nick, const std::string& channel) {
@@ -111,11 +111,11 @@ namespace RPL
 	} // Indicates that the user is trying to perform an action on a channel they are not in.
 
 	inline string	CAP302(const string& nickname) {
-		return ":" + SERV_NAME + " CAP " + nickname + " LS :multi-prefix";
+		return SERV_NAME + " CAP " + nickname + " LS :multi-prefix";
 	} // respond to CAP LS 302
 	
 	inline string	CAPREQ(const string& nickname) {
-		return ":" + SERV_NAME + " CAP " + nickname + " ACK :multi-prefix";
+		return SERV_NAME + " CAP " + nickname + " ACK :multi-prefix";
 	}
 }
 
