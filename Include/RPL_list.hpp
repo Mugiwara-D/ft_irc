@@ -18,7 +18,7 @@ namespace RPL
 		return "003 " + nick + " :This server was created " + date;
 	} // Shows the date and time when the IRC server was created.
 
-	inline string	MYINFO( const string& nick, const string& server, const string& version, string& userMode, string& channelMode) {
+	inline string	MYINFO( const string& nick, const string& server, const string& version, const string& userMode, const string& channelMode) {
 		return "004 " + nick + " " + server + " " + version + " " + userMode + " " + channelMode;
 	} // Displays server-specific information like server name, version, available user modes, and channel modes.
 	
@@ -111,11 +111,11 @@ namespace RPL
 	} // Indicates that the user is trying to perform an action on a channel they are not in.
 
 	inline string	CAP302(const string& nickname) {
-		return "CAP " + nickname + " LS :";
+		return ":" + SERV_NAME + " CAP " + nickname + " LS :multi-prefix sasl=PLAIN";
 	} // respond to CAP LS 302
 	
 	inline string	CAPREQ(const string& nickname) {
-		return "CAP " + nickname + " ACK :";
+		return ":" + SERV_NAME + " CAP " + nickname + " ACK :multi-prefix sasl";
 	}
 }
 
