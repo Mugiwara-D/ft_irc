@@ -24,8 +24,12 @@ bool 	Server::cmdMode( Command_s cmd, Client& client )
 		sendMessageToClient(client.getSocket(), ERROR::UNKNOWNMODE(client.getNickname(), cmd.params[0]));
         return false;
     }
-
+	
 	std::string	channel = cmd.params[0];
+	if (getChannelByName(channel) == NULL) {
+		sendMessageToClient(client.getSocket(), ERROR::CHANNELNOEXISTE(client.getNickname(), cmd.params[0]));
+		return false;
+	}
 
 	if (!getChannelByName(channel)->isOperator(client)){
 		sendMessageToClient(client.getSocket(), ERROR::CHANOPRIVSNEEDED(client.getNickname(), channel));
