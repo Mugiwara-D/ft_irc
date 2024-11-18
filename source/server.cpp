@@ -6,7 +6,7 @@
 /*   By: olcoste <olcoste@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 15:10:15 by ablancha          #+#    #+#             */
-/*   Updated: 2024/11/14 15:09:09 by olcoste          ###   ########.fr       */
+/*   Updated: 2024/11/18 15:01:53 by olcoste          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,32 +41,32 @@ void Server::removeClient(const std::string &username) {
 }
 
 void Server::displayInfo() const {
-    std::cout << "Password: " << password << std::endl;
-    std::cout << "Clients:" << std::endl;
-    for (std::vector<Client*>::const_iterator it = clients.begin(); it != clients.end(); ++it) {
-        (*it)->displayInfo();
-    }
+    // std::cout << "Password: " << password << std::endl;
+    // std::cout << "Clients:" << std::endl;
+    // for (std::vector<Client*>::const_iterator it = clients.begin(); it != clients.end(); ++it) {
+    //     (*it)->displayInfo();
+    // }
 
-    std::cout << "Port: " << port << std::endl;
+    // std::cout << "Port: " << port << std::endl;
 
-    if (channels.empty()) {
-        std::cout << "No channels exist." << std::endl;
-        return;
-    }
-    std::cout << "List of users in all channels:" << std::endl;
-    for (size_t i = 0; i < channels.size(); ++i) {
-        const channel& chan = *channels[i];
-        std::vector<Client*> clientsInChannel = chan.getClientList();
-        std::cout << "Channel: " << chan.getname() << std::endl;
-        if (clientsInChannel.empty()) {
-            std::cout << "  No users in this channel." << std::endl;
-        } else {
-            std::cout << "  Users:" << std::endl;
-            for (size_t j = 0; j < clientsInChannel.size(); ++j) {
-                std::cout << "    - " << clientsInChannel[j]->getNickname() << std::endl;
-            }
-        }
-    }
+    // if (channels.empty()) {
+    //     std::cout << "No channels exist." << std::endl;
+    //     return;
+    // }
+    // std::cout << "List of users in all channels:" << std::endl;
+    // for (size_t i = 0; i < channels.size(); ++i) {
+    //     const channel& chan = *channels[i];
+    //     std::vector<Client*> clientsInChannel = chan.getClientList();
+    //     std::cout << "Channel: " << chan.getname() << std::endl;
+    //     if (clientsInChannel.empty()) {
+    //         std::cout << "  No users in this channel." << std::endl;
+    //     } else {
+    //         std::cout << "  Users:" << std::endl;
+    //         for (size_t j = 0; j < clientsInChannel.size(); ++j) {
+    //             std::cout << "    - " << clientsInChannel[j]->getNickname() << std::endl;
+    //         }
+    //     }
+    // }
 }
 
 
@@ -288,8 +288,8 @@ void	Server::CAPresponse( std::string arg, Client& client )
 {
 	if (arg.find("REQ") != std::string::npos)
 		sendMessageToClient(client.getSocket(), RPL::CAPREQ(client.getNickname()));
-//	if (arg.find("END") != std::string::npos)
-//		sendMessageToClient(client.getSocket(), RPL::WELCOME(client.getNickname(), client.getUsername(), "server name"));
+	if (arg.find("END") != std::string::npos)
+		sendMessageToClient(client.getSocket(), RPL::WELCOME(client.getNickname(), client.getUsername(), "server name"));
 }
 
 bool	Server::initialHandShake( std::string buffer, int fd )
@@ -357,7 +357,9 @@ void Server::start() {
             ss << baseName << i;
             std::string indexedName = ss.str();
             i++;
-            //fin test 
+            //fin test
+           // time_t	currentTime = time(NULL);
+            //clients->setLastNicknameChange(time(NULL));
             clients.push_back(new Client(indexedName,indexedName,new_socket));
         }
         //verifier les connexions
