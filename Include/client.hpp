@@ -21,6 +21,7 @@ private:
 
 	////////Ping Pong/////////
 	std::time_t	lastPing;
+    bool        awaitPing;
 
 public:
     Client(const std::string &user, const std::string &nick, int socket);
@@ -43,7 +44,9 @@ public:
     bool	needPing(int interval, int timeout);
 	bool	isTimeout(int timeout);
     std::time_t getLastPing();
-    void setLastPing( std::time_t timeT );
+    void    setLastPing( std::time_t timeT );
+    bool    getAwaitPing();
+    void    setAwaitPing( bool ap );
 
     channel&    getCurrentChan( std::string channelName );
     std::string getCurrentChannel() const;

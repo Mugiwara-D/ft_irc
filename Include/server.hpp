@@ -91,7 +91,7 @@ public:
     void	sendMessageToChannel(const std::string& channelName, const std::string& message, const Client& sender);
    // void	sendMessageToChannel(const std::string& channel, const std::string& message, Client& sender);
 
-
+    void	handleTimeOut(Client& client);
 	bool	Pong(Client& client);
 	void	Ping(Client& client);
 	bool	PingRspd(Client& client);

@@ -16,7 +16,7 @@
 #include <unistd.h>
 
 Client::Client(const std::string &user, const std::string &nick, int socket): 
-	username(user), nickname(nick), socket(socket), lastPing(std::time(0))
+	username(user), nickname(nick), socket(socket), lastPing(std::time(0)), awaitPing(false)
 {
     this->Registered = false;
 }
@@ -75,10 +75,21 @@ void	Client::setLastNicknameChange(const time_t newChange){
 
 bool	Client::needPing(int interval, int timeout)
 {
-    (void) timeout;
-//	if (lastPing > std::time(0) - interval && lastPing < std::time(0) - timeout)
-//		return true;
-	return (std::time(0) - lastPing) >= interval ;
+	if (std::time(0) - lastPing >= interval){
+        if (std::time(0) - lastPing >= timeout){
+            return false;
+        }
+        return true;
+    }
+	return false ;
+}
+
+void    Client::setAwaitPing( bool ap ){
+    awaitPing = ap;
+}
+
+bool    Client::getAwaitPing(){
+    return  awaitPing;
 }
 
 bool	Client::isTimeout(int timeout) {

@@ -271,8 +271,8 @@ void Server::start() {
         }
 
         struct timeval timeout;
-        timeout.tv_sec = 2;
-        timeout.tv_usec = 0;
+        timeout.tv_sec = 0;
+        timeout.tv_usec = 500000;
 
         FDready = select(maxFD + 1, &fds, NULL, NULL, &timeout); // check les fd prets pour la lecture
 		if (FDready < 0){
@@ -313,7 +313,7 @@ void Server::start() {
 					removeClient(clients[i]->getUsername());
 					continue;
 				}
-				if (clients[i]->needPing(PING_INTERVAL, PING_TIMEOUT) == true)
+				if (clients[i]->needPing(PING_INTERVAL, PING_TIMEOUT) && !clients[i]->getAwaitPing())
 					Ping(*clients[i]);
                 int valread = read(clientFD, buffer, 1024);
                 if (valread >= 0) {
@@ -322,10 +322,11 @@ void Server::start() {
 					{
 						MessageParsing(buf, *clients[i], i);
 						buf.clear();
-					} else {
+                      //  clients[i]->setAwaitPing(false);
+					} /*else {
 						removeClient(clients[i]->getUsername());
 						continue ;
-					}
+					}*/
 				} else {
                     close(clientFD);
                     clients.erase(clients.begin() + i);
