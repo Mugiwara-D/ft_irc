@@ -11,8 +11,11 @@ std::string	Server::getStrDate()
 
 	std::ostringstream oss;
 
-	oss << days[localTime->tm_wday] << " " << month[localTime->tm_mon] << " " << localTime->tm_mday << " " << localTime->tm_year << " " 
-	<< localTime->tm_hour << ":" << localTime->tm_min << ":" << localTime->tm_sec << "CET";
+	oss << days[localTime->tm_wday] << " " << month[localTime->tm_mon] << " " << (localTime->tm_mday < 10 ? "0" : "") << localTime->tm_mday << " " 
+		<< 1900 + localTime->tm_year << " at "
+    	<< (localTime->tm_hour < 10 ? "0" : "") << localTime->tm_hour << ":"
+        << (localTime->tm_min < 10 ? "0" : "") << localTime->tm_min << ":"
+        << (localTime->tm_sec < 10 ? "0" : "") << localTime->tm_sec << " CET";
 
 	return oss.str();
 }

@@ -71,6 +71,7 @@ public:
     void 	displayInfo() const;
     void 	sendMessageToClient(int client_fd, const std::string& message);
 
+    void    setCreationDate(const std::string date);
     std::string getStrDate();
     std::string getCreationDate();
 	bool	checkPassWord( Command_s cmd, Client& Client );

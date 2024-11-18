@@ -14,7 +14,6 @@
 /*######################fonction utiles : ###########################################*/
 Server::Server(const Server &other)
     : password(other.password), clients(other.clients), port(other.port), running(false){
-        creationDate = getStrDate();
     }
 
 
@@ -24,6 +23,10 @@ std::string Server::getPassword() const {
 
 void Server::setPassword(const std::string &pwd) {
     password = pwd;
+}
+
+void    Server::setCreationDate(const std::string date){
+    creationDate = date;
 }
 
 void Server::addClient(Client* client) {
@@ -76,6 +79,7 @@ void Server::displayInfo() const {
 
 /*######################fonctionnement du serv : ###########################################*/
 Server::Server(int port, const std::string &pwd) : password(pwd), port(port){
+    setCreationDate(getStrDate());
     server_socket = socket(AF_INET, SOCK_STREAM, 0); //SOCK_STREAM = TCP
     if (server_socket < 0 ) {
         std::cout << "Error with socket creation." << std::endl;
