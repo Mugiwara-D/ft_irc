@@ -16,7 +16,7 @@
 #include <unistd.h>
 
 Client::Client(const std::string &user, const std::string &nick, int socket): 
-	username(user), nickname(nick), lastNicknameChange(NULL), socket(socket), lastPing(std::time(0)), awaitPing(false)
+	username(user), nickname(nick), lastNicknameChange(std::time(0)), socket(socket), lastPing(std::time(0)), awaitPing(false)
 {
     this->Registered = false;
 }
