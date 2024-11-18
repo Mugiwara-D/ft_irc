@@ -1,6 +1,6 @@
 #include "server.hpp"
 
-std::string	getStrDate()
+std::string	Server::getStrDate()
 {
 	const char*	days[] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
 
@@ -17,6 +17,11 @@ std::string	getStrDate()
 	return oss.str();
 }
 
+std::string	Server::getCreationDate()
+{
+	return creationDate;
+}
+
 void	Server::cmdUser(Command_s cmd, Client& client)
 {
 	client.setRealname(cmd.trailing);
@@ -24,7 +29,7 @@ void	Server::cmdUser(Command_s cmd, Client& client)
 
 	sendMessageToClient(client.getSocket(), RPL::WELCOME(client.getNickname(), client.getUsername(), "host"));
 	sendMessageToClient(client.getSocket(), RPL::YOURHOST(client.getNickname(), "irc.example.com", "1.0"));
-	sendMessageToClient(client.getSocket(), RPL::CREATED(client.getNickname(), getStrDate()));
+	sendMessageToClient(client.getSocket(), RPL::CREATED(client.getNickname(), getCreationDate()));
 	sendMessageToClient(client.getSocket(), RPL::MYINFO(client.getNickname(), SERV_NAME, "1.0", " o", " o"));
 	sendMessageToClient(client.getSocket(), RPL::BOUNCE(client.getNickname(), "10", "10", "10"));
 	sendMessageToClient(client.getSocket(), RPL::MOTDSTART(client.getNickname(), SERV_NAME));

@@ -1,0 +1,25 @@
+<< CAP LS 302
+<< JOIN :
+>> :irc.example.com CAP * LS :multi-prefix sasl=PLAIN
+<< CAP REQ :multi-prefix
+>> :irc.example.com CAP Guest0 ACK :multi-prefix sasl
+<< AUTHENTICATE *
+<< CAP END
+<< PASS pwd
+<< NICK matiya
+<< USER matiya matiya localhost :matiya
+>> :server_name 421  Guest0 AUTHENTICATE :Unknown command
+>> :Guest0 NICK matiya
+>> 
+>> :irc.example.com 001 matiya :Welcome to the IRC Network, matiya!matiya@host
+>> 002 matiya :Your host is irc.example.com, running version1.0
+>> 003 matiya :This server was created 
+>> 004 matiya irc.example.com 1.0  o  o
+>> 005 matiya MAXCHANNELS=10 CHANLIMIT=#&:10 NICKLEN=10 :are supported by this server
+>> 375 matiya :- irc.example.com Message of the Day -
+>> 372 matiya :- salut bien venue sur le serveur irc le plus sketchy de tout le 93, enjoy!!
+>> 376 matiya :End of /MOTD command.
+<< MODE matiya +i
+>> :server 461 matiya MODE :Not enough parameters
+<< PING irc.example.com
+<< QUIT :leaving

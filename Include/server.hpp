@@ -46,6 +46,7 @@ struct	Command_s{
 class Server {
 private:
     std::string password;
+	std::string creationDate;
     std::vector<Client*> clients;
 	std::vector<channel*> channels;
     int port;
@@ -70,6 +71,8 @@ public:
     void 	displayInfo() const;
     void 	sendMessageToClient(int client_fd, const std::string& message);
 
+    std::string getStrDate();
+    std::string getCreationDate();
 	bool	checkPassWord( Command_s cmd, Client& Client );
     void 	MessageParsing(std::string buffer, Client& Client, int i);
 
