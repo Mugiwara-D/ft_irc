@@ -2,9 +2,9 @@
 
 void	Server::Ping(Client& client)
 {
-	if (!client.getAwaitPing()) {
+	if (client.getAwaitPing()) {
 		sendMessageToClient(client.getSocket(), "PING irc.example.com");
-		client.setAwaitPing(true);
+		client.setAwaitPing(false);
 	}
 }
 
@@ -24,12 +24,9 @@ bool	Server::PingRspd(Client& client)
 		handleTimeOut(client);
 		return false;
 	}
-	if (client.getAwaitPing()) {
-		sendMessageToClient(client.getSocket(), "PONG irc.example.com");
-		client.setLastPing(std::time(0));
-		client.setAwaitPing(false);
-		std::cout << client.getNickname() << " pong sent" << std::endl;
-    }
+	sendMessageToClient(client.getSocket(), "PONG irc.example.com");
+	client.setLastPing(std::time(0));
+	client.setAwaitPing(false);
 	return true;
 }
 

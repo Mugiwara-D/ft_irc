@@ -52,7 +52,7 @@ void	Server::cmdNick(Command_s command, Client &Clt)
 
 /**********************EXECUTION*************************/
 
- 	std::string newNick = ":" + (*itClient)->getNickname() + " NICK " + (*itSup) + "\r\n";
+ 	std::string newNick = ":" + (*itClient)->getNickname() + " NICK " + (*itSup) ;
 
 	sendMessageToClient(Clt.getSocket(), newNick);
 	(*itClient)->setNickname((*itSup));

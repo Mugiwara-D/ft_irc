@@ -15,7 +15,7 @@ private:
     std::string nickname;
     std::string Currentchannel;
     std::vector<channel*> Channel_list;
-    time_t lastNicknameChange;
+    time_t  lastNicknameChange;
     bool Registered;
     int socket;
 

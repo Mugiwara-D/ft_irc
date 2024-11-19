@@ -6,7 +6,7 @@ std::vector<std::string>	splitBuffer(const std::string& buffer)
 	std::string::size_type	start = 0;
 	std::string::size_type	end = 0;
 
-	std::cout << "\nparsing Buffer :\n" << buffer << std::endl;
+	//std::cout << "\nparsing Buffer :\n" << buffer << std::endl;
 
 	while ((end = buffer.find("\r\n", start)) != std::string::npos)
 	{
@@ -67,19 +67,19 @@ Command_s	parseCommand( const std::string rawCmd )
 
 void	Server::executeCmd(Command_s command, Client& client)
 {
-	std::cout << "\nCommand : " << command.command 
+/*	std::cout << "\nCommand : " << command.command 
 		<< "\nprefix : " << command.prefix <<
 		"\ntrailing : " << command.trailing << std::endl;
 	std::cout << "Params : " << std::endl;
 	for (size_t i = 0; i < command.params.size(); ++i){
 		std::cout << command.params[i] << std::endl; 
-	}
+	}*/
 	if (command.command == "CAP")
 		CAPresponse(command.params[0], client);
 	else if (command.command == "JOIN" && command.params.size() != 0)
         cmdJoin(client, command.params[0], command.params[2]);
-	else if (command.command == "PING")
-		PingRspd(client);
+	//else if (command.command == "PING")
+		//PingRspd(client);
 	else if (command.command == "PONG")
 		Pong(client);
 	else if (command.command == "MODE")
