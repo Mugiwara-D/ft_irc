@@ -108,7 +108,7 @@ public:
 	bool	initialHandShake( std::string buffer, int fd );
 	void	CAPresponse( std::string arg, Client& client );
 
-	void	executeCmd(Command_s command, Client& client);
+	bool	executeCmd(Command_s command, Client& client);
     channel* getChannelByName(const std::string& channelName);
     Client& getClientByName(const std::string& nickname);
 

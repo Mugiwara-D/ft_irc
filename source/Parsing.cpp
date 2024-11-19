@@ -6,8 +6,6 @@ std::vector<std::string>	splitBuffer(const std::string& buffer)
 	std::string::size_type	start = 0;
 	std::string::size_type	end = 0;
 
-	//std::cout << "\nparsing Buffer :\n" << buffer << std::endl;
-
 	while ((end = buffer.find("\r\n", start)) != std::string::npos)
 	{
 			commands.push_back(buffer.substr(start, end - start));
@@ -16,10 +14,7 @@ std::vector<std::string>	splitBuffer(const std::string& buffer)
 
 	if (start < buffer.size())
 		commands.push_back(buffer.substr(start));
-/*	std::cout << "\nsplited command :\n";
-	for (size_t i = 0; i < commands.size(); i++){
-		std::cout << "->" << commands[i] << std::endl;
-	}*/
+
 	return commands;
 }
 
@@ -65,7 +60,7 @@ Command_s	parseCommand( const std::string rawCmd )
 	return command;
 }
 
-void	Server::executeCmd(Command_s command, Client& client)
+bool	Server::executeCmd(Command_s command, Client& client)
 {
 /*	std::cout << "\nCommand : " << command.command 
 		<< "\nprefix : " << command.prefix <<
@@ -95,7 +90,10 @@ void	Server::executeCmd(Command_s command, Client& client)
 	else if (command.command == "WHOIS")
 		cmdWhois(command, client);
 	else if (command.command == "PASS")
-		checkPassWord(command, client);
+	{
+		if(!checkPassWord(command, client))
+			return false;
+	}
 	else if (command.command == "USER")
 		cmdUser(command, client);
 	else if (command.command == "KICK")
@@ -106,6 +104,7 @@ void	Server::executeCmd(Command_s command, Client& client)
 		std::cout << "\nInvalide Command" << std::endl;
 		sendMessageToClient(client.getSocket(), ERROR::UNKNOWNCOMMAND(client.getUsername(), command.command));
 	}
+	return true;
 }
 
 void	Server::MessageParsing(std::string buffer, Client& Client, int i)
@@ -119,6 +118,7 @@ void	Server::MessageParsing(std::string buffer, Client& Client, int i)
 	for (size_t i = 0; i < rawCommands.size(); ++i)
 	{
 		parsedCmd = parseCommand(rawCommands[i]);
-		executeCmd(parsedCmd, Client);
+		if (!executeCmd(parsedCmd, Client))
+			return;
 	}
 }

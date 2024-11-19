@@ -131,7 +131,8 @@ bool	Server::checkPassWord( Command_s cmd, Client& Client)
             {
                 sendMessageToClient(Client.getSocket(), 
 						"Password required for connexion pas le bon mdp mon reuf"); 
-                close(Client.getSocket());
+                removeClient(Client.getUsername());
+                //close(Client.getSocket());
 				return false;
             }
         }
@@ -297,18 +298,19 @@ void Server::start() {
 			int bitread = read(new_socket, buffer, 1024);
 			if (bitread <= 0)
 				std::cout << "\nproblem" << std::endl;
-			else { 
+			/*else { 
 				initialHandShake(buffer, new_socket);
-			}
+			}*/
             std::string baseName = "Guest";
             std::stringstream ss;
             ss << baseName << i;
             std::string indexedName = ss.str();
-            i++;
             //fin test
            // time_t	currentTime = time(NULL);
             //clients->setLastNicknameChange(time(NULL));
             clients.push_back(new Client(indexedName,indexedName,new_socket));
+            MessageParsing(buffer, *clients[i], i);
+            i++;
         }
         //verifier les connexions
         displayInfo(); 
@@ -373,6 +375,7 @@ Server::~Server() {
 void Server::stop() {
     close(server_socket);
     for (size_t i = 0; i < clients.size(); ++i) {
+      //  close(clients[i]->getSocket());
         delete clients[i];
     }
 	for (size_t i = 0; i < channels.size(); ++i) {

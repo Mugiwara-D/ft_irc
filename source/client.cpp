@@ -16,20 +16,17 @@
 #include <unistd.h>
 
 Client::Client(const std::string &user, const std::string &nick, int socket): 
-	username(user), nickname(nick), lastNicknameChange(std::time(0) - 10), socket(socket), lastPing(std::time(0)), awaitPing(false)
-{
-    this->Registered = false;
-}
+	username(user), nickname(nick), lastNicknameChange(std::time(0) - 10), Registered(false), socket(socket), lastPing(std::time(0)), awaitPing(false)
+{}
 
 Client::Client(const Client &source): username(source.username), nickname(source.nickname) 
-{
-    this->Registered = false;
-}
+{}
 
 Client::~Client() {
     for (std::vector<channel*>::iterator it = Channel_list.begin(); it != Channel_list.end(); ++it) {
         delete *it;
     }
+    close(socket);
 }
 
 int Client::getSocket() const {
@@ -58,7 +55,7 @@ void Client::displayInfo() const {
 }
 
 bool Client::isRegistered() const{
-    return(this->Registered);
+    return(Registered);
 }
 
 void Client::setRegistered(bool val){
