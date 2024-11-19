@@ -132,15 +132,12 @@ bool	Server::checkPassWord( Command_s cmd, Client& Client)
                 sendMessageToClient(Client.getSocket(), 
 						"Password required for connexion pas le bon mdp mon reuf"); 
                 removeClient(Client.getUsername());
-                //close(Client.getSocket());
 				return false;
             }
         }
         else
         {
             sendMessageToClient(Client.getSocket(), "Password required for connexion"); 
-            // close(Client.getSocket());
-            // clients.erase(clients.begin() + i);
         }
     }
     else{
@@ -164,7 +161,6 @@ Client& Server::getClientByName(const std::string& nickname) {
             return *clients[i];
         }
     }
-	//return nullptr;
     throw std::runtime_error("Client with nickname '" + nickname + "' not found.");
 }
 
@@ -191,9 +187,6 @@ void Server::cmdKick(Client& client, const std::string& channelName, const std::
     std::string kickMessage = ":" + client.getUsername() + "!admin@host KICK " + target + " :Breaking rules";
     std::cout << kickMessage << std::endl;
 
-//    const std::vector<Client*>& clientsInChannel = chan->getClientList();
-  //  for (size_t i = 0; i < clientsInChannel.size(); ++i) {
-    //    sendMessageToClient(clientsInChannel[i]->getSocket(), kickMessage);
 	sendMessageToChannel(channelName, kickMessage, client);
 	}
 	catch(const std::exception& e)
@@ -298,9 +291,6 @@ void Server::start() {
 			int bitread = read(new_socket, buffer, 1024);
 			if (bitread <= 0)
 				std::cout << "\nproblem" << std::endl;
-			/*else { 
-				initialHandShake(buffer, new_socket);
-			}*/
             std::string baseName = "Guest";
             std::stringstream ss;
             ss << baseName << i;
@@ -375,7 +365,6 @@ Server::~Server() {
 void Server::stop() {
     close(server_socket);
     for (size_t i = 0; i < clients.size(); ++i) {
-      //  close(clients[i]->getSocket());
         delete clients[i];
     }
 	for (size_t i = 0; i < channels.size(); ++i) {
