@@ -2,6 +2,15 @@
 
 void	Server::cmdTopic(Command_s cmd, Client& client)
 {
+	if (cmd.params.size() < 1)
+	{
+		sendMessageToClient(client.getSocket(), ERROR::NOSUCHCHANNEL(client.getNickname(), "*"));
+		return ;
+	} else if (!isValidChan(cmd.params[0])){
+		sendMessageToClient(client.getSocket(), ERROR::NOSUCHCHANNEL(client.getNickname(), cmd.params[0]));
+		return ;
+	}
+
 	channel*	cchan = getChannelByName(cmd.params[0]);
 	
 	if (cmd.trailing.empty())
