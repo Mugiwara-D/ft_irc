@@ -228,6 +228,8 @@ bool	Server::isValidChan(const std::string channel)
 
 void	Server::CAPresponse( std::string arg, Client& client )
 {
+	if (arg.find("LS") != std::string::npos)
+		sendMessageToClient(client.getSocket(), RPL::CAP302("*"));
 	if (arg.find("REQ") != std::string::npos)
 		sendMessageToClient(client.getSocket(), RPL::CAPREQ(client.getNickname()));
 	if (arg.find("END") != std::string::npos)
