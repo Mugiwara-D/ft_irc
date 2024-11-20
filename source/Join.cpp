@@ -26,7 +26,7 @@ void Server::cmdJoin(Client& client, const std::string& channelName, const std::
                 sendMessageToClient(client.getSocket(), ERROR::NOTONCHANNEL(client.getNickname(), channelName));
                 return ;
         }      
-        if (!existingChannel->getKey().empty() && existingChannel->getKey() != key) {
+        if (existingChannel->getLock() && !existingChannel->getKey().empty() && existingChannel->getKey() != key) {
             std::string errorMsg = "Wrong password" + channelName;
             sendMessageToClient(client.getSocket(), errorMsg);
             return;

@@ -338,7 +338,6 @@ void Server::start() {
 }
 
 void Server::sendMessageToClient(int client_fd, const std::string& message) {
-    // Envoyer un message au client
     std::string formattedMessage = message + "\r\n";
     std::cout << formattedMessage <<std::endl;
     if (send(client_fd, formattedMessage.c_str(), formattedMessage.length(), 0) < 0) {

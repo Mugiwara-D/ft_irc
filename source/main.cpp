@@ -70,19 +70,8 @@ int	main(int argc, char **argv)
 		int port = validport(argv[1]);
 		if(port != -1)
 			std::cout << "good port" << std::endl;
-		// Server server(port, "Pass");
-		
-		/////////////serie de test pour ajouter les clients et init le serv///////////////////
-		// Client c1("Alexandre", "Alex"); 
-		// Client c2("Olivier", "Olcoste");
 		Server Server(port, argv[2]);
 		Server.start();
-		// Server.addClient(c1);
-		// Server.addClient(c2);
-		// Server.displayInfo();
-		// Server.removeClient("Alexandre");
-		// Server.displayInfo();
-		//start init;
 	}
 		
 }
