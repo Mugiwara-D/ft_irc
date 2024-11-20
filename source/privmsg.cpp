@@ -56,7 +56,7 @@ void	Server::cmdPrivMsg(Command_s command, Client &Clt)//messag  vers d autre ch
 			std::cerr << "Failed to send error message to client" << std::endl;
             return ;
 		}
-	return;
+	return ;
 	}
 
  	std::string msg = ":" + Clt.getNickname() + " PRIVMSG " + (*itDest) + " :" + command.trailing;

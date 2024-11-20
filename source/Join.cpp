@@ -31,7 +31,7 @@ void Server::cmdJoin(Client& client, const std::string& channelName, const std::
             sendMessageToClient(client.getSocket(), errorMsg);
             return;
         }
-        if (existingChannel->getUserLimit() > 0 && existingChannel->getClientList().size() >= existingChannel->getUserLimit()) {
+        if (existingChannel->isLimited() && existingChannel->getUserLimit() > 0 && existingChannel->getClientList().size() >= existingChannel->getUserLimit()) {
             std::string errorMsg = "User limit is reach";
             sendMessageToClient(client.getSocket(), errorMsg);
             return;

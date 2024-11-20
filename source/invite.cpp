@@ -60,6 +60,12 @@ void	Server::cmdInvite(Command_s command, Client &Clt)
 		return ;
 	}
 
+		 if (!chnVar->isOperator(Clt)) {
+        std::cout << "Client " << Clt.getNickname() << " is not an operator in channel \"" << chnVar->getname() << "\"." << std::endl;
+        sendMessageToClient(Clt.getSocket(), ERROR::KICKNOOPERATOR(Clt.getNickname(), chnVar->getname()));
+		return;
+	}
+
 	std::string lineInvite = ":" + Clt.getNickname() + " INVITE " + usr + " " + (*chn);
 	//std::cout << "La ligne pour inviter un user est:" << lineInvite << std::endl;
 	sendMessageToClient(itSup.getSocket(), lineInvite);

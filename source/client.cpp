@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "client.hpp"
 #include <iostream>
 #include <unistd.h>
@@ -19,7 +18,7 @@ Client::Client(const std::string &user, const std::string &nick, int socket):
 	username(user), nickname(nick), lastNicknameChange(std::time(0) - 10), Registered(false), socket(socket), lastPing(std::time(0)), awaitPing(false)
 {}
 
-Client::Client(const Client &source): username(source.username), nickname(source.nickname) 
+Client::Client(const Client &source): username(source.username), nickname(source.nickname), Registered(false)
 {}
 
 Client::~Client() {
@@ -55,7 +54,7 @@ void Client::displayInfo() const {
 }
 
 bool Client::isRegistered() const{
-    return(Registered);
+    return(this->Registered);
 }
 
 void Client::setRegistered(bool val){
