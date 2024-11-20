@@ -295,13 +295,13 @@ void Server::start() {
 				std::cout << "\nproblem" << std::endl;
             std::string baseName = "Guest";
             std::stringstream ss;
-            ss << baseName << i;
+            ss << baseName << i << "fd=" << new_socket;
             std::string indexedName = ss.str();
             //fin test
            // time_t	currentTime = time(NULL);
             //clients->setLastNicknameChange(time(NULL));
             clients.push_back(new Client(indexedName,indexedName,new_socket));
-            MessageParsing(buffer, *clients[i], i);
+            MessageParsing(buffer, getClientByName(indexedName), i);
             i++;
         }
         //verifier les connexions

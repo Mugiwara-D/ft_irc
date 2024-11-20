@@ -79,7 +79,7 @@ namespace RPL
 	} // Indicates that a channel has no topic set.
 	
 	inline string	TOPIC( const string& nick, const string& channel, const string& topic ) {
-		return ":" + SERV_NAME + " 332 " + nick + " " + channel + " :" + topic;
+		return  SERV_NAME + " 332 " + nick + " " + channel + " :" + topic;
 	} // Sends the current topic of a channel to the client.
 	
 	inline string	INVITING(const std::string& nick, const std::string& invitedNick, const std::string& channel) {

@@ -1,0 +1,49 @@
+<< CAP LS 302
+<< JOIN :
+>> :irc.example.com CAP * LS :multi-prefix
+<< CAP REQ :multi-prefix
+>> :server_name 421  Guest0 JOIN :Unknown command
+>> :irc.example.com CAP Guest0 ACK :multi-prefix
+<< CAP END
+<< PASS pwd
+<< NICK matiya
+<< USER matiya matiya localhost :matiya
+>> :irc.example.com 001 Guest0 :Welcome to the IRC Network, Guest0!Guest0@server name
+>> :Guest0 NICK matiya
+>> :irc.example.com 001 matiya :Welcome to the IRC Network, matiya!matiya@host
+>> :irc.example.com 002 matiya :Your host is irc.example.com, running version1.0
+>> :irc.example.com 003 matiya :This server was created Wed Nov 20 2024 at 12:03:20 CET
+>> :irc.example.com 004 matiya :irc.example.com 1.0  o  o
+>> :irc.example.com 005 matiya MAXCHANNELS=10 CHANLIMIT=#&:10 NICKLEN=10 :are supported by this server
+>> :irc.example.com 375 matiya :- :irc.example.com Message of the Day -
+>> :irc.example.com 372 matiya :- salut bien venue sur le serveur irc le plus sketchy de tout le 93, enjoy!!
+>> :irc.example.com 376 matiya :End of /MOTD command.
+<< MODE Guest0 +i
+>> :server 461 matiya MODE :Not enough parameters
+<< WHOIS matiya
+>> 311 matiya matiya localhost * :matiya
+--> nickfind event whois
+>> 319 matiya :
+--> event empty
+>> 318 matiya :End of WHOIS list
+--> event empty
+<< MODE matiya +i
+>> :server 461 matiya MODE :Not enough parameters
+<< PING irc.example.com
+>> PONG irc.example.com
+--> lag pong
+>> :server_name 421  matiya PING :Unknown command
+<< TOPIC 
+>> :server 403 matiya * :No such channel
+<< TOPIC tr
+>> :server 403 matiya tr :No such channel
+<< JOIN #test
+>> :matiya!matiya@matiya JOIN #test
+<< TOPIC #test :testing
+>> ::irc.example.com 332 matiya #test :testing
+<< MODE #test +i
+<< MODE #test +k yo
+<< PRIVMSG #test :yo
+<< INVITE Guest1 #test
+<< PRIVMSG #test :yop
+<< MODE #test -i
