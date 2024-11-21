@@ -62,13 +62,13 @@ Command_s	parseCommand( const std::string rawCmd )
 
 bool	Server::executeCmd(Command_s command, Client& client)
 {
-	/*std::cout << "\nCommand : " << command.command 
+	std::cout << "\nCommand : " << command.command 
 		<< "\nprefix : " << command.prefix <<
 		"\ntrailing : " << command.trailing << std::endl;
 	std::cout << "Params : " << std::endl;
 	for (size_t i = 0; i < command.params.size(); ++i){
 		std::cout << command.params[i] << std::endl; 
-	}*/
+	}
 	if (command.command == "CAP")
 		CAPresponse(command.params[0], client);
 	else if (command.command == "JOIN" && command.params.size() != 0)
@@ -106,24 +106,59 @@ bool	Server::executeCmd(Command_s command, Client& client)
 	}
 	return true;
 }
-
-void	Server::MessageParsing(std::string buffer, Client& Client, int i)
+void Server::MessageParsing(std::string buffer, Client& client, int i)
 {
-	std::vector<std::string>	rawCommands;
-	Command_s	parsedCmd;
+	(void)i;
+    std::vector<std::string> commands;
+    Command_s parsedCmd;
+    size_t pos = 0;
+    while ((pos = buffer.find("\r\n")) != std::string::npos) {
+        commands.push_back(buffer.substr(0, pos));
+        buffer.erase(0, pos + 2);
+    }
 
-	if (buffer.find("USER") != std::string::npos && buffer.find("PASS") == std::string::npos) {
-		sendMessageToClient(Client.getSocket(), ERROR::PASSWDMISMATCH(Client.getNickname(), "Password Required"));
-		removeClient(Client.getUsername());
-		return;
-	}
-	(void) i;
-	rawCommands = splitBuffer(buffer);
+    bool passFound = false;
+    for (size_t i = 0; i < commands.size(); ++i) {
+        parsedCmd = parseCommand(commands[i]);
 
-	for (size_t i = 0; i < rawCommands.size(); ++i)
-	{
-		parsedCmd = parseCommand(rawCommands[i]);
-		if (!executeCmd(parsedCmd, Client))
-			return;
-	}
+        if (parsedCmd.command == "PASS") {
+            passFound = true;
+            if (parsedCmd.params.empty()) {
+                std::cout << "PASS command received but no password provided." << std::endl;
+                sendMessageToClient(client.getSocket(), "464 * :Password required.");
+                return;
+            }
+        } 
+        else if (!passFound && parsedCmd.command != "CAP") {
+            std::cout << "PASS command must be sent before other commands." << std::endl;
+            sendMessageToClient(client.getSocket(), "464 * :Password required before other commands.");
+            return;
+        }
+        if (!executeCmd(parsedCmd, client)) {
+            return;
+        }
+    }
 }
+
+
+// void	Server::MessageParsing(std::string buffer, Client& Client, int i)
+// {
+// 	std::vector<std::string>	rawCommands;
+// 	Command_s	parsedCmd;
+// 	std::cout << "\nBuffer:\n" << buffer << std::endl;
+// 	if (Client.isRegistered() == false &&  buffer.find("PASS") == std::string::npos) {
+// 		std::cout << "pas de pass" << std::endl;
+// 		sendMessageToClient(Client.getSocket(), ERROR::PASSWDMISMATCH(Client.getNickname(), "Password Required"));
+// 		removeClient(Client.getUsername());
+// 		return;
+// 	}
+// 	(void) i;
+// 	rawCommands = splitBuffer(buffer);
+
+// 	for (size_t i = 0; i < rawCommands.size(); ++i)
+// 	{
+// 		parsedCmd = parseCommand(rawCommands[i]);
+// 		if (!executeCmd(parsedCmd, Client))
+// 			return;
+// 	}
+// }
