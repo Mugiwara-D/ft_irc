@@ -157,6 +157,10 @@ namespace ERROR{
 		return ":server 461 "+ nick +" " + command + " :Not enough parameters";
 	} // The client didn't provide enough parameters for the MODE command.
 
+	inline string	PASSWDMISMATCH(const string& nick, const string& type){
+		return SERV_NAME + "464 " + nick + " :" + type;
+	} // err when the client doesn't provide a password;
+
 	inline string	KEYSET(const string& nick, const string& chan) {
 		return ":server 467 "+ nick + " "+ chan +" :Channel key already set";
 	} // The client attempted to set a password on a channel that already has one set, and the server rejected the request.

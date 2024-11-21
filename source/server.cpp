@@ -129,8 +129,7 @@ bool	Server::checkPassWord( Command_s cmd, Client& Client)
             }
             else
             {
-                sendMessageToClient(Client.getSocket(), 
-						"Password required for connexion pas le bon mdp mon reuf"); 
+                sendMessageToClient(Client.getSocket(), ERROR::PASSWDMISMATCH(Client.getNickname(), "Password incorrect")); 
                 removeClient(Client.getUsername());
 				return false;
             }
@@ -236,16 +235,16 @@ void	Server::CAPresponse( std::string arg, Client& client )
 		sendMessageToClient(client.getSocket(), RPL::WELCOME(client.getNickname(), client.getUsername(), "server name"));
 }
 
-bool	Server::initialHandShake( std::string buffer, int fd )
+bool	Server::initialHandShake( std::string buffer, Client& client, int i)
 {
-	if (buffer.find("CAP") != std::string::npos){
-		sendMessageToClient(fd, RPL::CAP302("*"));
-		return true;
-	}
-
-	return false;
+    std::cout << buffer << std::endl;
+    if (buffer.find("PASS") == std::string::npos) {
+        sendMessageToClient(client.getSocket(), ERROR::PASSWDMISMATCH(client.getNickname(), "Password required"));
+        return true;
+    }
+    MessageParsing(buffer, client, i);
+    return false;
 }
-
 
 
 void Server::start() {
@@ -301,6 +300,8 @@ void Server::start() {
            // time_t	currentTime = time(NULL);
             //clients->setLastNicknameChange(time(NULL));
             clients.push_back(new Client(indexedName,indexedName,new_socket));
+            /*if (initialHandShake(buffer, getClientByName(indexedName), i))
+                removeClient(indexedName);*/
             MessageParsing(buffer, getClientByName(indexedName), i);
             i++;
         }

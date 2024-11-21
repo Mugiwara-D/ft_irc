@@ -30,7 +30,7 @@ void	Server::cmdUser(Command_s cmd, Client& client)
 	client.setRealname(cmd.trailing);
 	client.setUsername(cmd.params[0]);
 
-	sendMessageToClient(client.getSocket(), RPL::WELCOME(client.getNickname(), client.getUsername(), "host"));
+	//sendMessageToClient(client.getSocket(), RPL::WELCOME(client.getNickname(), client.getUsername(), "host"));
 	sendMessageToClient(client.getSocket(), RPL::YOURHOST(client.getNickname(), "irc.example.com", "1.0"));
 	sendMessageToClient(client.getSocket(), RPL::CREATED(client.getNickname(), getCreationDate()));
 	sendMessageToClient(client.getSocket(), RPL::MYINFO(client.getNickname(), SERV_NAME, "1.0", " o", " o"));

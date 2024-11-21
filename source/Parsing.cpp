@@ -62,7 +62,7 @@ Command_s	parseCommand( const std::string rawCmd )
 
 bool	Server::executeCmd(Command_s command, Client& client)
 {
-/*	std::cout << "\nCommand : " << command.command 
+	/*std::cout << "\nCommand : " << command.command 
 		<< "\nprefix : " << command.prefix <<
 		"\ntrailing : " << command.trailing << std::endl;
 	std::cout << "Params : " << std::endl;
@@ -112,6 +112,11 @@ void	Server::MessageParsing(std::string buffer, Client& Client, int i)
 	std::vector<std::string>	rawCommands;
 	Command_s	parsedCmd;
 
+	if (buffer.find("USER") != std::string::npos && buffer.find("PASS") == std::string::npos) {
+		sendMessageToClient(Client.getSocket(), ERROR::PASSWDMISMATCH(Client.getNickname(), "Password Required"));
+		removeClient(Client.getUsername());
+		return;
+	}
 	(void) i;
 	rawCommands = splitBuffer(buffer);
 

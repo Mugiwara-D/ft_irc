@@ -105,7 +105,7 @@ public:
     std::string trimPriMsg(std::string& str);
     void cmdPrivMsgServ(Command_s command, Client &Clt);
 
-	bool	initialHandShake( std::string buffer, int fd );
+	bool	initialHandShake( std::string buffer, Client& client, int i );
 	void	CAPresponse( std::string arg, Client& client );
 
 	bool	executeCmd(Command_s command, Client& client);
