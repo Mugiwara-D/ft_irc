@@ -53,6 +53,7 @@ void Server::cmdJoin(Client& client, const std::string& channelName, const std::
 
     const std::vector<Client*>& clientsInChannel = existingChannel->getClientList();
     for (size_t i = 0; i < clientsInChannel.size(); ++i) {
+        std::cout << "Msg accueil CHN:" << reply << std::endl;
         sendMessageToClient(clientsInChannel[i]->getSocket(), reply);
     }
 }

@@ -129,7 +129,7 @@ void Server::MessageParsing(std::string buffer, Client& client, int i)
                 return;
             }
         } 
-        else if (!passFound && parsedCmd.command != "CAP") {
+        else if (!passFound && parsedCmd.command != "CAP" && client.isRegistered() == false) {
             std::cout << "PASS command must be sent before other commands." << std::endl;
             sendMessageToClient(client.getSocket(), "464 * :Password required before other commands.");
             return;
