@@ -27,7 +27,10 @@ std::string	Server::getCreationDate()
 
 void	Server::cmdUser(Command_s cmd, Client& client)
 {
-	client.setRealname(cmd.trailing);
+	size_t sizeName = cmd.trailing.find(" ");
+	std::string realName = cmd.trailing.substr(0, sizeName);
+
+	client.setRealname(realName);
 	client.setUsername(cmd.params[0]);
 
 	//sendMessageToClient(client.getSocket(), RPL::WELCOME(client.getNickname(), client.getUsername(), "host"));
