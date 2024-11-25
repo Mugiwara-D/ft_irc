@@ -26,10 +26,16 @@ void Server::cmdJoin(Client& client, const std::string& channelName, const std::
                 sendMessageToClient(client.getSocket(), ERROR::NOTONCHANNEL(client.getNickname(), channelName));
                 return ;
         }      
-        if (existingChannel->getLock() && !existingChannel->getKey().empty() && existingChannel->getKey() != key) {
-            std::string errorMsg = "Wrong password" + channelName;
-            sendMessageToClient(client.getSocket(), errorMsg);
-            return;
+        if (existingChannel->getLock() /* && !existingChannel->getKey().empty() && existingChannel->getKey() != key */) {
+            if (existingChannel->getKey().empty() || existingChannel->getKey() == key)
+            {
+                std::cout << "JOIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIin";
+            }
+            else {
+                std::string errorMsg = "Wrong password" + channelName;
+                sendMessageToClient(client.getSocket(), errorMsg);
+                return;
+            }
         }
         if (existingChannel->isLimited() && existingChannel->getUserLimit() > 0 && existingChannel->getClientList().size() >= existingChannel->getUserLimit()) {
             std::string errorMsg = "User limit is reach";
@@ -39,7 +45,7 @@ void Server::cmdJoin(Client& client, const std::string& channelName, const std::
         existingChannel->addClient(client);
         client.addChannelClient(*existingChannel);
     } 
-    else {
+    else {  
         channel* newChannel = new channel(channelName, false, false, false, false);
         newChannel->addClient(client);
         newChannel->addOps(client);
