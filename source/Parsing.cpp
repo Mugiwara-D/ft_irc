@@ -104,6 +104,7 @@ bool	Server::executeCmd(Command_s command, Client& client)
 		std::cout << "\nInvalide Command" << std::endl;
 		sendMessageToClient(client.getSocket(), ERROR::UNKNOWNCOMMAND(client.getUsername(), command.command));
 	}
+	client.setLastPing(std::time(0));
 	return true;
 }
 void Server::MessageParsing(std::string buffer, Client& client, int i)
