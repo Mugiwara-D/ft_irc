@@ -14,6 +14,7 @@ private:
     std::string _realname;
     std::string nickname;
     std::string Currentchannel;
+    std::string _ip;
     std::vector<channel*> Channel_list;
     time_t  lastNicknameChange;
     bool Registered;
@@ -28,6 +29,8 @@ public:
     Client(const Client &source);
     ~Client();
 
+    std::string getClientIp();
+    void        setClientIp( std::string cip );
     std::string getUsername() const;
 	std::string	getRealname();
 	void		setRealname( std::string realname );

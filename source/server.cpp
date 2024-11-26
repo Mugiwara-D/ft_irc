@@ -45,6 +45,7 @@ void Server::removeClient(const std::string &username) {
     std::cout << "Client with username \"" << username << "\" not found." << std::endl;
 }
 
+/*
 void Server::displayInfo() const {
     // std::cout << "Password: " << password << std::endl;
     // std::cout << "Clients:" << std::endl;
@@ -72,8 +73,13 @@ void Server::displayInfo() const {
     //         }
     //     }
     // }
-}
+}*/
 
+void Server::displayInfo() const {
+    for (size_t i = 0; i < clients.size(); ++i) {
+        std::cout << clients[i]->getRealname() << " : Bind FD = " << clients[i]->getSocket() << std::endl;
+    }
+}
 
 
 
@@ -235,7 +241,7 @@ void	Server::CAPresponse( std::string arg, Client& client )
 		sendMessageToClient(client.getSocket(), RPL::WELCOME(client.getNickname(), client.getUsername(), "server name"));
 }
 
-bool	Server::initialHandShake( std::string buffer, Client& client, int i)
+/*bool	Server::initialHandShake( std::string buffer, Client& client, int i)
 {
     std::cout << buffer << std::endl;
     if (buffer.find("PASS") == std::string::npos) {
@@ -244,7 +250,7 @@ bool	Server::initialHandShake( std::string buffer, Client& client, int i)
     }
     MessageParsing(buffer, client, i);
     return false;
-}
+}*/
 
 
 void Server::start() {
@@ -256,6 +262,7 @@ void Server::start() {
     struct sockaddr_in client_addr;
     socklen_t client_len = sizeof(client_addr);
 
+    std::cout << std::setfill('#') << std::setw(12) << "" << " USERS " << std::setw(12) << "" << std::endl;
     while (server_running) {
         FD_ZERO(&fds); //reset les fds
         FD_SET(server_socket, &fds); //mets le fd du socket serv dqns la liste
@@ -283,6 +290,8 @@ void Server::start() {
 
         if (FD_ISSET(server_socket, &fds)) {
             int new_socket = accept(server_socket, (struct sockaddr*)&client_addr, &client_len);
+            char ip_str[16];
+            inet_ntop(AF_INET, &client_addr.sin_addr, ip_str, INET_ADDRSTRLEN);
 			if (new_socket < 0) {
 				std::cout << "Accept failed: " << errno << std::endl;
                 exit(1);
@@ -300,13 +309,13 @@ void Server::start() {
            // time_t	currentTime = time(NULL);
             //clients->setLastNicknameChange(time(NULL));
             clients.push_back(new Client(indexedName,indexedName,new_socket));
+            getClientByName(indexedName).setClientIp(ip_str);
             /*if (initialHandShake(buffer, getClientByName(indexedName), i))
                 removeClient(indexedName);*/
             MessageParsing(buffer, getClientByName(indexedName), i);
             i++;
         }
         //verifier les connexions
-        displayInfo(); 
         
         for (size_t i = 0; i < clients.size(); ++i) {
             int clientFD = clients[i]->getSocket();
@@ -323,8 +332,8 @@ void Server::start() {
 					buf += buffer;
 					if(buf.find("\r\n") != std::string::npos)
 					{
-                        if (buf.find("PING") != std::string::npos)
-                            PingRspd(*clients[i]);
+                        /*if (buf.find("PING") != std::string::npos)
+                            PingRspd(*clients[i]);*/
 						MessageParsing(buf, *clients[i], i);
 						buf.clear();
 					} /*else {
@@ -342,7 +351,6 @@ void Server::start() {
 
 void Server::sendMessageToClient(int client_fd, const std::string& message) {
     std::string formattedMessage = message + "\r\n";
-    std::cout << formattedMessage <<std::endl;
     if (send(client_fd, formattedMessage.c_str(), formattedMessage.length(), 0) < 0) {
         std::cerr << "Failed to send message to client " << client_fd << std::endl;
     }

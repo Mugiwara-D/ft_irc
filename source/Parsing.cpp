@@ -61,20 +61,20 @@ Command_s	parseCommand( const std::string rawCmd )
 }
 
 bool	Server::executeCmd(Command_s command, Client& client)
-{
+{/*
 	std::cout << "\nCommand : " << command.command 
 		<< "\nprefix : " << command.prefix <<
 		"\ntrailing : " << command.trailing << std::endl;
 	std::cout << "Params : " << std::endl;
 	for (size_t i = 0; i < command.params.size(); ++i){
 		std::cout << command.params[i] << std::endl; 
-	}
+	}*/
 	if (command.command == "CAP")
 		CAPresponse(command.params[0], client);
 	else if (command.command == "JOIN" && command.params.size() != 0)
         cmdJoin(client, command.params[0], command.params[1]);
-	//else if (command.command == "PING")
-		//PingRspd(client);
+	else if (command.command == "PING")
+		PingRspd(client);
 	else if (command.command == "PONG")
 		Pong(client);
 	else if (command.command == "MODE")

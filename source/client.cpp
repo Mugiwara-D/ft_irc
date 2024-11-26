@@ -32,6 +32,14 @@ int Client::getSocket() const {
     return socket;
 }
 
+std::string Client::getClientIp(){
+    return _ip;
+}
+
+void    Client::setClientIp( std::string cip ){
+    _ip = cip;
+}
+
 std::string Client::getUsername() const {
     return username;
 }

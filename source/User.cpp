@@ -41,4 +41,6 @@ void	Server::cmdUser(Command_s cmd, Client& client)
 	sendMessageToClient(client.getSocket(), RPL::MOTDSTART(client.getNickname(), SERV_NAME));
 	sendMessageToClient(client.getSocket(), RPL::MOTD(client.getNickname(), "salut bien venue sur le serveur irc le plus sketchy de tout le 93, enjoy!!"));
 	sendMessageToClient(client.getSocket(), RPL::ENDOFMOTD(client.getNickname()));
+	
+    std::cout << client.getRealname() << " :IP = " << client.getClientIp() << " :FD = " << client.getSocket() << std::endl;
 }
