@@ -35,7 +35,12 @@ void Server::addClient(Client* client) {
 
 void Server::removeClient(const std::string &username) {
     for (std::vector<Client*>::iterator it = clients.begin(); it != clients.end(); ++it) {
-        if ((*it)->getUsername() == username) {
+        if ((*it)->getNickname() == username) {
+            for (std::vector<channel*>::iterator ite = channels.begin(); ite != channels.end(); ++ite)
+            {
+                std::string ni = (*it)->getNickname();
+               (*ite)->removeClient(getClientByName(ni));
+            }
             delete *it;
             clients.erase(it);
             std::cout << "Client with username \"" << username << "\" has been removed." << std::endl;
@@ -85,7 +90,6 @@ void Server::displayInfo() const {
 
 /*######################fonctionnement du serv : ###########################################*/
 Server::Server(int port, const std::string &pwd) : password(pwd), port(port){
-    setCreationDate(getStrDate());
     server_socket = socket(AF_INET, SOCK_STREAM, 0); //SOCK_STREAM = TCP
     if (server_socket < 0 ) {
         std::cout << "Error with socket creation." << std::endl;
@@ -103,6 +107,7 @@ Server::Server(int port, const std::string &pwd) : password(pwd), port(port){
     }
 	running = true;
     std::cout << "Server initialized" << std::endl;
+    setCreationDate(getStrDate());
 }
 
 void sendReply(int clientSocket, const std::string& reply) {
@@ -315,7 +320,18 @@ void Server::start() {
             MessageParsing(buffer, getClientByName(indexedName), i);
             i++;
         }
-        //verifier les connexions
+        for (size_t i = 0; i < channels.size(); ++i) {
+            const channel& chan = *channels[i];
+            std::vector<Client*> clientsInChannel = chan.getClientList();
+            std::cout << "Channel: " << chan.getname() << std::endl;
+            if (clientsInChannel.empty()) {
+                std::cout << "  No users in this channel." << std::endl;
+            } else {
+                std::cout << "  Users:" << std::endl;
+                for (size_t j = 0; j < clientsInChannel.size(); ++j) {
+                    std::cout << "    - " << clientsInChannel[j]->getNickname() << std::endl;
+            }
+            }}
         
         for (size_t i = 0; i < clients.size(); ++i) {
             int clientFD = clients[i]->getSocket();

@@ -42,10 +42,10 @@ int validport(char *port)
 			std::cout << "Port shall be positive numeric value  only" << std::endl;
 			return(-1);
 		}
-		int Iport = std::atoi(port);
-		if(Iport > 65535)
+		int Iport = atoi(port);
+		if(Iport > 65535 || Iport < 0)
 		{
-			std::cout << "Port shall be lower than 65535" << std::endl;
+			std::cout << "Port shall be lower than 65535 and positiv" << std::endl;
 			return(-1);
 		}
 		std::cout << "port :" << Iport << std::endl;
@@ -69,9 +69,11 @@ int	main(int argc, char **argv)
 	{
 		int port = validport(argv[1]);
 		if(port != -1)
+		{
 			std::cout << "good port" << std::endl;
-		Server Server(port, argv[2]);
-		Server.start();
+			Server Server(port, argv[2]);
+			Server.start();
+		}
 	}
 		
 }

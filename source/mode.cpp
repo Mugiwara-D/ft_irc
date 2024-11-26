@@ -56,7 +56,7 @@ bool 	Server::cmdMode( Command_s cmd, Client& client )
 		getChannelByName(channel)->addOps(getChannelByName(channel)->getClient(cmd.params[2]));
 	} else if (cmd.params[1] == "-o" && getChannelByName(channel)->isOperator(client)) {
 		getChannelByName(channel)->removeOps(getChannelByName(channel)->getClient(cmd.params[2]));
-	} else if (cmd.params[1] == "+l" && !getChannelByName(channel)->isLimited()) {
+	} else if (cmd.params[1] == "+l") {
 		getChannelByName(channel)->setLimited(true);
 		getChannelByName(channel)->setUserLim(atoi(cmd.params[2].c_str()));
 	} else if (cmd.params[1] == "-l" && getChannelByName(channel)->isLimited()) {

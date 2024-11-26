@@ -30,14 +30,12 @@ void Server::cmdJoin(Client& client, const std::string& channelName, const std::
             if (existingChannel->getKey().empty() || existingChannel->getKey() == key)
             {            }
             else {
-                std::string errorMsg = "Wrong password" + channelName;
-                sendMessageToClient(client.getSocket(), errorMsg);
+                sendMessageToClient(client.getSocket(), ERROR::BADCHANNELKEY(client.getNickname(), channelName));
                 return;
             }
         }
         if (existingChannel->isLimited() && existingChannel->getUserLimit() > 0 && existingChannel->getClientList().size() >= existingChannel->getUserLimit()) {
-            std::string errorMsg = "User limit is reach";
-            sendMessageToClient(client.getSocket(), errorMsg);
+            sendMessageToClient(client.getSocket(), ERROR::CHANNELISFULL(client.getNickname(), channelName));
             return;
         }
         existingChannel->addClient(client);

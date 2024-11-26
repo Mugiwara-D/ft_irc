@@ -165,6 +165,9 @@ namespace ERROR{
 		return ":server 467 "+ nick + " "+ chan +" :Channel key already set";
 	} // The client attempted to set a password on a channel that already has one set, and the server rejected the request.
 
+	inline string	CHANNELISFULL(const string& nick, const string& chan){
+		return SERV_NAME + " 471 "+ nick + " " + chan + " :Cannot join channel (+l)";
+	}
 	inline string	UNKNOWNMODE(const string& nick, const string& mode) {
 		return ":server 472 "+ nick + " "+ mode +" :is unknown mode "+ mode +" to me";
 	} // he mode specified by the client is not recognized by the server, and thus the mode change cannot be applied.
@@ -172,6 +175,10 @@ namespace ERROR{
 	inline string	INVITEONLYCHAN(const string& nick, const string& chan) {
 		return ":server 473 "+ nick +" "+ chan +" :Cannot join channel (+i)";
 	} // The client is trying to join a channel that is set to invite-only, and they were not invited.
+
+	inline string	BADCHANNELKEY( const string& nick, const string& chan ) {
+		return SERV_NAME + " 475 "+ nick + " " + chan + " :Cannot join channel (+k)";
+	}
 
 	inline string	CHANOPRIVSNEEDED(const string& nick, const string& channel) {
 		return "482 "+ nick +" "+ channel +" :You're not channel operator";

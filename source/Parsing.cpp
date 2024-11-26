@@ -69,6 +69,7 @@ bool	Server::executeCmd(Command_s command, Client& client)
 	for (size_t i = 0; i < command.params.size(); ++i){
 		std::cout << command.params[i] << std::endl; 
 	}*/
+	client.setLastPing(std::time(0));
 	if (command.command == "CAP")
 		CAPresponse(command.params[0], client);
 	else if (command.command == "JOIN" && command.params.size() != 0)
@@ -82,7 +83,7 @@ bool	Server::executeCmd(Command_s command, Client& client)
 	else if (command.command == "NICK")
 		cmdNick(command, client);
 	else if (command.command == "QUIT")
-		removeClient(client.getUsername());
+		removeClient(client.getNickname());
 	else if (command.command == "PRIVMSG")
 		cmdPrivMsg(command, client);
 	else if (command.command == "TOPIC")
@@ -104,7 +105,6 @@ bool	Server::executeCmd(Command_s command, Client& client)
 		std::cout << "\nInvalide Command" << std::endl;
 		sendMessageToClient(client.getSocket(), ERROR::UNKNOWNCOMMAND(client.getUsername(), command.command));
 	}
-	client.setLastPing(std::time(0));
 	return true;
 }
 void Server::MessageParsing(std::string buffer, Client& client, int i)
