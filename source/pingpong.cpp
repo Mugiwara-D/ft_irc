@@ -10,9 +10,10 @@ void	Server::Ping(Client& client)
 
 void	Server::handleTimeOut(Client& client)
 {
-	std::string	ErrMsg = "ERROR :closing link: [" + client.getUsername() + "] (Ping timeout: 120 seconds)";
+	std::ostringstream	oss;
+	oss << "ERROR :closing link: [" + client.getUsername() + "] (Ping timeout: " << PING_TIMEOUT << " Seconds)";
 	std::cout << client.getNickname() << " Timed Out" << std::endl;
-	sendMessageToClient(client.getSocket(), ErrMsg);
+	sendMessageToClient(client.getSocket(), oss.str());
 	removeClient(client.getUsername());
 
 }
