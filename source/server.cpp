@@ -281,7 +281,7 @@ void Server::start() {
             char ip_str[16];
             inet_ntop(AF_INET, &client_addr.sin_addr, ip_str, INET_ADDRSTRLEN);
 			if (new_socket < 0) {
-				std::cout << "Accept failed: " << errno << std::endl;
+				std::cout << "Accept failed: " << std::endl;
                 exit(1);
 			} 
 			char buffer[1024] = {0};

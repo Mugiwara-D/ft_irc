@@ -47,7 +47,7 @@ bool 	Server::cmdMode( Command_s cmd, Client& client )
 		getChannelByName(channel)->setLockTopic(true);
 	} else if (cmd.params[1] == "-t" && getChannelByName(channel)->getLockTopic()) {
 		getChannelByName(channel)->setLockTopic(false);
-	} else if (cmd.params[1] == "+k" && !getChannelByName(channel)->getLock()) {
+	} else if (cmd.params[1] == "+k" && cmd.params.size() > 2 && !getChannelByName(channel)->getLock()) {
 		getChannelByName(channel)->setKey(cmd.params[2]);
 		getChannelByName(channel)->setLocked(true);
 	} else if (cmd.params[1] == "-k" && getChannelByName(channel)->getLock()) {
@@ -56,7 +56,7 @@ bool 	Server::cmdMode( Command_s cmd, Client& client )
 		getChannelByName(channel)->addOps(getChannelByName(channel)->getClient(cmd.params[2]));
 	} else if (cmd.params[1] == "-o" && getChannelByName(channel)->isOperator(client)) {
 		getChannelByName(channel)->removeOps(getChannelByName(channel)->getClient(cmd.params[2]));
-	} else if (cmd.params[1] == "+l") {
+	} else if (cmd.params[1] == "+l" && cmd.params.size() > 2) {
 		getChannelByName(channel)->setLimited(true);
 		getChannelByName(channel)->setUserLim(atoi(cmd.params[2].c_str()));
 	} else if (cmd.params[1] == "-l" && getChannelByName(channel)->isLimited()) {
