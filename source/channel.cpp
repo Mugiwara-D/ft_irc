@@ -15,11 +15,11 @@
 
 channel::channel( std::string name, bool inviteOnly, bool lockTopic, bool locked, bool limited ) : 
 	name(name), _inviteOnly(inviteOnly), _lockTopic(lockTopic), _locked(locked), _limited(limited){
-    std::cout << "Channel \"" << name << "\" created." << std::endl;
+    // std::cout << "Channel \"" << name << "\" created." << std::endl;
 }
 
 channel::~channel(){
-    std::cout << "Channel \"" << name << "\" destroyed." << std::endl;
+    // std::cout << "Channel \"" << name << "\" destroyed." << std::endl;
 }
 
 std::string channel::getname(){
@@ -92,14 +92,14 @@ Client&	channel::getClient(std::string clientNick){
 
 void channel::addClient(Client& client) {
     clientList.push_back(&client);
-    std::cout << "Client " << client.getNickname() << " added to channel \"" << name << "\"." << std::endl;
+    // std::cout << "Client " << client.getNickname() << " added to channel \"" << name << "\"." << std::endl;
 }
 
 void channel::removeClient(Client& client) {
     for (std::vector<Client*>::iterator it = clientList.begin(); it != clientList.end(); ++it) {
         if (*it == &client) {
             clientList.erase(it);
-            std::cout << "Client " << client.getNickname() << " removed from channel \"" << name << "\"." << std::endl;
+            // std::cout << "Client " << client.getNickname() << " removed from channel \"" << name << "\"." << std::endl;
             break;
         }
     }
@@ -117,19 +117,19 @@ std::string channel::getname() const {
 
 void channel::addOps(Client& client) {
     operators.push_back(&client);
-    std::cout << "Client " << client.getNickname() << " added to channel \"" << name << "\"." << std::endl;
+    // std::cout << "Client " << client.getNickname() << " added to channel \"" << name << "\"." << std::endl;
 }
 
 void channel::addInvite(Client& client) {
     invite.push_back(&client);
-    std::cout << "Client " << client.getNickname() << " added to channel \"" << name << "\"." << std::endl;
+    // std::cout << "Client " << client.getNickname() << " added to channel \"" << name << "\"." << std::endl;
 }
 
 void channel::removeOps(Client& client) {
     for (std::vector<Client*>::iterator it = operators.begin(); it != operators.end(); ++it) {
         if (*it == &client) {
             operators.erase(it);
-            std::cout << "Client " << client.getNickname() << " removed from channel \"" << name << "\"." << std::endl;
+            // std::cout << "Client " << client.getNickname() << " removed from channel \"" << name << "\"." << std::endl;
             break;
         }
     }
@@ -148,24 +148,22 @@ void channel::kickClient(Client& client) {
     for (std::vector<Client*>::iterator it = clientList.begin(); it != clientList.end(); ++it) {
         if (*it == &client) {
             clientList.erase(it);
-            std::cout << "Client " << client.getNickname() << " kicked from channel \"" << name << "\"." << std::endl;
+            // std::cout << "Client " << client.getNickname() << " kicked from channel \"" << name << "\"." << std::endl;
             return;
         }
     }
-    std::cout << "Client " << client.getNickname() << " is not in the channel \"" << name << "\"." << std::endl;
+    // std::cout << "Client " << client.getNickname() << " is not in the channel \"" << name << "\"." << std::endl;
 }
 
 bool channel::checkInvite(Client *client)
 {
-        //msg d erreur
-
         for (std::vector<Client*>::iterator it = invite.begin(); it != invite.end(); ++it) {
             if ((*it) == client)
             {
-                std::cout << "Le client est dans la liste" << std::endl;
+                // std::cout << "Le client est dans la liste" << std::endl;
                 return (true);
             }
         }
-        std::cout << "Le client n'est PAS dans la liste" << std::endl;
+        // std::cout << "Le client n'est pas dans la liste" << std::endl;
     return (false);
 }

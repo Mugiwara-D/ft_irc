@@ -165,6 +165,12 @@ namespace ERROR{
 		return ":server 467 "+ nick + " "+ chan +" :Channel key already set";
 	} // The client attempted to set a password on a channel that already has one set, and the server rejected the request.
 
+/* TEST */
+	inline string	KICKED(const string& nick, const string& chan){
+		return SERV_NAME + " 470 "+ nick + " " + chan + " :You have been kicked from <channel>(+l)";
+	}
+/* TEST */
+
 	inline string	CHANNELISFULL(const string& nick, const string& chan){
 		return SERV_NAME + " 471 "+ nick + " " + chan + " :Cannot join channel (+l)";
 	}

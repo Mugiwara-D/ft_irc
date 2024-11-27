@@ -20,15 +20,17 @@ void Server::cmdJoin(Client& client, const std::string& channelName, const std::
     channel* existingChannel = getChannelByName(channelName);
 
     if (existingChannel) {
-        std::cout << "Le channel est:" << existingChannel->getInviteOnly() << std::endl;
+        // std::cout << "Le channel est:" << existingChannel->getInviteOnly() << std::endl;
         if (existingChannel->getInviteOnly() == true && existingChannel->checkInvite(&client) == false)/*check si le user est dans la liste*/ {
-                std::cout << "Le client ne rejoint pas le channel" << std::endl;
+                // std::cout << "Le client ne rejoint pas le channel" << std::endl;
                 sendMessageToClient(client.getSocket(), ERROR::NOTONCHANNEL(client.getNickname(), channelName));
                 return ;
         }      
-        if (existingChannel->getLock() /* && !existingChannel->getKey().empty() && existingChannel->getKey() != key */) {
+        if (existingChannel->getLock()) {
             if (existingChannel->getKey().empty() || existingChannel->getKey() == key)
-            {            }
+            {
+                // std::cout << "Good Password" << std::endl;
+            }
             else {
                 sendMessageToClient(client.getSocket(), ERROR::BADCHANNELKEY(client.getNickname(), channelName));
                 return;
@@ -49,13 +51,11 @@ void Server::cmdJoin(Client& client, const std::string& channelName, const std::
         addChannel(*newChannel);
         existingChannel = newChannel;
     }
-
-    std::cout << client.getNickname() << " has joined channel: " << channelName << std::endl;
+    // std::cout << client.getNickname() << " has joined channel: " << channelName << std::endl;
     std::string reply = ":" + client.getNickname() + "!" + client.getUsername() + "@" + client.getRealname() + " JOIN " + channelName;
-
     const std::vector<Client*>& clientsInChannel = existingChannel->getClientList();
     for (size_t i = 0; i < clientsInChannel.size(); ++i) {
-        std::cout << "Msg accueil CHN:" << reply << std::endl;
+        // std::cout << "Msg accueil CHN:" << reply << std::endl;
         sendMessageToClient(clientsInChannel[i]->getSocket(), reply);
     }
 }

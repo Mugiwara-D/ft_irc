@@ -43,11 +43,11 @@ void Server::removeClient(const std::string &username) {
             }
             delete *it;
             clients.erase(it);
-            std::cout << "Client with username \"" << username << "\" has been removed." << std::endl;
+            // std::cout << "Client with username \"" << username << "\" has been removed." << std::endl;
             return;
         }
     }
-    std::cout << "Client with username \"" << username << "\" not found." << std::endl;
+    // std::cout << "Client with username \"" << username << "\" not found." << std::endl;
 }
 
 /*
@@ -113,7 +113,7 @@ std::string get_irc_password(const std::string& command) {
     while (std::getline(stream, line)) {
         if (line.substr(0, 4) == "PASS") {
             std::string password = line.substr(5, line.size()-6);
-            std::cout << password.size()<< std::endl;
+            // std::cout << password.size()<< std::endl;
             return password;
         }
     }
@@ -173,7 +173,7 @@ void Server::cmdKick(Client& client, const std::string& channelName, const std::
 	channel* chan = getChannelByName(channelName);
     
     if (chan == NULL) {
-        std::cout << "Channel \"" << channelName << "\" does not exist." << std::endl;
+        // std::cout << "Channel \"" << channelName << "\" does not exist." << std::endl;
 		sendMessageToClient(client.getSocket(), ERROR::CHANNELNOEXISTE(client.getNickname(), channelName));
         return;
     }
@@ -181,15 +181,18 @@ void Server::cmdKick(Client& client, const std::string& channelName, const std::
 	Client& cli = getClientByName(target);
 
     if (!chan->isOperator(client)) {
-        std::cout << "Client " << client.getNickname() << " is not an operator in channel \"" << channelName << "\"." << std::endl;
+        // std::cout << "Client " << client.getNickname() << " is not an operator in channel \"" << channelName << "\"." << std::endl;
         sendMessageToClient(client.getSocket(), ERROR::KICKNOOPERATOR(client.getNickname(), channelName));
 		return;
     }
+    sendMessageToClient(cli.getSocket(), ERROR::KICKED(client.getNickname(), channelName));
     chan->kickClient(cli);
-    std::string kickMessage = ":" + client.getUsername() + "!admin@host KICK " + target + " :Breaking rules";
-    std::cout << kickMessage << std::endl;
-
-	sendMessageToChannel(channelName, kickMessage, client);
+    std::string kickMessage = ":" + client.getNickname() + "!" + client.getUsername() + "@" + client.getRealname() +" KICK " + channelName + " " + cli.getNickname() + " :" + "breaking rules";
+    // std::cout << kickMessage << std::endl;
+    const std::vector<Client*>& clientsInChannel = chan->getClientList();
+	for (size_t i = 0; i < clientsInChannel.size(); ++i) {
+        sendMessageToClient(clientsInChannel[i]->getSocket(), kickMessage);
+    }
 	}
 	catch(const std::exception& e)
 	{
@@ -331,12 +334,12 @@ void Server::sendMessageToClient(int client_fd, const std::string& message) {
 void Server::addChannel(channel& newChannel) {
     for (size_t i = 0; i < channels.size(); ++i) {
         if (channels[i]->getname() == newChannel.getname()) {
-            std::cout << "Channel " << newChannel.getname() << " already exists." << std::endl;
+            // std::cout << "Channel " << newChannel.getname() << " already exists." << std::endl;
             return;
         }
     }
     channels.push_back(&newChannel);
-    std::cout << "Channel " << newChannel.getname() << " added successfully." << std::endl;
+    // std::cout << "Channel " << newChannel.getname() << " added successfully." << std::endl;
 }
 
 

@@ -129,19 +129,19 @@ std::string	Client::getRealname() {
 void Client::addChannelClient(channel &newChannel) {
     for (size_t i = 0; i < Channel_list.size(); ++i) {
         if (Channel_list[i]->getname() == newChannel.getname()) {
-            std::cout << "Client " << nickname << " is already in channel: " << newChannel.getname() << std::endl;
+            // std::cout << "Client " << nickname << " is already in channel: " << newChannel.getname() << std::endl;
             return;
         }
     }
     Channel_list.push_back(new channel(newChannel));
-    std::cout << "Client " << nickname << " added to channel: " << newChannel.getname() << std::endl;
+    // std::cout << "Client " << nickname << " added to channel: " << newChannel.getname() << std::endl;
 }
 
 void Client::removeChannelClient(const std::string &channelName) {
     for (size_t i = 0; i < Channel_list.size(); ++i) {
         if (Channel_list[i]->getname() == channelName) {
             Channel_list.erase(Channel_list.begin() + i);
-            std::cout << "Client " << nickname << " removed from channel: " << channelName << std::endl;
+            // std::cout << "Client " << nickname << " removed from channel: " << channelName << std::endl;
             return;
         }
     }

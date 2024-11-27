@@ -35,7 +35,7 @@ void	Server::cmdInvite(Command_s command, Client &Clt)
 	channel* chnVar = NULL;
 
 	for (std::vector<channel*>::iterator it = channels.begin(); it != channels.end(); ++it) {
-		std::cout << "(*it)->getname():" << (*it)->getname() << " (*chn):" << (*chn) << std::endl;
+		// std::cout << "(*it)->getname():" << (*it)->getname() << " (*chn):" << (*chn) << std::endl;
 		if (it == channels.end())
 			break;
 		else if ((*it)->getname() == (*chn))
@@ -46,7 +46,7 @@ void	Server::cmdInvite(Command_s command, Client &Clt)
 	}
 
 	for (std::vector<Client*>::iterator it = clients.begin(); it != clients.end(); ++it) {
-		std::cout << "(*it)->getNickname() :" << (*it)->getNickname() << " usr:" << usr << std::endl;
+		// std::cout << "(*it)->getNickname() :" << (*it)->getNickname() << " usr:" << usr << std::endl;
 		if ((*it)->getNickname() == usr)
 			existingUsr = true;
 	}
@@ -61,13 +61,12 @@ void	Server::cmdInvite(Command_s command, Client &Clt)
 	}
 
 		 if (!chnVar->isOperator(Clt)) {
-        std::cout << "Client " << Clt.getNickname() << " is not an operator in channel \"" << chnVar->getname() << "\"." << std::endl;
+        // std::cout << "Client " << Clt.getNickname() << " is not an operator in channel \"" << chnVar->getname() << "\"." << std::endl;
         sendMessageToClient(Clt.getSocket(), ERROR::KICKNOOPERATOR(Clt.getNickname(), chnVar->getname()));
 		return;
 	}
 
 	std::string lineInvite = ":" + Clt.getNickname() + " INVITE " + usr + " " + (*chn);
-	//std::cout << "La ligne pour inviter un user est:" << lineInvite << std::endl;
 	sendMessageToClient(itSup.getSocket(), lineInvite);
 
 	chnVar->addInvite(itSup);
