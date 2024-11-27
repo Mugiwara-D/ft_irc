@@ -107,6 +107,7 @@ bool	Server::executeCmd(Command_s command, Client& client)
 	}
 	return true;
 }
+
 void Server::MessageParsing(std::string buffer, Client& client, int i)
 {
 	(void)i;
@@ -125,14 +126,14 @@ void Server::MessageParsing(std::string buffer, Client& client, int i)
         if (parsedCmd.command == "PASS") {
             passFound = true;
             if (parsedCmd.params.empty()) {
-                std::cout << "PASS command received but no password provided." << std::endl;
-                sendMessageToClient(client.getSocket(), "464 * :Password required.");
+                //std::cout << "PASS command received but no password provided." << std::endl;
+                sendMessageToClient(client.getSocket(), ERROR::PASSWDMISMATCH(client.getNickname(), "Missing password"));
                 return;
             }
         } 
         else if (!passFound && parsedCmd.command != "CAP" && client.isRegistered() == false) {
-            std::cout << "PASS command must be sent before other commands." << std::endl;
-            sendMessageToClient(client.getSocket(), "464 * :Password required before other commands.");
+          //  std::cout << "PASS command must be sent before other commands." << std::endl;
+            sendMessageToClient(client.getSocket(), ERROR::PASSWDMISMATCH(client.getNickname(), "Password required"));
             return;
         }
         if (!executeCmd(parsedCmd, client)) {
@@ -140,26 +141,3 @@ void Server::MessageParsing(std::string buffer, Client& client, int i)
         }
     }
 }
-
-
-// void	Server::MessageParsing(std::string buffer, Client& Client, int i)
-// {
-// 	std::vector<std::string>	rawCommands;
-// 	Command_s	parsedCmd;
-// 	std::cout << "\nBuffer:\n" << buffer << std::endl;
-// 	if (Client.isRegistered() == false &&  buffer.find("PASS") == std::string::npos) {
-// 		std::cout << "pas de pass" << std::endl;
-// 		sendMessageToClient(Client.getSocket(), ERROR::PASSWDMISMATCH(Client.getNickname(), "Password Required"));
-// 		removeClient(Client.getUsername());
-// 		return;
-// 	}
-// 	(void) i;
-// 	rawCommands = splitBuffer(buffer);
-
-// 	for (size_t i = 0; i < rawCommands.size(); ++i)
-// 	{
-// 		parsedCmd = parseCommand(rawCommands[i]);
-// 		if (!executeCmd(parsedCmd, Client))
-// 			return;
-// 	}
-// }

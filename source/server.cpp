@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "server.hpp"
-/*######################fonction utiles : ###########################################*/
+
 Server::Server(const Server &other)
     : password(other.password), clients(other.clients), port(other.port), running(false){
     }
@@ -79,14 +79,6 @@ void Server::displayInfo() const {
     //     }
     // }
 }*/
-
-void Server::displayInfo() const {
-    for (size_t i = 0; i < clients.size(); ++i) {
-        std::cout << clients[i]->getRealname() << " : Bind FD = " << clients[i]->getSocket() << std::endl;
-    }
-}
-
-
 
 /*######################fonctionnement du serv : ###########################################*/
 Server::Server(int port, const std::string &pwd) : password(pwd), port(port){
@@ -246,18 +238,6 @@ void	Server::CAPresponse( std::string arg, Client& client )
 		sendMessageToClient(client.getSocket(), RPL::WELCOME(client.getNickname(), client.getUsername(), "server name"));
 }
 
-/*bool	Server::initialHandShake( std::string buffer, Client& client, int i)
-{
-    std::cout << buffer << std::endl;
-    if (buffer.find("PASS") == std::string::npos) {
-        sendMessageToClient(client.getSocket(), ERROR::PASSWDMISMATCH(client.getNickname(), "Password required"));
-        return true;
-    }
-    MessageParsing(buffer, client, i);
-    return false;
-}*/
-
-
 void Server::start() {
     fd_set fds;
     int i = 0;
@@ -301,38 +281,20 @@ void Server::start() {
 				std::cout << "Accept failed: " << errno << std::endl;
                 exit(1);
 			} 
-			//partir de test a modifier pour recuperer les noms des differents clients !
 			char buffer[1024] = {0};
 			int bitread = read(new_socket, buffer, 1024);
 			if (bitread <= 0)
 				std::cout << "\nproblem" << std::endl;
             std::string baseName = "Guest";
             std::stringstream ss;
-            ss << baseName << i << "fd=" << new_socket;
+            ss << baseName << i;
             std::string indexedName = ss.str();
-            //fin test
-           // time_t	currentTime = time(NULL);
-            //clients->setLastNicknameChange(time(NULL));
             clients.push_back(new Client(indexedName,indexedName,new_socket));
             getClientByName(indexedName).setClientIp(ip_str);
-            /*if (initialHandShake(buffer, getClientByName(indexedName), i))
-                removeClient(indexedName);*/
             MessageParsing(buffer, getClientByName(indexedName), i);
             i++;
         }
-        for (size_t i = 0; i < channels.size(); ++i) {
-            const channel& chan = *channels[i];
-            std::vector<Client*> clientsInChannel = chan.getClientList();
-            std::cout << "Channel: " << chan.getname() << std::endl;
-            if (clientsInChannel.empty()) {
-                std::cout << "  No users in this channel." << std::endl;
-            } else {
-                std::cout << "  Users:" << std::endl;
-                for (size_t j = 0; j < clientsInChannel.size(); ++j) {
-                    std::cout << "    - " << clientsInChannel[j]->getNickname() << std::endl;
-            }
-            }}
-        
+       
         for (size_t i = 0; i < clients.size(); ++i) {
             int clientFD = clients[i]->getSocket();
             if (FD_ISSET(clientFD, &fds)) {
@@ -346,16 +308,10 @@ void Server::start() {
                 int valread = read(clientFD, buffer, 1024);
                 if (valread >= 0) {
 					buf += buffer;
-					if(buf.find("\r\n") != std::string::npos)
-					{
-                        /*if (buf.find("PING") != std::string::npos)
-                            PingRspd(*clients[i]);*/
+					if(buf.find("\r\n") != std::string::npos) {
 						MessageParsing(buf, *clients[i], i);
 						buf.clear();
-					} /*else {
-						removeClient(clients[i]->getUsername());
-						continue ;
-					}*/
+					}
 				} else {
                     close(clientFD);
                     clients.erase(clients.begin() + i);

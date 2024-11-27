@@ -23,7 +23,7 @@ namespace RPL
 	} // Displays server-specific information like server name, version, available user modes, and channel modes.
 	
 	inline string	BOUNCE( const string& nick, const string& maxChan, const string& chanLim, const string& nickLen ) {
-		return SERV_NAME +" 005 "+ nick +" MAXCHANNELS="+ maxChan +" CHANLIMIT=#&:"+ chanLim +" NICKLEN="+ nickLen +" :are supported by this server";
+		return SERV_NAME +" 005 "+ nick +" MAXCHANNELS="+ maxChan +" CHANLIMIT="+ chanLim +" NICKLEN="+ nickLen +" :are supported by this server";
 	} // Sent to show features and limits specific to the server.
 
 	inline string	USERCLIENT( const string& nick, const string& users, const string& invisible, const string& servers ){
@@ -103,7 +103,7 @@ namespace RPL
 	} // Indicates the start of the Message of the Day.
 
 	inline string	ENDOFMOTD(const string& nick) {
-		return SERV_NAME + " 376 "+ nick +" :End of /MOTD command.";
+		return SERV_NAME + " 376 "+ nick +" :- End of /MOTD command.";
 	} // Marks the end of the Message of the Day.
 
 	inline string	NOTONCHANNEL(const std::string& nick, const std::string& channel) {
