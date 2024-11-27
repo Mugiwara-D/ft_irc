@@ -303,7 +303,7 @@ void Server::start() {
             if (FD_ISSET(clientFD, &fds)) {
                 char buffer[1024] = {0};
 				if (clients[i]->isTimeout(PING_TIMEOUT)){
-					removeClient(clients[i]->getUsername());
+                    handleTimeOut(*clients[i]);
 					continue;
 				}
 				if (clients[i]->needPing(PING_INTERVAL, PING_TIMEOUT) && clients[i]->getAwaitPing())
