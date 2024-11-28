@@ -34,8 +34,8 @@
 #include "RPL_list.hpp"
 #include <cerrno>
 
-const int	PING_INTERVAL = 60;
-const int	PING_TIMEOUT = 120;
+const int	PING_INTERVAL = 120;
+const int	PING_TIMEOUT = 240;
 extern bool server_running;
 struct	Command_s{
 	std::string					command;

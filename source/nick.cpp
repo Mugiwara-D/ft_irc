@@ -16,7 +16,11 @@ void	Server::cmdNick(Command_s command, Client &Clt)
 {
 /***********************PARSING**************************/
 	std::vector<Client*>::iterator itClient;
-
+	if (command.params.size() < 1)
+	{
+		sendMessageToClient(Clt.getSocket(), ERROR::NEEDMOREPARAMS(Clt.getNickname(), command.command));
+		return;
+	}
 	std::vector<std::string>::iterator itSup = command.params.begin();
 	for (std::vector<Client*>::iterator it = clients.begin(); it != clients.end(); ++it) {
 

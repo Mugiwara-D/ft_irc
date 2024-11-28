@@ -61,14 +61,14 @@ Command_s	parseCommand( const std::string rawCmd )
 }
 
 bool	Server::executeCmd(Command_s command, Client& client)
-{/*
-	std::cout << "\nCommand : " << command.command 
+{
+	/* std::cout << "\nCommand : " << command.command 
 		<< "\nprefix : " << command.prefix <<
 		"\ntrailing : " << command.trailing << std::endl;
 	std::cout << "Params : " << std::endl;
 	for (size_t i = 0; i < command.params.size(); ++i){
-		std::cout << command.params[i] << std::endl; 
-	}*/
+		std::cout << command.params[i] << command.command.size() <<std::endl; 
+	} */
 	client.setLastPing(std::time(0));
 	if (command.command == "CAP")
 		CAPresponse(command.params[0], client);

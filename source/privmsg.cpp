@@ -36,7 +36,10 @@ void	Server::cmdPrivMsg(Command_s command, Client &Clt)//messag  vers d autre ch
 	int		destinataireSocket;
 	bool	found = false;
 	std::vector<std::string>::iterator itDest = command.params.begin();
-
+    if(!(*itDest)[0])
+    {
+        return;
+    }
 	if ((*itDest)[0] == '#') {
 		cmdPrivMsgServ(command, Clt); return ;}
 

@@ -50,35 +50,6 @@ void Server::removeClient(const std::string &username) {
     // std::cout << "Client with username \"" << username << "\" not found." << std::endl;
 }
 
-/*
-void Server::displayInfo() const {
-    // std::cout << "Password: " << password << std::endl;
-    // std::cout << "Clients:" << std::endl;
-    // for (std::vector<Client*>::const_iterator it = clients.begin(); it != clients.end(); ++it) {
-    //     (*it)->displayInfo();
-    // }
-
-    // std::cout << "Port: " << port << std::endl;
-
-    // if (channels.empty()) {
-    //     std::cout << "No channels exist." << std::endl;
-    //     return;
-    // }
-    // std::cout << "List of users in all channels:" << std::endl;
-    // for (size_t i = 0; i < channels.size(); ++i) {
-    //     const channel& chan = *channels[i];
-    //     std::vector<Client*> clientsInChannel = chan.getClientList();
-    //     std::cout << "Channel: " << chan.getname() << std::endl;
-    //     if (clientsInChannel.empty()) {
-    //         std::cout << "  No users in this channel." << std::endl;
-    //     } else {
-    //         std::cout << "  Users:" << std::endl;
-    //         for (size_t j = 0; j < clientsInChannel.size(); ++j) {
-    //             std::cout << "    - " << clientsInChannel[j]->getNickname() << std::endl;
-    //         }
-    //     }
-    // }
-}*/
 
 /*######################fonctionnement du serv : ###########################################*/
 Server::Server(int port, const std::string &pwd) : password(pwd), port(port){
@@ -268,7 +239,7 @@ void Server::start() {
 
         struct timeval timeout;
         timeout.tv_sec = 0;
-        timeout.tv_usec = 1000;
+        timeout.tv_usec = 1;
 
         FDready = select(maxFD + 1, &fds, NULL, NULL, &timeout); // check les fd prets pour la lecture
 		if (FDready < 0){
